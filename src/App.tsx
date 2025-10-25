@@ -203,6 +203,9 @@ const App = () => (
   <Router>
     <Routes>
       <Route path="/" element={<Home />} />
+      {/* <Route path="/adminPage" element={<adminPage />} /> */}
+
+
       <Route path="/playboy" element={<PlayBoy />} />
       <Route path="/stamp" element={<GovermentStamp />} />
       <Route path="/gst" element={<Gst />} />
@@ -220,6 +223,11 @@ const App = () => (
       <Route path="voter-id-verification" element={<VoterIDVerificationGenerator />} />
       <Route path="/noc-2" element={<NoObjectionCertificateGenerator />} />
       {/* <Route path="/image/upload" element={<ImageUploadStep />} /> */}
+
+
+
+
+      
      <Route path="/card" element={<Card  />} />
     </Routes>
   </Router>

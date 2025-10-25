@@ -71,3 +71,20 @@ export default defineConfig([
   },
 ])
 ```
+
+
+
+
+
+in this code don't change anything just add a submit button after that 
+
+
+this is my profile to get by id check if user have already uploded the image 
+if uploaded then show then disabled the input box show the image that user have uploaded also disable the submit button 
+
+if status is pending then show the status is pending and wait for verification if rejected then show rejected if approved then show the image the user have uploaded and then enable the next button if not approved then don't let user click on next button 
+
+if not uploaded then user can upload image
+
+ui
+in this code do not change logic only change tailwind css to make attractive ui and display the formal message and make sure do not change logic
