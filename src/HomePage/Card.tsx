@@ -1,5 +1,4 @@
-
-import React, { FormEvent } from "react";
+import { type FormEvent } from "react";
 import PhoneVerification from "../pages/PhoneVerification";
 import CardVerification from "../pages/CardVerification";
 import MedicalKitChange from "../pages/MedicalKitChange";

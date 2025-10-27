@@ -1,6 +1,3 @@
-
-
-
 import { create } from "zustand";
 
 interface FormState {
@@ -12,7 +9,7 @@ interface FormState {
   setStep: (step: number) => void;
 }
 
-export const useFormStore = create<FormState>((set, get) => ({
+export const useFormStore = create<FormState>((set) => ({
   currentStep: 0,
   formData: {},
   nextStep: () => set((state) => ({
