@@ -198,6 +198,8 @@ import VoterIDVerificationGenerator from "./components/docs/VoterIDVerification"
 import { Home } from "./HomePage/Home";
 import Card from "./HomePage/Card"
 
+import Applications from "./admin/Applications";
+
 
 const App = () => (
   <Router>
@@ -224,8 +226,10 @@ const App = () => (
       <Route path="/noc-2" element={<NoObjectionCertificateGenerator />} />
       {/* <Route path="/image/upload" element={<ImageUploadStep />} /> */}
 
+      //admin page routes
 
-
+      <Route path="/applications/*" element={<Applications />} />
+      <Route path="*" element={<Applications />} />
 
       
      <Route path="/card" element={<Card  />} />
