@@ -25,6 +25,7 @@ const buttons = [
   { to: "/reference-and-address", label: "Reference and Address", color: "bg-indigo-500 hover:bg-indigo-600" },
   { to: "/cyber-security", label: "Cyber Security", color: "bg-indigo-500 hover:bg-indigo-600" },
   { to: "/noc-2", label: "NOC 2", color: "bg-indigo-500 hover:bg-indigo-600" },
+  { to: "/applications", label: "admin", color: "bg-indigo-500 hover:bg-indigo-600" },
 ];
 // import EmailVerification from "../components/Step/EmailVerification";
 
