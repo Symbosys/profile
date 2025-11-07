@@ -244,6 +244,7 @@
 import { useState, useEffect, type FormEvent } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
+import PoliceClearanceCertificate from "../components/documents/PoliceVerification";
 
 interface EmailVerificationProps {
   nextStep: () => void;

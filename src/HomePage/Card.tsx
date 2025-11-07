@@ -59,7 +59,7 @@ export default function Card() {
     <div>
       {/* Header */}
       <div className="text-center bg-blue-600 text-3xl mt-10 h-16 p-4 text-white font-bold">
-        <h1>Form-Card</h1>
+        <h1>Profile Verification</h1>
       </div>
 
       {/* Form Card */}

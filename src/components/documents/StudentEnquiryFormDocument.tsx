@@ -1,0 +1,127 @@
+import { useRef } from "react";
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
+import html2pdf from "html2pdf.js";
+import { Download } from "lucide-react";
+
+const StudentEnquiryFormDocument: React.FC = () => {
+  const printRef = useRef<HTMLDivElement>(null);
+
+  // Hardcoded Data (EDIT HERE)
+  const formData = {
+    name: "Rohit Sharma",
+    age: "18",
+    educationLevel: "12th Pass",
+    reasonForEnquiry: "Interested in choosing a degree program",
+    courseInfo: true,
+    admissionProcess: true,
+    scholarshipOpportunities: false,
+    preferredMethodEmail: true,
+    preferredMethodPhone: false,
+    bestTimeToContact: "10:00 AM - 5:00 PM",
+    questionsComments: "Want to understand placement opportunities.",
+    infoPacket: true,
+    guidanceCounselor: false,
+    campusTour: true,
+  };
+
+  const handleDownload = () => {
+    if (printRef.current) {
+      const element = printRef.current;
+      const opt = {
+        margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
+        filename: `Student_Enquiry_Form_${formData.name}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, width: 750 },
+        jsPDF: { unit: "cm", format: "a4", orientation: "portrait" },
+      };
+
+      html2pdf().set(opt).from(element).save();
+    }
+  };
+
+  return (
+    <div className="w-full bg-background py-8 flex justify-center">
+      <div className="w-full max-w-[750px]">
+
+        <Card className="shadow-xl">
+          <CardContent>
+            <div ref={printRef} className="bg-white p-6 shadow-lg font-sans w-full">
+
+              {/* Title */}
+              <div className="text-center mb-6">
+                <h1 className="text-2xl font-bold text-blue-600 uppercase border-b-2 border-blue-600 pb-2">
+                  Student Enquiry Form
+                </h1>
+              </div>
+
+              {/* Personal Information */}
+              <div className="mb-6">
+                <h2 className="font-bold text-lg mb-2">Personal Information</h2>
+                <p><strong>Name:</strong> {formData.name}</p>
+                <p><strong>Age:</strong> {formData.age}</p>
+                <p><strong>Current Level of Education:</strong> {formData.educationLevel}</p>
+              </div>
+
+              {/* Enquiry Area */}
+              <div className="mb-6">
+                <h2 className="font-bold text-lg mb-2">Enquiry Area of Interest</h2>
+                <p><strong>Reason for Enquiry:</strong> {formData.reasonForEnquiry}</p>
+
+                <div className="ml-4 mt-2">
+                  <p>☐ Course Information {formData.courseInfo && "✅"}</p>
+                  <p>☐ Admission Process {formData.admissionProcess && "✅"}</p>
+                  <p>☐ Scholarship Opportunities {formData.scholarshipOpportunities && "✅"}</p>
+                </div>
+              </div>
+
+              {/* Contact Preferences */}
+              <div className="mb-6">
+                <h2 className="font-bold text-lg mb-2">Contact Preferences</h2>
+                <p>
+                  <strong>Preferred Method:</strong>{" "}
+                  {formData.preferredMethodEmail && "Email"}{" "}
+                  {formData.preferredMethodPhone && "Phone"}
+                </p>
+                <p><strong>Best Time to Contact:</strong> {formData.bestTimeToContact}</p>
+              </div>
+
+              {/* Questions */}
+              <div className="mb-6">
+                <h2 className="font-bold text-lg mb-2">Questions or Comments</h2>
+                <p>{formData.questionsComments}</p>
+              </div>
+
+              {/* Checklist */}
+              <div>
+                <h2 className="font-bold text-lg mb-2">Requested Items</h2>
+                <div className="ml-4 mt-2">
+                  <p>☐ Information Packet {formData.infoPacket && "✅"}</p>
+                  <p>☐ Guidance Counselor Appointment {formData.guidanceCounselor && "✅"}</p>
+                  <p>☐ Campus Tour Scheduled {formData.campusTour && "✅"}</p>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="text-center text-sm text-gray-500 mt-8 border-t pt-4">
+                <p>© 2025 Sampleforms.com</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex justify-center mt-6">
+          <Button
+            onClick={handleDownload}
+            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:scale-105 transition-all"
+          >
+            <Download className="mr-2 h-5 w-5" /> Download PDF
+          </Button>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default StudentEnquiryFormDocument;
