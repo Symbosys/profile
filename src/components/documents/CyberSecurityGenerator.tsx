@@ -57,23 +57,12 @@ const CyberSecurityGenerator: React.FC = () => {
     <div className="w-full bg-background min-h-screen">
       <div className="container mx-auto p-4">
 
-        {/* Download Button */}
-        <div className="flex justify-center mb-4">
-          <Button
-            onClick={handleDownload}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-lg shadow-lg"
-          >
-            <Download className="mr-2 h-5 w-5" /> Download PDF
-          </Button>
-        </div>
-
         {/* Certificate Document */}
         <div
           ref={printRef}
           className="bg-white p-8 shadow-2xl border-2 border-gray-300 print-certificate"
         >
           <div className="border-2 border-black p-6">
-
             {/* Header Icons */}
             <div className="flex justify-between items-start mb-6">
               <div className="flex items-center">
@@ -93,12 +82,10 @@ const CyberSecurityGenerator: React.FC = () => {
               </div>
             </div>
 
-            {/* Office Title */}
             <div className="text-center mb-6 font-bold text-sm">
               Office of the Dy.Commissioner of Police Special Branch, Thane
             </div>
 
-            {/* Details */}
             <div className="flex justify-between mb-6">
               <div className="text-sm">
                 <p><strong>No. SIVR/PMPVL/90/2024</strong></p>
@@ -141,8 +128,20 @@ const CyberSecurityGenerator: React.FC = () => {
               This is a digitally signed document. Verify at:
               <br /><span className="font-bold text-blue-600">https://mahapolice.maharashtra.gov.in</span>
             </div>
+
           </div>
         </div>
+
+        {/* ✅ Download Button moved below the document */}
+        <div className="flex justify-center mt-6">
+          <Button
+            onClick={handleDownload}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-lg shadow-lg"
+          >
+            <Download className="mr-2 h-5 w-5" /> Download PDF
+          </Button>
+        </div>
+
       </div>
     </div>
   );

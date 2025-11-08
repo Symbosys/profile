@@ -1,4 +1,3 @@
-
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import html2pdf from "html2pdf.js";
@@ -66,7 +65,7 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
   const handleDownload = () => {
     if (printRef.current) {
       const opt = {
-        margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number], // ✅ FIXED
+        margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
         filename: `PCC_${formData.applicationNumber}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, width: 750 },
@@ -84,21 +83,14 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
   return (
     <div className="w-full bg-background min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-center mb-6">
-          <Button
-            onClick={handleDownload}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-lg shadow-lg"
-          >
-            <Download className="mr-2 h-5 w-5" />
-            Download PDF
-          </Button>
-        </div>
 
+        {/* Document */}
         <div
           ref={printRef}
           className="bg-white p-8 shadow-2xl border-2 border-gray-300 print-certificate"
         >
           <div className="border-2 border-black p-6">
+            
             <div className="flex justify-between items-start mb-6">
               <div className="flex items-center">
                 <div className="w-16 h-16 bg-blue-800 rounded-full text-white flex items-center justify-center text-xs font-bold mr-4">
@@ -168,6 +160,17 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
               <span className="font-bold text-blue-600">https://mahapolice.maharashtra.gov.in</span>
             </div>
           </div>
+        </div>
+
+        {/* ✅ Download button moved below */}
+        <div className="flex justify-center mt-6">
+          <Button
+            onClick={handleDownload}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-lg shadow-lg"
+          >
+            <Download className="mr-2 h-5 w-5" />
+            Download PDF
+          </Button>
         </div>
 
       </div>
