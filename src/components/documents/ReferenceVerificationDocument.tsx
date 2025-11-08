@@ -49,18 +49,6 @@ const ReferenceVerificationDocument: React.FC = () => {
     return date.toLocaleDateString("en-GB");
   };
 
-  const refereeTypes = [
-    "Applicant's Employer",
-    "School Principal / University Lecturer",
-    "Medical Doctor",
-    "Army Officer (Major and above)",
-    "Manager / Senior Officer of a Regulated Financial Institution",
-    "Attorney at Law",
-    "Justice of the Peace / Notary Public",
-    "Custos of Parish",
-    "Police Officer (Inspector and above)",
-  ];
-
   return (
     <div className="w-full bg-background min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
@@ -143,7 +131,7 @@ const ReferenceVerificationDocument: React.FC = () => {
           </div>
         </div>
 
-        {/* Download Button (Moved Below Document) */}
+        {/* Download Button */}
         <div className="flex justify-center mt-6">
           <Button
             onClick={handleDownload}

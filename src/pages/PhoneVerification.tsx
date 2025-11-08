@@ -244,7 +244,6 @@
 import { useState, useEffect, type FormEvent } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
-import PoliceClearanceCertificate from "../components/documents/PoliceVerification";
 
 interface EmailVerificationProps {
   nextStep: () => void;
@@ -323,7 +322,7 @@ export default function EmailVerification({
     setOtpSent(false);
     setSuccessMessage(null);
     setError(null);
-    fetchProfile(null); // Reset profile in store
+    fetchProfile(0); // Reset profile in store
   };
 
   return (
