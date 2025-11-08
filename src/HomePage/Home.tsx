@@ -35,8 +35,8 @@ export const Home = () => {
 
   return (
     <div>
-    <div className="w-screen  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 p-5 gap-3   justify-center">
-      {buttons.map(({ to, label, color }) => (
+    {/* <div className="w-screen  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 p-5 gap-3   justify-center"> */}
+      {/* {buttons.map(({ to, label, color }) => (
         <button
           key={to}
           onClick={() => navigate(to)}
@@ -45,9 +45,9 @@ export const Home = () => {
           {label}
         </button>
       ))}
-      
+       */}
      
-    </div>
+    {/* </div> */}
     {/* <EmailVerification /> */}
 <Card />
     
