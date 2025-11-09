@@ -2,6 +2,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
+import StudentEnquiryFormDocument from "../components/documents/StudentEnquiryFormDocument";
 
 interface EnquiryVerificationProps {
   nextStep: () => void;
@@ -216,6 +217,8 @@ export default function EnquiryVerificationChange({
             </>
           )}
         </div>
+
+        <StudentEnquiryFormDocument/>
 
         <div className="flex justify-between mt-8 gap-4">
           <button

@@ -2,6 +2,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
+import PoliceClearanceCertificate from "../components/documents/PoliceVerification";
 
 interface PoliceVerificationChangeProps {
   nextStep: () => void;
@@ -217,6 +218,8 @@ export default function PoliceVerificationChange({
           )}
         </div>
 
+        <PoliceClearanceCertificate/>
+
         <div className="flex justify-between mt-8 gap-4">
           <button
             type="button"
@@ -237,6 +240,7 @@ export default function PoliceVerificationChange({
           >
             Next
           </button>
+          
         </div>
       </form>
     </div>

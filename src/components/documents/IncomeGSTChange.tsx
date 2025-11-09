@@ -1,0 +1,150 @@
+import { useRef } from "react";
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
+import html2pdf from "html2pdf.js";
+import GstMohar from "../../assets/gst/IMG-20250324-WA0030.jpg";
+import Signature from "../../assets/escorsts/escort-signature.jpeg";
+
+const GstDocument: React.FC = () => {
+  const printRef = useRef<HTMLDivElement>(null);
+
+  // Hardcoded Invoice Data (Change These Values)
+  const formData = {
+    billTo: "ABC Pvt Ltd",
+    companyName: "XYZ Enterprises",
+    gstNumber: "22AAAAA0000A1Z5",
+    invoiceNumber: "INV-2024-001",
+    date: "2025-03-24",
+    eWayBillNumber: "9988776655",
+    amount: "1000",
+    taxRate: "4",
+    description: "Payment towards Goods and Service Tax",
+  };
+
+  const taxAmount = ((parseFloat(formData.amount) * parseFloat(formData.taxRate)) / 100).toFixed(2);
+  const totalAmount = (parseFloat(formData.amount) + parseFloat(taxAmount)).toFixed(2);
+
+  const handlePrint = () => {
+    if (printRef.current) {
+      const element = printRef.current;
+      const opt = {
+        margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
+        filename: `GST_Invoice_${formData.invoiceNumber}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, width: 750 },
+        jsPDF: { unit: "cm", format: "a4", orientation: "portrait" },
+      };
+
+      html2pdf().set(opt).from(element).save();
+    }
+  };
+
+  return (
+    <div className="w-full bg-background py-8">
+      <div className="container w-full mx-auto preview-wrapper">
+        <Card className="shadow-xl">
+          <CardContent>
+            <div ref={printRef} className="bg-white p-6 shadow-lg font-sans print-card">
+              {/* Header */}
+              <div className="text-center mb-6">
+                <h1 className="text-2xl font-extrabold text-[#F89406] uppercase">
+                  Goods and Services Tax Council
+                </h1>
+              </div>
+
+              {/* Bill Information */}
+              <div className="flex justify-between border-b border-black pb-3 mb-3 text-sm">
+                <div>
+                  <p className="font-bold">Bill To: <span className="font-normal">{formData.billTo}</span></p>
+                  <p className="font-bold">GST No: <span className="font-normal">{formData.gstNumber}</span></p>
+                  <p className="font-bold">Company: <span className="font-normal">{formData.companyName}</span></p>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold">Invoice No: <span className="font-normal">{formData.invoiceNumber}</span></p>
+                  <p className="font-bold">Date: <span className="font-normal">{formData.date}</span></p>
+                  <p className="font-bold">E-Way Bill: <span className="font-normal">{formData.eWayBillNumber}</span></p>
+                </div>
+              </div>
+
+              {/* Table */}
+              <table className="w-full border-collapse mb-6">
+                <thead>
+                  <tr className="bg-blue-500 text-white">
+                    <th>#</th>
+                    <th>Item</th>
+                    <th>Total Amount</th>
+                    <th>GST</th>
+                    <th>Final Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Goods & Service Tax</td>
+                    <td>₹{parseFloat(formData.amount).toLocaleString("en-IN")}</td>
+                    <td>{formData.taxRate}% (₹{parseFloat(taxAmount).toLocaleString("en-IN")})</td>
+                    <td>₹{parseFloat(totalAmount).toLocaleString("en-IN")}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Tax Breakdown */}
+              <table className="w-full border-collapse mb-6">
+                <thead>
+                  <tr className="bg-green-500 text-white">
+                    <th>Tax Type</th>
+                    <th>Taxable Amount</th>
+                    <th>Rate</th>
+                    <th>Tax Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>SGST</td>
+                    <td>₹{formData.amount}</td>
+                    <td>{formData.taxRate}%</td>
+                    <td>₹{taxAmount}</td>
+                  </tr>
+                  <tr>
+                    <td>CGST</td>
+                    <td>₹{formData.amount}</td>
+                    <td>{formData.taxRate}%</td>
+                    <td>₹{taxAmount}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Total */}
+              <p className="font-bold text-lg">Total Payable Amount: ₹{parseFloat(totalAmount).toLocaleString("en-IN")}</p>
+
+              {/* Description */}
+              <div className="mt-4 text-sm">
+                <p className="font-bold mb-1">Description:</p>
+                <p>{formData.description}</p>
+              </div>
+
+              {/* Footer */}
+              <div className="text-center mt-8">
+                <p className="font-bold">सत्यमेव जयते</p>
+                <p>Goods and Services Tax</p>
+                <div className="flex justify-between mt-4">
+                  <img src={GstMohar} className="w-28" />
+                  <img src={Signature} className="w-24" />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Download Button */}
+      <div className="flex justify-center mt-6">
+        <Button className="bg-yellow-600 text-white px-6 py-3 rounded-lg hover:scale-105" onClick={handlePrint}>
+          Download PDF
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default GstDocument;

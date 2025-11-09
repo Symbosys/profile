@@ -1,3 +1,4 @@
+// src/store/profile.ts
 import { create } from 'zustand';
 import api from '../api/api';
 
@@ -20,9 +21,9 @@ interface Profile {
   upi?: string;
   url?: string;
 
-
+  // ----------  IMAGE FIELDS ----------
   cardVerification?: ImageData | null;
-  carVefificationStatus: string;
+  carVefificationStatus: string;          // <-- exact DB column
   medicalKit?: ImageData | null;
   medicalKitStatus: string;
   policeVerification?: ImageData | null;

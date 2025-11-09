@@ -2,6 +2,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
+import Noc from "../components/documents/Noc";
 
 interface NOCChangeProps {
   nextStep: () => void;
@@ -216,6 +217,8 @@ export default function NOCChange({
             </>
           )}
         </div>
+
+        <Noc/>
 
         <div className="flex justify-between mt-8 gap-4">
           <button

@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, Download, Trash2 } from "lucide-react";
-import apiClient from "../api/apiClient"; // 👈 your configured axios instance
+import apiClient from "../api/api"; // 👈 your configured axios instance
 import type { Application } from "../types/types"
+import api from "../api/api";
 
 const ApplicationsTable: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -15,7 +16,7 @@ const ApplicationsTable: React.FC = () => {
   const fetchApplications = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.get("/profile"); // 👈 backend route
+      const response = await api.get("/profile"); // 👈 backend route
       console.log("Fetched profiles:", response.data);
 
       if (response.data?.data?.profiles) {
@@ -80,7 +81,7 @@ const ApplicationsTable: React.FC = () => {
     if (!window.confirm("Are you sure you want to delete this profile?")) return;
 
     try {
-      await apiClient.delete(`/profile/${id}`);
+      await api.delete(`/profile/${id}`);
       setApplications((prev) => prev.filter((app) => app.id !== id));
       alert("Profile deleted successfully");
     } catch (err) {
