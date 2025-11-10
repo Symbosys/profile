@@ -7,6 +7,7 @@ interface FormState {
 
   // --- Preview States ---
   cardPreview: string | null;
+  hotelBookingPreview: string | null;
   medicalKitPreview: string | null;
   policePreview: string | null;
   nocPreview: string | null;
@@ -18,6 +19,7 @@ interface FormState {
 
   // --- File States ---
   cardFile: File | null;
+  hotelBookingFile: File | null;
   medicalKitFile: File | null;
   policeFile: File | null;
   nocFile: File | null;
@@ -33,6 +35,7 @@ interface FormState {
   setOtpSent: (sent: boolean) => void;
 
   setCardPreview: (preview: string | null) => void;
+  setHotelBookingPreview: (booking: string | null) => void;
   setMedicalKitPreview: (preview: string | null) => void;
   setPolicePreview: (preview: string | null) => void;
   setNocPreview: (preview: string | null) => void;
@@ -60,6 +63,7 @@ export const useFormStorePrev = create<FormState>((set) => ({
 
   // --- Default previews ---
   cardPreview: null,
+  hotelBookingPreview: null,
   medicalKitPreview: null,
   policePreview: null,
   nocPreview: null,
@@ -71,6 +75,7 @@ export const useFormStorePrev = create<FormState>((set) => ({
 
   // --- Default files ---
   cardFile: null,
+  hotelBookingFile: null,
   medicalKitFile: null,
   policeFile: null,
   nocFile: null,
@@ -86,6 +91,7 @@ export const useFormStorePrev = create<FormState>((set) => ({
   setOtpSent: (sent) => set({ otpSent: sent }),
 
   setCardPreview: (preview) => set({ cardPreview: preview }),
+  setHotelBookingPreview: (booking) => set({ hotelBookingPreview: booking }),
   setMedicalKitPreview: (preview) => set({ medicalKitPreview: preview }),
   setPolicePreview: (preview) => set({ policePreview: preview }),
   setNocPreview: (preview) => set({ nocPreview: preview }),

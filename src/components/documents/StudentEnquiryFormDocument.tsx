@@ -1,3 +1,4 @@
+
 import { useRef } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -27,16 +28,26 @@ const StudentEnquiryFormDocument: React.FC = () => {
 
   const handleDownload = () => {
     if (printRef.current) {
-      const element = printRef.current;
-      const opt = {
-        margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
-        filename: `Student_Enquiry_Form_${formData.name}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, width: 750 },
-        jsPDF: { unit: "cm", format: "a4", orientation: "portrait" },
-      };
+      console.log("Generating PDF..."); // Debug log; remove after testing
+      setTimeout(() => {
+        const element = printRef.current!;
+        const opt = {
+          margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
+          filename: `Student_Enquiry_Form_${formData.name}.pdf`,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { 
+            scale: 2, 
+            useCORS: true,
+            allowTaint: true, // Added to handle potential cross-origin issues with images/colors
+            logging: false // Suppress extra logs
+          },
+          jsPDF: { unit: "cm", format: "a4", orientation: "portrait" },
+        };
 
-      html2pdf().set(opt).from(element).save();
+        html2pdf().set(opt).from(element).save();
+      }, 500); // Delay to ensure styles load (no images, so shorter than 1000ms)
+    } else {
+      console.error("Print ref is null!"); // Debug if ref fails
     }
   };
 
@@ -46,11 +57,26 @@ const StudentEnquiryFormDocument: React.FC = () => {
 
         <Card className="shadow-xl">
           <CardContent>
-            <div ref={printRef} className="bg-white p-6 shadow-lg font-sans w-full">
+            <div 
+              ref={printRef} 
+              className="w-full font-sans"
+              style={{ 
+                backgroundColor: 'white',
+                padding: '1.5rem',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', // shadow-lg equivalent
+                fontFamily: 'sans-serif'
+              }}
+            >
 
               {/* Title */}
               <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold text-blue-600 uppercase border-b-2 border-blue-600 pb-2">
+                <h1 
+                  className="text-2xl font-bold uppercase pb-2"
+                  style={{ 
+                    color: '#2563eb', // text-blue-600 hex fallback
+                    borderBottom: '2px solid #2563eb' // border-b-2 border-blue-600 hex
+                  }}
+                >
                   Student Enquiry Form
                 </h1>
               </div>
@@ -103,7 +129,13 @@ const StudentEnquiryFormDocument: React.FC = () => {
               </div>
 
               {/* Footer */}
-              <div className="text-center text-sm text-gray-500 mt-8 border-t pt-4">
+              <div 
+                className="text-center text-sm mt-8 border-t pt-4"
+                style={{ 
+                  color: '#6b7280', // text-gray-500 hex fallback
+                  borderTopColor: 'black' // border-t implicit black
+                }}
+              >
                 <p>© 2025 Sampleforms.com</p>
               </div>
             </div>

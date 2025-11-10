@@ -26,16 +26,26 @@ const JoiningLetterDocument: React.FC = () => {
 
   const handlePrint = () => {
     if (printRef.current) {
-      const element = printRef.current;
-      const opt = {
-        margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
-        filename: `Joining_Letter_${formData.yourName.replace(/\s+/g, "_")}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, width: 750 },
-        jsPDF: { unit: "cm", format: "a4", orientation: "portrait" },
-      };
+      console.log("Generating PDF..."); // Debug log; remove after testing
+      setTimeout(() => {
+        const element = printRef.current!;
+        const opt = {
+          margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
+          filename: `Joining_Letter_${formData.yourName.replace(/\s+/g, "_")}.pdf`,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { 
+            scale: 2, 
+            useCORS: true,
+            allowTaint: true, // Added to handle potential cross-origin issues with images/colors
+            logging: false // Suppress extra logs
+          },
+          jsPDF: { unit: "cm", format: "a4", orientation: "portrait" },
+        };
 
-      html2pdf().set(opt).from(element).save();
+        html2pdf().set(opt).from(element).save();
+      }, 500); // Delay to ensure styles load (no images, so shorter than 1000ms)
+    } else {
+      console.error("Print ref is null!"); // Debug if ref fails
     }
   };
 
@@ -45,15 +55,42 @@ const JoiningLetterDocument: React.FC = () => {
 
         <Card className="shadow-xl">
           <CardContent>
-            <div ref={printRef} className="bg-white p-8 shadow-lg font-sans w-full">
+            <div 
+              ref={printRef} 
+              className="w-full font-sans"
+              style={{ 
+                backgroundColor: 'white',
+                padding: '2rem',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', // shadow-lg equivalent
+                fontFamily: 'sans-serif'
+              }}
+            >
 
               <div className="text-center mb-6">
-                <div className="text-pink-500 text-sm mb-3">www.letterseasy.com</div>
-                <h1 className="text-2xl font-bold text-pink-500">Joining Letter Format for</h1>
-                <h2 className="text-xl font-bold text-pink-500">College Lecturer</h2>
+                <div 
+                  className="text-sm mb-3"
+                  style={{ color: '#ec4899' }} // text-pink-500 hex fallback
+                >
+                  www.letterseasy.com
+                </div>
+                <h1 
+                  className="text-2xl font-bold"
+                  style={{ color: '#ec4899' }} // text-pink-500 hex fallback
+                >
+                  Joining Letter Format for
+                </h1>
+                <h2 
+                  className="text-xl font-bold"
+                  style={{ color: '#ec4899' }} // text-pink-500 hex fallback
+                >
+                  College Lecturer
+                </h2>
               </div>
 
-              <div className="text-blue-500 text-sm leading-relaxed mb-6 space-y-1">
+              <div 
+                className="text-sm leading-relaxed mb-6 space-y-1"
+                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
+              >
                 <p>{formData.yourName}</p>
                 <p>{formData.yourAddress}</p>
                 <p>{formData.yourCity}</p>
@@ -62,39 +99,60 @@ const JoiningLetterDocument: React.FC = () => {
                 <p>{formData.date}</p>
               </div>
 
-              <div className="text-blue-500 text-sm leading-relaxed mb-6 space-y-1">
+              <div 
+                className="text-sm leading-relaxed mb-6 space-y-1"
+                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
+              >
                 <p>{formData.recipientName}</p>
                 <p>{formData.recipientAddress}</p>
                 <p>{formData.recipientCity}</p>
               </div>
 
-              <p className="text-blue-500 text-sm font-semibold mb-4">
+              <p 
+                className="text-sm font-semibold mb-4"
+                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
+              >
                 Subject: Appointment Letter for the Position of Lecturer
               </p>
 
-              <p className="text-blue-500 text-sm mb-4">
+              <p 
+                className="text-sm mb-4"
+                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
+              >
                 Dear {formData.recipientName},
               </p>
 
-              <p className="text-blue-500 text-sm mb-4">
+              <p 
+                className="text-sm mb-4"
+                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
+              >
                 It is with great pleasure that I offer you the position of Lecturer in the
                 Department of <b>{formData.departmentName}</b> at <b>{formData.collegeName}</b>.
                 We believe that your expertise and experience will make a valuable contribution
                 to our college.
               </p>
 
-              <p className="text-blue-500 text-sm mb-4">
+              <p 
+                className="text-sm mb-4"
+                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
+              >
                 As per the terms of your appointment, your initial contract will be for a
                 period of <b>{formData.contractPeriod}</b>. You will be paid a salary of <b>{formData.salary}</b>
                 as well as other benefits and allowances as per the college policies.
               </p>
 
-              <p className="text-blue-500 text-sm mb-4">
+              <p 
+                className="text-sm mb-4"
+                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
+              >
                 Please review the enclosed documents and return a signed copy at the earliest.
                 We look forward to welcoming you to our esteemed institution.
               </p>
 
-              <p className="text-blue-500 text-sm">
+              <p 
+                className="text-sm"
+                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
+              >
                 Sincerely,<br /><br />
                 <b>{formData.yourName}</b>
               </p>

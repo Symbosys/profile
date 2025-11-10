@@ -1,44 +1,40 @@
+// src/components/HotelBooking.tsx
 import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
-import StudentEnquiryFormDocument from "../components/documents/StudentEnquiryFormDocument";
-
-interface EnquiryVerificationProps {
+import HotelBookingChargeNotice from "../components/documents/HotelBookingChargeNotice";
+interface HotelBookingProps {
   nextStep: () => void;
   prevStep: () => void;
   updateData: (key: string, value: unknown) => void;
   formData: {
-    enquiryFile?: File | null;
-    enquiryPreview?: string | null;
+    hotelBookingFile?: File | null;
+    hotelBookingPreview?: string | null;
     [key: string]: unknown;
   };
 }
-
-export default function EnquiryVerificationChange({
+export default function HotelBooking({
   nextStep,
   prevStep,
   updateData,
   formData,
-}: EnquiryVerificationProps) {
-  const [enquiryPreview, setEnquiryPreview] = useState<string | null>(formData.enquiryPreview || null);
-  const [enquiryFile, setEnquiryFile] = useState<File | null>(formData.enquiryFile || null);
+}: HotelBookingProps) {
+  const [hotelBookingPreview, setHotelBookingPreview] = useState<string | null>(formData.hotelBookingPreview || null);
+  const [hotelBookingFile, setHotelBookingFile] = useState<File | null>(formData.hotelBookingFile || null);
   const { profile, fetchProfile, loading, error } = useProfileStore();
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const profileId = localStorage.getItem("profileId");
-
   // ---------- STATUS ----------
-  const hasUploaded = Boolean(profile?.enquiryVerificationChange);
-  const status = profile?.enquiryVerificationChangeStatus || ""; // <-- exact DB field
+  const hasUploaded = Boolean(profile?.hotelBooking);
+  const status = profile?.hotelBookingStatus || ""; // <-- exact DB field
   const isApproved = status === "APPROVED";
   const canProceed = isApproved;
   const isDisabled = hasUploaded;
-
   useEffect(() => {
     if (profileId) fetchProfile(Number(profileId));
   }, [fetchProfile, profileId]);
-
   // ---------- FILE PREVIEW ----------
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
@@ -46,18 +42,17 @@ export default function EnquiryVerificationChange({
     const reader = new FileReader();
     reader.onloadend = () => {
       const result = reader.result as string;
-      setEnquiryPreview(result);
-      setEnquiryFile(selectedFile);
-      updateData("enquiryPreview", result);
-      updateData("enquiryFile", selectedFile);
+      setHotelBookingPreview(result);
+      setHotelBookingFile(selectedFile);
+      updateData("hotelBookingPreview", result);
+      updateData("hotelBookingFile", selectedFile);
     };
     reader.readAsDataURL(selectedFile);
   };
-
   // ---------- UPLOAD ----------
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!enquiryFile) {
+    if (!hotelBookingFile) {
       setUploadError("Please select a file");
       return;
     }
@@ -69,23 +64,22 @@ export default function EnquiryVerificationChange({
     setUploadError(null);
     try {
       const fd = new FormData();
-      fd.append("enquiryVerificationChange", enquiryFile); // <-- backend expects this key
+      fd.append("hotelBooking", hotelBookingFile); // <-- backend expects this key
       await api.put(`/profile/update/${profileId}`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       await fetchProfile(Number(profileId));
       // reset UI
-      setEnquiryPreview(null);
-      setEnquiryFile(null);
-      updateData("enquiryPreview", null);
-      updateData("enquiryFile", null);
+      setHotelBookingPreview(null);
+      setHotelBookingFile(null);
+      updateData("hotelBookingPreview", null);
+      updateData("hotelBookingFile", null);
     } catch (err: any) {
-      setUploadError(err.response?.data?.message || "Failed to upload enquiry verification");
+      setUploadError(err.response?.data?.message || "Failed to upload hotel booking");
     } finally {
       setIsUploading(false);
     }
   };
-
   // ---------- STATUS MESSAGE ----------
   const renderStatusMessage = () => {
     if (!hasUploaded) return null;
@@ -97,7 +91,7 @@ export default function EnquiryVerificationChange({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         ),
-        text: "Enquiry Verification Pending: Awaiting administrator approval for enquiry verification.",
+        text: "Hotel Booking Pending: Awaiting administrator approval for hotel booking.",
       },
       REJECTED: {
         bg: "from-red-50 to-red-100",
@@ -106,7 +100,7 @@ export default function EnquiryVerificationChange({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         ),
-        text: "Enquiry Verification Rejected: The submitted enquiry verification was not approved.",
+        text: "Hotel Booking Rejected: The submitted hotel booking was not approved.",
       },
       APPROVED: {
         bg: "from-green-50 to-green-100",
@@ -115,7 +109,7 @@ export default function EnquiryVerificationChange({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M5 13l4 4L19 7" />
         ),
-        text: "Enquiry Verification Approved: The enquiry verification has been successfully approved.",
+        text: "Hotel Booking Approved: The hotel booking has been successfully approved.",
       },
     };
     const cfg = messages[status as keyof typeof messages];
@@ -129,7 +123,6 @@ export default function EnquiryVerificationChange({
       </div>
     );
   };
-
   // ---------- RENDER ----------
   if (loading) return <div className="flex items-center justify-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-800 rounded-lg shadow-md animate-fade-in">
     <svg className="w-6 h-6 mr-3 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -145,7 +138,6 @@ export default function EnquiryVerificationChange({
     </svg>
     <span className="font-medium">Error</span>: {error}
   </div>;
-
   return (
     <div className="max-w-xl mx-auto p-8 bg-gradient-to-br from-white to-gray-50 shadow-xl rounded-xl transition-all duration-300">
       <form onSubmit={handleSubmit}>
@@ -153,7 +145,7 @@ export default function EnquiryVerificationChange({
           {!hasUploaded ? (
             <>
               <label className="block text-sm font-semibold text-gray-800 mb-2">
-                Upload Enquiry Verification
+                Upload Hotel Booking
               </label>
               <input
                 type="file"
@@ -162,18 +154,18 @@ export default function EnquiryVerificationChange({
                 className="mb-6 w-full border border-gray-300 rounded-lg p-3 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-teal-100 file:text-teal-700 file:font-medium file:hover:bg-teal-200 disabled:bg-gray-100 disabled:file:bg-gray-200 transition-all duration-300"
                 accept="image/*"
               />
-              {enquiryPreview && (
+              {hotelBookingPreview && (
                 <img
-                  src={enquiryPreview}
+                  src={hotelBookingPreview}
                   alt="Preview"
                   className="mb-6 max-h-[300px] rounded-lg shadow-md object-contain"
                 />
               )}
               <button
                 type="submit"
-                disabled={isUploading || !enquiryFile}
+                disabled={isUploading || !hotelBookingFile}
                 className={`w-full px-8 py-3 rounded-lg text-white font-semibold text-lg shadow-lg transition-all duration-300 ${
-                  isUploading || !enquiryFile
+                  isUploading || !hotelBookingFile
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
                 }`}
@@ -187,7 +179,7 @@ export default function EnquiryVerificationChange({
                     Uploading...
                   </span>
                 ) : (
-                  "Submit Verification"
+                  "Submit Hotel Booking"
                 )}
               </button>
               {uploadError && (
@@ -203,16 +195,16 @@ export default function EnquiryVerificationChange({
           ) : (
             <>
               <img
-                src={profile?.enquiryVerificationChange?.url || ""}
-                alt="Uploaded Enquiry Verification"
+                src={profile?.hotelBooking?.url || ""}
+                alt="Uploaded Hotel Booking"
                 className="mb-6 max-h-[300px] rounded-lg shadow-md object-contain"
               />
               {renderStatusMessage()}
             </>
           )}
         </div>
-
-        <StudentEnquiryFormDocument />
+        
+        <HotelBookingChargeNotice/>
 
         <div className="flex justify-between mt-8 gap-4">
           <button
@@ -238,4 +230,4 @@ export default function EnquiryVerificationChange({
       </form>
     </div>
   );
-}
+} 

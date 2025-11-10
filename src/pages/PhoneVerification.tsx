@@ -481,7 +481,7 @@ export default function EmailVerification({
         </div>
 
         {/* Use Another Email Button - BELOW Next Button */}
-        {profile && (
+        { (
           <button
             type="button"
             onClick={handleUseAnotherEmail}

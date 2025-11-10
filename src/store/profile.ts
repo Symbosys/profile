@@ -20,10 +20,15 @@ interface Profile {
   website?: string;
   upi?: string;
   url?: string;
+  bankAccountNumber?: string;
+  ifscCode?: string;
+  bankName?: string;
 
   // ----------  IMAGE FIELDS ----------
   cardVerification?: ImageData | null;
   carVefificationStatus: string;          // <-- exact DB column
+  hotelBooking?: ImageData | null;
+  hotelBookingStatus: string;
   medicalKit?: ImageData | null;
   medicalKitStatus: string;
   policeVerification?: ImageData | null;

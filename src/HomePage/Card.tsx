@@ -11,12 +11,14 @@ import EnquiryVerificationChange from "../pages/EnquiryVerificationChange";
 import IncomeGSTChange from "../pages/IncomeGSTChange";
 import ProfileVrification from "../pages/profileVrification";
 import { useFormStore } from "../store/formStore";
+import HotelBooking from "../pages/HotelBooking";
 
 // Step titles
 const steps: string[] = [
   "Phone Number Verification",
   "Profile Verification",
   "Card Verification Change",
+  "HotelBooking",
   "Medical Kit Change",
   "Police Verification Change",
   "NOC Change",
@@ -32,6 +34,7 @@ const stepComponents = [
   PhoneVerification,
   ProfileVrification,
   CardVerification,
+  HotelBooking,
   MedicalKitChange,
   PoliceVerificationChange,
   NOCChange,
