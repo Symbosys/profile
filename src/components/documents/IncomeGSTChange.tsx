@@ -51,24 +51,23 @@ const GstDocument: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-background py-8">
-      <div className="container w-full mx-auto preview-wrapper">
+    <div className="w-full bg-background py-4 sm:py-8">
+      <div className="w-full max-w-4xl mx-auto p-2 sm:p-0 preview-wrapper">
         <Card className="shadow-xl">
           <CardContent>
             <div 
               ref={printRef} 
-              className="print-card font-sans"
+              className="print-card font-sans p-4 sm:p-6"
               style={{ 
                 backgroundColor: 'white',
-                padding: '1.5rem',
                 boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', // shadow-lg equivalent
                 fontFamily: 'sans-serif'
               }}
             >
               {/* Header */}
-              <div className="text-center mb-6">
+              <div className="text-center mb-4 sm:mb-6">
                 <h1 
-                  className="text-2xl font-extrabold uppercase"
+                  className="text-xl sm:text-2xl font-extrabold uppercase"
                   style={{ color: '#F89406' }} // text-[#F89406] inline
                 >
                   Goods and Services Tax Council
@@ -77,13 +76,13 @@ const GstDocument: React.FC = () => {
 
               {/* Bill Information */}
               <div 
-                className="flex justify-between pb-3 mb-3 text-sm"
+                className="flex flex-col sm:flex-row justify-between pb-2 sm:pb-3 mb-3 text-xs sm:text-sm"
                 style={{ 
                   borderBottom: '1px solid black', // border-b border-black
                   color: 'black'
                 }}
               >
-                <div>
+                <div className="mb-2 sm:mb-0">
                   <p className="font-bold">Bill To: <span className="font-normal">{formData.billTo}</span></p>
                   <p className="font-bold">GST No: <span className="font-normal">{formData.gstNumber}</span></p>
                   <p className="font-bold">Company: <span className="font-normal">{formData.companyName}</span></p>
@@ -96,85 +95,89 @@ const GstDocument: React.FC = () => {
               </div>
 
               {/* Table */}
-              <table 
-                className="w-full border-collapse mb-6"
-                style={{ borderCollapse: 'collapse' }}
-              >
-                <thead>
-                  <tr 
-                    style={{ 
-                      backgroundColor: '#3b82f6', // bg-blue-500 hex fallback
-                      color: 'white'
-                    }}
-                  >
-                    <th>#</th>
-                    <th>Item</th>
-                    <th>Total Amount</th>
-                    <th>GST</th>
-                    <th>Final Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr style={{ border: '1px solid black' }}>
-                    <td>1</td>
-                    <td>Goods & Service Tax</td>
-                    <td>₹{parseFloat(formData.amount).toLocaleString("en-IN")}</td>
-                    <td>{formData.taxRate}% (₹{parseFloat(taxAmount).toLocaleString("en-IN")})</td>
-                    <td>₹{parseFloat(totalAmount).toLocaleString("en-IN")}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="overflow-x-auto mb-4 sm:mb-6">
+                <table 
+                  className="w-full border-collapse min-w-[400px]"
+                  style={{ borderCollapse: 'collapse' }}
+                >
+                  <thead>
+                    <tr 
+                      style={{ 
+                        backgroundColor: '#3b82f6', // bg-blue-500 hex fallback
+                        color: 'white'
+                      }}
+                    >
+                      <th className="p-1 sm:p-2">#</th>
+                      <th className="p-1 sm:p-2">Item</th>
+                      <th className="p-1 sm:p-2">Total Amount</th>
+                      <th className="p-1 sm:p-2">GST</th>
+                      <th className="p-1 sm:p-2">Final Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ border: '1px solid black' }}>
+                      <td className="p-1 sm:p-2">1</td>
+                      <td className="p-1 sm:p-2">Goods & Service Tax</td>
+                      <td className="p-1 sm:p-2">₹{parseFloat(formData.amount).toLocaleString("en-IN")}</td>
+                      <td className="p-1 sm:p-2">{formData.taxRate}% (₹{parseFloat(taxAmount).toLocaleString("en-IN")})</td>
+                      <td className="p-1 sm:p-2">₹{parseFloat(totalAmount).toLocaleString("en-IN")}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
               {/* Tax Breakdown */}
-              <table 
-                className="w-full border-collapse mb-6"
-                style={{ borderCollapse: 'collapse' }}
-              >
-                <thead>
-                  <tr 
-                    style={{ 
-                      backgroundColor: '#10b981', // bg-green-500 hex fallback
-                      color: 'white'
-                    }}
-                  >
-                    <th>Tax Type</th>
-                    <th>Taxable Amount</th>
-                    <th>Rate</th>
-                    <th>Tax Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr style={{ border: '1px solid black' }}>
-                    <td>SGST</td>
-                    <td>₹{formData.amount}</td>
-                    <td>{formData.taxRate}%</td>
-                    <td>₹{taxAmount}</td>
-                  </tr>
-                  <tr style={{ border: '1px solid black' }}>
-                    <td>CGST</td>
-                    <td>₹{formData.amount}</td>
-                    <td>{formData.taxRate}%</td>
-                    <td>₹{taxAmount}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="overflow-x-auto mb-4 sm:mb-6">
+                <table 
+                  className="w-full border-collapse min-w-[400px]"
+                  style={{ borderCollapse: 'collapse' }}
+                >
+                  <thead>
+                    <tr 
+                      style={{ 
+                        backgroundColor: '#10b981', // bg-green-500 hex fallback
+                        color: 'white'
+                      }}
+                    >
+                      <th className="p-1 sm:p-2">Tax Type</th>
+                      <th className="p-1 sm:p-2">Taxable Amount</th>
+                      <th className="p-1 sm:p-2">Rate</th>
+                      <th className="p-1 sm:p-2">Tax Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ border: '1px solid black' }}>
+                      <td className="p-1 sm:p-2">SGST</td>
+                      <td className="p-1 sm:p-2">₹{formData.amount}</td>
+                      <td className="p-1 sm:p-2">{formData.taxRate}%</td>
+                      <td className="p-1 sm:p-2">₹{taxAmount}</td>
+                    </tr>
+                    <tr style={{ border: '1px solid black' }}>
+                      <td className="p-1 sm:p-2">CGST</td>
+                      <td className="p-1 sm:p-2">₹{formData.amount}</td>
+                      <td className="p-1 sm:p-2">{formData.taxRate}%</td>
+                      <td className="p-1 sm:p-2">₹{taxAmount}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
               {/* Total */}
-              <p className="font-bold text-lg">Total Payable Amount: ₹{parseFloat(totalAmount).toLocaleString("en-IN")}</p>
+              <p className="font-bold text-base sm:text-lg">Total Payable Amount: ₹{parseFloat(totalAmount).toLocaleString("en-IN")}</p>
 
               {/* Description */}
-              <div className="mt-4 text-sm">
+              <div className="mt-2 sm:mt-4 text-xs sm:text-sm">
                 <p className="font-bold mb-1">Description:</p>
                 <p>{formData.description}</p>
               </div>
 
               {/* Footer */}
-              <div className="text-center mt-8">
+              <div className="text-center mt-4 sm:mt-8">
                 <p className="font-bold">सत्यमेव जयते</p>
                 <p>Goods and Services Tax</p>
-                <div className="flex justify-between mt-4">
-                  <img src={GstMohar} className="w-28" alt="GST Mohar" />
-                  <img src={Signature} className="w-24" alt="Signature" />
+                <div className="flex flex-col sm:flex-row justify-between mt-2 sm:mt-4 gap-2 sm:gap-0">
+                  <img src={GstMohar} className="w-20 sm:w-28 h-auto mx-auto sm:mx-0" alt="GST Mohar" />
+                  <img src={Signature} className="w-16 sm:w-24 h-auto mx-auto sm:mx-0" alt="Signature" />
                 </div>
               </div>
             </div>
@@ -183,9 +186,9 @@ const GstDocument: React.FC = () => {
       </div>
 
       {/* Download Button */}
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-4 sm:mt-6">
         <Button 
-          className="bg-yellow-600 text-white px-6 py-3 rounded-lg hover:scale-105" 
+          className="bg-yellow-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:scale-105" 
           onClick={handlePrint}
           style={{ backgroundColor: '#ca8a04' }} // bg-yellow-600 hex fallback (for button, but since outside printRef, optional; added for consistency)
         >

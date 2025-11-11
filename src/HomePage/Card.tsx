@@ -1,3 +1,4 @@
+
 import { type FormEvent } from "react";
 import PhoneVerification from "../pages/PhoneVerification";
 import CardVerification from "../pages/CardVerification";
@@ -61,14 +62,14 @@ export default function Card() {
   return (
     <div>
       {/* Header */}
-      <div className="text-center bg-blue-600 text-3xl mt-10 h-16 p-4 text-white font-bold">
+      <div className="text-center bg-blue-600 text-xl sm:text-2xl lg:text-3xl mt-4 sm:mt-10 h-12 sm:h-16 p-2 sm:p-4 text-white font-bold">
         <h1>Profile Verification</h1>
       </div>
 
       {/* Form Card */}
-      <div className="flex justify-center items-center">
-        <div className="w-[600px] p-6 ">
-          <h1 className="text-2xl font-bold text-center">{steps[currentStep]}</h1>
+      <div className="flex justify-center items-center p-2 sm:p-0">
+        <div className="w-full max-w-[600px] p-4 sm:p-6 mx-auto">
+          <h1 className="text-xl sm:text-2xl font-bold text-center">{steps[currentStep]}</h1>
 
           <StepComponent
             nextStep={nextStep}

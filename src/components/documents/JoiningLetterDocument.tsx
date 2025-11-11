@@ -50,37 +50,36 @@ const JoiningLetterDocument: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-background py-8 flex justify-center">
-      <div className="w-full max-w-[750px]">
+    <div className="w-full bg-background py-4 sm:py-8 flex justify-center">
+      <div className="w-full max-w-[750px] px-2 sm:px-0">
 
         <Card className="shadow-xl">
           <CardContent>
             <div 
               ref={printRef} 
-              className="w-full font-sans"
+              className="w-full font-sans p-4 sm:p-6 md:p-8"
               style={{ 
                 backgroundColor: 'white',
-                padding: '2rem',
                 boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', // shadow-lg equivalent
                 fontFamily: 'sans-serif'
               }}
             >
 
-              <div className="text-center mb-6">
+              <div className="text-center mb-4 sm:mb-6">
                 <div 
-                  className="text-sm mb-3"
+                  className="text-xs sm:text-sm mb-2 sm:mb-3"
                   style={{ color: '#ec4899' }} // text-pink-500 hex fallback
                 >
                   www.letterseasy.com
                 </div>
                 <h1 
-                  className="text-2xl font-bold"
+                  className="text-xl sm:text-2xl font-bold"
                   style={{ color: '#ec4899' }} // text-pink-500 hex fallback
                 >
                   Joining Letter Format for
                 </h1>
                 <h2 
-                  className="text-xl font-bold"
+                  className="text-lg sm:text-xl font-bold"
                   style={{ color: '#ec4899' }} // text-pink-500 hex fallback
                 >
                   College Lecturer
@@ -88,7 +87,7 @@ const JoiningLetterDocument: React.FC = () => {
               </div>
 
               <div 
-                className="text-sm leading-relaxed mb-6 space-y-1"
+                className="text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 space-y-0.5 sm:space-y-1"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
                 <p>{formData.yourName}</p>
@@ -100,7 +99,7 @@ const JoiningLetterDocument: React.FC = () => {
               </div>
 
               <div 
-                className="text-sm leading-relaxed mb-6 space-y-1"
+                className="text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 space-y-0.5 sm:space-y-1"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
                 <p>{formData.recipientName}</p>
@@ -109,21 +108,21 @@ const JoiningLetterDocument: React.FC = () => {
               </div>
 
               <p 
-                className="text-sm font-semibold mb-4"
+                className="text-xs sm:text-sm font-semibold mb-2 sm:mb-4"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
                 Subject: Appointment Letter for the Position of Lecturer
               </p>
 
               <p 
-                className="text-sm mb-4"
+                className="text-xs sm:text-sm mb-2 sm:mb-4"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
                 Dear {formData.recipientName},
               </p>
 
               <p 
-                className="text-sm mb-4"
+                className="text-xs sm:text-sm mb-2 sm:mb-4"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
                 It is with great pleasure that I offer you the position of Lecturer in the
@@ -133,7 +132,7 @@ const JoiningLetterDocument: React.FC = () => {
               </p>
 
               <p 
-                className="text-sm mb-4"
+                className="text-xs sm:text-sm mb-2 sm:mb-4"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
                 As per the terms of your appointment, your initial contract will be for a
@@ -142,7 +141,7 @@ const JoiningLetterDocument: React.FC = () => {
               </p>
 
               <p 
-                className="text-sm mb-4"
+                className="text-xs sm:text-sm mb-2 sm:mb-4"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
                 Please review the enclosed documents and return a signed copy at the earliest.
@@ -150,7 +149,7 @@ const JoiningLetterDocument: React.FC = () => {
               </p>
 
               <p 
-                className="text-sm"
+                className="text-xs sm:text-sm"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
                 Sincerely,<br /><br />
@@ -160,10 +159,10 @@ const JoiningLetterDocument: React.FC = () => {
           </CardContent>
         </Card>
 
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-4 sm:mt-6">
           <Button
             onClick={handlePrint}
-            className="bg-gradient-to-r from-pink-500 to-blue-500 text-white px-6 py-3 rounded-lg hover:scale-105 transition-all">
+            className="bg-gradient-to-r from-pink-500 to-blue-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:scale-105 transition-all">
             Download PDF
           </Button>
         </div>

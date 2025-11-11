@@ -38,26 +38,26 @@ const HotelBookingChargeNotice: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-background py-8">
-      <div className="container w-full mx-auto preview-wrapper">
+    <div className="w-full bg-background py-4 sm:py-8">
+      <div className="w-full max-w-2xl mx-auto p-2 sm:p-0">
         <Card className="shadow-xl">
           <CardContent>
-            <div ref={printRef} className="bg-white p-6 shadow-lg font-sans print-card">
+            <div ref={printRef} className="bg-white p-4 sm:p-6 shadow-lg font-sans print-card">
               
-              <div className="text-center mb-6">
-                <h1 className="text-2xl font-extrabold text-[#F89406] uppercase">
+              <div className="text-center mb-4 sm:mb-6">
+                <h1 className="text-xl sm:text-2xl font-extrabold text-[#F89406] uppercase">
                   Hotel Booking Charge Information Notice
                 </h1>
               </div>
 
-              <p className="text-sm leading-6 mb-4">
+              <p className="text-xs sm:text-sm leading-5 sm:leading-6 mb-4">
                 The Hotel Booking Charge is required to ensure confirmation and guarantee of the reserved room. 
                 This charge is collected as a commitment amount to secure your booking and to allocate the required 
                 resources such as room arrangements, guest amenities, and reservation processing. Once confirmed, 
                 the hotel ensures priority check-in and full assurance of the scheduled stay.
               </p>
 
-              <div className="border border-black p-4 text-sm mb-4">
+              <div className="border border-black p-2 sm:p-4 text-xs sm:text-sm mb-4">
                 <p><strong>Issued To:</strong> {formData.issuedTo}</p>
                 <p><strong>Mobile Number:</strong> {formData.mobile}</p>
                 <p><strong>Hotel Name:</strong> {formData.hotelName}</p>
@@ -65,7 +65,7 @@ const HotelBookingChargeNotice: React.FC = () => {
                 <p><strong>Booking Charge Amount:</strong> {formData.bookingAmount}</p>
               </div>
 
-              <div className="text-center mt-8 text-sm">
+              <div className="text-center mt-4 sm:mt-8 text-xs sm:text-sm">
                 <p><strong>Issued By:</strong> {formData.issuedBy}</p>
                 <p><strong>Date:</strong> {formData.issueDate}</p>
 
@@ -77,8 +77,8 @@ const HotelBookingChargeNotice: React.FC = () => {
         </Card>
       </div>
 
-      <div className="flex justify-center mt-6">
-        <Button className="bg-yellow-600 text-white px-6 py-3 rounded-lg hover:scale-105" onClick={handlePrint}>
+      <div className="flex justify-center mt-4 sm:mt-6">
+        <Button className="bg-yellow-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:scale-105" onClick={handlePrint}>
           Download PDF
         </Button>
       </div>

@@ -52,26 +52,25 @@ const StudentEnquiryFormDocument: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-background py-8 flex justify-center">
+    <div className="w-full bg-background py-4 sm:py-8 flex justify-center">
       <div className="w-full max-w-[750px]">
 
         <Card className="shadow-xl">
           <CardContent>
             <div 
               ref={printRef} 
-              className="w-full font-sans"
+              className="w-full font-sans p-4 sm:p-6"
               style={{ 
                 backgroundColor: 'white',
-                padding: '1.5rem',
                 boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', // shadow-lg equivalent
                 fontFamily: 'sans-serif'
               }}
             >
 
               {/* Title */}
-              <div className="text-center mb-6">
+              <div className="text-center mb-4 sm:mb-6">
                 <h1 
-                  className="text-2xl font-bold uppercase pb-2"
+                  className="text-xl sm:text-2xl font-bold uppercase pb-1 sm:pb-2"
                   style={{ 
                     color: '#2563eb', // text-blue-600 hex fallback
                     borderBottom: '2px solid #2563eb' // border-b-2 border-blue-600 hex
@@ -82,55 +81,55 @@ const StudentEnquiryFormDocument: React.FC = () => {
               </div>
 
               {/* Personal Information */}
-              <div className="mb-6">
-                <h2 className="font-bold text-lg mb-2">Personal Information</h2>
-                <p><strong>Name:</strong> {formData.name}</p>
-                <p><strong>Age:</strong> {formData.age}</p>
-                <p><strong>Current Level of Education:</strong> {formData.educationLevel}</p>
+              <div className="mb-4 sm:mb-6">
+                <h2 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">Personal Information</h2>
+                <p className="text-sm sm:text-base"><strong>Name:</strong> {formData.name}</p>
+                <p className="text-sm sm:text-base"><strong>Age:</strong> {formData.age}</p>
+                <p className="text-sm sm:text-base"><strong>Current Level of Education:</strong> {formData.educationLevel}</p>
               </div>
 
               {/* Enquiry Area */}
-              <div className="mb-6">
-                <h2 className="font-bold text-lg mb-2">Enquiry Area of Interest</h2>
-                <p><strong>Reason for Enquiry:</strong> {formData.reasonForEnquiry}</p>
+              <div className="mb-4 sm:mb-6">
+                <h2 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">Enquiry Area of Interest</h2>
+                <p className="text-sm sm:text-base"><strong>Reason for Enquiry:</strong> {formData.reasonForEnquiry}</p>
 
-                <div className="ml-4 mt-2">
-                  <p>☐ Course Information {formData.courseInfo && "✅"}</p>
-                  <p>☐ Admission Process {formData.admissionProcess && "✅"}</p>
-                  <p>☐ Scholarship Opportunities {formData.scholarshipOpportunities && "✅"}</p>
+                <div className="ml-2 sm:ml-4 mt-1 sm:mt-2">
+                  <p className="text-sm sm:text-base">☐ Course Information {formData.courseInfo && "✅"}</p>
+                  <p className="text-sm sm:text-base">☐ Admission Process {formData.admissionProcess && "✅"}</p>
+                  <p className="text-sm sm:text-base">☐ Scholarship Opportunities {formData.scholarshipOpportunities && "✅"}</p>
                 </div>
               </div>
 
               {/* Contact Preferences */}
-              <div className="mb-6">
-                <h2 className="font-bold text-lg mb-2">Contact Preferences</h2>
-                <p>
+              <div className="mb-4 sm:mb-6">
+                <h2 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">Contact Preferences</h2>
+                <p className="text-sm sm:text-base">
                   <strong>Preferred Method:</strong>{" "}
                   {formData.preferredMethodEmail && "Email"}{" "}
                   {formData.preferredMethodPhone && "Phone"}
                 </p>
-                <p><strong>Best Time to Contact:</strong> {formData.bestTimeToContact}</p>
+                <p className="text-sm sm:text-base"><strong>Best Time to Contact:</strong> {formData.bestTimeToContact}</p>
               </div>
 
               {/* Questions */}
-              <div className="mb-6">
-                <h2 className="font-bold text-lg mb-2">Questions or Comments</h2>
-                <p>{formData.questionsComments}</p>
+              <div className="mb-4 sm:mb-6">
+                <h2 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">Questions or Comments</h2>
+                <p className="text-sm sm:text-base">{formData.questionsComments}</p>
               </div>
 
               {/* Checklist */}
               <div>
-                <h2 className="font-bold text-lg mb-2">Requested Items</h2>
-                <div className="ml-4 mt-2">
-                  <p>☐ Information Packet {formData.infoPacket && "✅"}</p>
-                  <p>☐ Guidance Counselor Appointment {formData.guidanceCounselor && "✅"}</p>
-                  <p>☐ Campus Tour Scheduled {formData.campusTour && "✅"}</p>
+                <h2 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">Requested Items</h2>
+                <div className="ml-2 sm:ml-4 mt-1 sm:mt-2">
+                  <p className="text-sm sm:text-base">☐ Information Packet {formData.infoPacket && "✅"}</p>
+                  <p className="text-sm sm:text-base">☐ Guidance Counselor Appointment {formData.guidanceCounselor && "✅"}</p>
+                  <p className="text-sm sm:text-base">☐ Campus Tour Scheduled {formData.campusTour && "✅"}</p>
                 </div>
               </div>
 
               {/* Footer */}
               <div 
-                className="text-center text-sm mt-8 border-t pt-4"
+                className="text-center text-xs sm:text-sm mt-4 sm:mt-8 border-t pt-2 sm:pt-4"
                 style={{ 
                   color: '#6b7280', // text-gray-500 hex fallback
                   borderTopColor: 'black' // border-t implicit black
@@ -142,12 +141,12 @@ const StudentEnquiryFormDocument: React.FC = () => {
           </CardContent>
         </Card>
 
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-4 sm:mt-6">
           <Button
             onClick={handleDownload}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:scale-105 transition-all"
+            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:scale-105 transition-all"
           >
-            <Download className="mr-2 h-5 w-5" /> Download PDF
+            <Download className="mr-2 h-4 sm:h-5 w-4 sm:w-5" /> Download PDF
           </Button>
         </div>
 
