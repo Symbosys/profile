@@ -3,6 +3,8 @@ import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import html2pdf from "html2pdf.js";
 import { Download } from "lucide-react";
+import type { Profile } from "../../store/profile"; 
+
 
 interface FormData {
   date: string;
@@ -20,18 +22,18 @@ interface FormData {
   companyName: string;
 }
 
-const ReferenceVerificationDocument: React.FC = () => {
+const ReferenceVerificationDocument= ({profile}: {profile: Profile | null}) => {
   const printRef = useRef<HTMLDivElement>(null);
 
   const [formData] = useState<FormData>({
     date: new Date().toISOString().split("T")[0],
-    applicantName: "John Doe",
-    permanentAddress: "123 Main Street, Kingston, Jamaica",
+    applicantName: profile?.name ?? "",
+    permanentAddress: profile?.address ?? "",
     yearsKnown: "5 Years",
     refereeSignature: "",
     refereeTelephone: "876-555-1234",
     refereeName: "Dr. Michael Smith",
-    refereeAddress: "21 Hope Road, Kingston",
+    refereeAddress: profile?.address ?? "",
     refereeOccupation: "Medical Doctor",
     visitorsAccountNo: "",
     refereeType: "Medical Doctor",

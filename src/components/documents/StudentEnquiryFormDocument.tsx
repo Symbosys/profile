@@ -4,13 +4,14 @@ import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import html2pdf from "html2pdf.js";
 import { Download } from "lucide-react";
+import type { Profile } from "../../store/profile"; 
 
-const StudentEnquiryFormDocument: React.FC = () => {
+const StudentEnquiryFormDocument = ({profile}: {profile: Profile | null}) =>{
   const printRef = useRef<HTMLDivElement>(null);
 
   // Hardcoded Data (EDIT HERE)
   const formData = {
-    name: "Rohit Sharma",
+    name: profile?.name,
     age: "18",
     educationLevel: "12th Pass",
     reasonForEnquiry: "Interested in choosing a degree program",

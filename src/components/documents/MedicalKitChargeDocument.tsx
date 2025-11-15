@@ -1,9 +1,11 @@
 
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Button } from "../ui/button";
 import html2pdf from "html2pdf.js";
+import type { Profile } from "../../store/profile";
 
-const MedicalKitChargeDocument: React.FC = () => {
+
+const MedicalKitChargeDocument= ({profile}: {profile: Profile | null}) => {
   const printRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadPDF = () => {
@@ -12,7 +14,7 @@ const MedicalKitChargeDocument: React.FC = () => {
     const element = printRef.current;
     const opt = {
       margin: 0.5,
-      filename: `Medical_Kit_Charge_Details.pdf`,
+      filename: profile?.name ?? `Medical_Kit_Charge_Details.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: "cm", format: "a4", orientation: "portrait" },

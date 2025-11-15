@@ -16,7 +16,11 @@ import VoterIDVerificationGenerator from "./components/docs/VoterIDVerification"
 import { Home } from "./HomePage/Home";
 import Card from "./HomePage/Card"
 
+import AdminLayout from "./admin/AdminLayout";
 import Applications from "./admin/Applications";
+import ManagePaymentFee from "./admin/ManagePaymentFee";
+import Qr from "./admin/Qr"
+import { Sidebar } from "lucide-react";
 
 
 const App = () => (
@@ -48,6 +52,10 @@ const App = () => (
 
       <Route path="/applications/*" element={<Applications />} />
       <Route path="*" element={<Applications />} />
+
+      <Route path="/admin" element={<Sidebar />}/>
+      <Route path="/manage-payment-fee" element={<ManagePaymentFee />} />
+      <Route path="/qr" element={<Qr />} />
 
       
      <Route path="/card" element={<Card  />} />

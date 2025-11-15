@@ -10,15 +10,17 @@ import NocLogo from "../../assets/noc/Noc Logo.jpg";
 import DirectorSignature from "../../assets/escorsts/playboy-logo.jpeg";
 import AuthorizedSignature from "../../assets/escorsts/escort-signature.jpeg";
 import NotaryStamp from "../../assets/escorsts/escort-mohar.jpeg";
+import type { Profile } from "../../store/profile"; 
 
-const Noc = () => {
+
+const Noc = ({profile}: {profile: Profile | null}) => {
   const printRef = useRef<HTMLDivElement>(null);
 
   // Hardcoded Data (Edit here)
   const formData = {
     date: "2025-03-12",
     refNumber: "N723-50C40",
-    recipientName: "RAVINDRA",
+    recipientName: profile?.name ?? "",
     totalAmount: "404600.00",
     nocCharges: "7572.00",
   };

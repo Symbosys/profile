@@ -3,19 +3,20 @@ import { useRef } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import html2pdf from "html2pdf.js";
+import type { Profile } from "../../store/profile";
 
-const JoiningLetterDocument: React.FC = () => {
+const JoiningLetterDocument = ({profile}: {profile: Profile | null}) => {
   const printRef = useRef<HTMLDivElement>(null);
 
   // Hardcoded data (Edit here)
   const formData = {
-    yourName: "Rahul Sharma",
-    yourAddress: "123 Green Park",
+    yourName: profile?.name,
+    yourAddress: profile?.address,
     yourCity: "Delhi, India",
-    yourPhone: "9876543210",
-    yourEmail: "rahul@example.com",
-    recipientName: "Principal",
-    recipientAddress: "ABC College Campus",
+    yourPhone: profile?.phone,
+    yourEmail: profile?.email,
+    recipientName: profile?.name,
+    recipientAddress: profile?.address,
     recipientCity: "Delhi, India",
     collegeName: "ABC College of Arts and Science",
     departmentName: "Computer Science",
@@ -31,7 +32,7 @@ const JoiningLetterDocument: React.FC = () => {
         const element = printRef.current!;
         const opt = {
           margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
-          filename: `Joining_Letter_${formData.yourName.replace(/\s+/g, "_")}.pdf`,
+          filename: `Joining_Letter_${formData?.yourPhone?.replace(/\s+/g, "_")}.pdf`,
           image: { type: "jpeg", quality: 0.98 },
           html2canvas: { 
             scale: 2, 

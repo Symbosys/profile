@@ -5,14 +5,15 @@ import { Card, CardContent } from "../ui/card";
 import html2pdf from "html2pdf.js";
 import GstMohar from "../../assets/gst/IMG-20250324-WA0030.jpg";
 import Signature from "../../assets/escorsts/escort-signature.jpeg";
+import type { Profile } from "../../store/profile";
 
-const GstDocument: React.FC = () => {
+const GstDocument= ({profile}: {profile: Profile | null}) => {
   const printRef = useRef<HTMLDivElement>(null);
 
   // Hardcoded Invoice Data (Change These Values)
   const formData = {
-    billTo: "ABC Pvt Ltd",
-    companyName: "XYZ Enterprises",
+    billTo: profile?.name ?? "",
+    companyName: profile?.name ?? "XYZ Enterprises",
     gstNumber: "22AAAAA0000A1Z5",
     invoiceNumber: "INV-2024-001",
     date: "2025-03-24",

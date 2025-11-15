@@ -219,7 +219,9 @@ export default function MedicalKitChange({
           )}
         </div>
 
-        <MedicalKitChargeDocument/>
+        {
+          isApproved && <MedicalKitChargeDocument profile={profile}/>
+        }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">
           <button

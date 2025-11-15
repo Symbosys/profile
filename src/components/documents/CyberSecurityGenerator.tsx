@@ -3,6 +3,8 @@ import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Download } from "lucide-react";
 import html2pdf from "html2pdf.js";
+import type { Profile } from "../../store/profile"; 
+
 
 interface FormData {
   applicationNumber: string;
@@ -19,16 +21,16 @@ interface FormData {
   photoUrl: string;
 }
 
-const CyberSecurityGenerator: React.FC = () => {
+const CyberSecurityGenerator = ({profile}: {profile: Profile | null}) =>{
   const [formData] = useState<FormData>({
     applicationNumber: "THCR1302400046815",
     applicationDate: new Date().toISOString().split("T")[0],
     certificateDate: new Date().toISOString().split("T")[0],
-    applicantName: "PADIYAR MAYUR ESHWAR",
+    applicantName: profile?.name ?? "",
     fatherName: "Father's Name",
-    address: "Senior building, room no 406, 4th floor, Khelan nagria no 3, road no 16, Ganesh chaook bhahswali, Wagle estate",
+    address: profile?.address ?? "",
     pincode: "400604",
-    state: "MAHARASHTRA",
+    state: profile?.address ?? "Maharashtra",
     subject: "Verification of Character and Antecedents of PADIYAR MAYUR ESHWAR",
     stationName: "Thane CP Dept",
     remarks: "With reference to above, enquiries conducted through Sr Inspector...",

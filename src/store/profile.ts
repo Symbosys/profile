@@ -8,7 +8,7 @@ interface ImageData {
   url: string;
 }
 
-interface Profile {
+export interface Profile {
   id: number;
   email: string;
   name?: string;
