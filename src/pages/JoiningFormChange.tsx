@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
 import JoiningLetterDocument from "../components/documents/JoiningLetterDocument";
+import QRPaymentDisplay from "../components/shared/QrCode";
 
 interface JoiningFormChangeProps {
   nextStep: () => void;
@@ -219,7 +220,7 @@ export default function JoiningFormChange({
           )}
         </div>
         {
-          isApproved && <JoiningLetterDocument profile={profile} />
+          isApproved ? <JoiningLetterDocument profile={profile} /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">

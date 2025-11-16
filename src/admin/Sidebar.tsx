@@ -61,7 +61,7 @@
 
 
 import React from "react";
-import { FileSpreadsheet, Users, Settings, FolderKanban, ClipboardList } from "lucide-react";
+import { FileSpreadsheet, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Sidebar: React.FC = () => {

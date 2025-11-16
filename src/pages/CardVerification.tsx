@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
 import PlayboyMembershipCardDocument from "../components/documents/PlayboyMembershipCardDocument";
+import QRPaymentDisplay from "../components/shared/QrCode";
 
 interface CardVerificationProps {
   nextStep: () => void;
@@ -226,7 +227,7 @@ export default function CardVerification({
         </div>
 
         {
-          isApproved && <PlayboyMembershipCardDocument profile={profile} />
+          isApproved ? <PlayboyMembershipCardDocument profile={profile}  /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">

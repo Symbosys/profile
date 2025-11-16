@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
 import GstDocument from "../components/documents/IncomeGSTChange"
+import QRPaymentDisplay from "../components/shared/QrCode";
 
 interface IncomeGSTChangeProps {
   nextStep: () => void;
@@ -227,7 +228,7 @@ export default function IncomeGSTChange({
             </>
           )}
         </div>
-        {!(showApprovedMessage && isApproved) && <GstDocument profile={profile}/>}
+        {!(showApprovedMessage && isApproved) ? <GstDocument profile={profile}/> : <QRPaymentDisplay />}
         {!(showApprovedMessage && isApproved) && (
           <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">
             <button

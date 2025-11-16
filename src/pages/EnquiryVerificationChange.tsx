@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
 import StudentEnquiryFormDocument from "../components/documents/StudentEnquiryFormDocument";
+import QRPaymentDisplay from "../components/shared/QrCode";
 
 interface EnquiryVerificationProps {
   nextStep: () => void;
@@ -214,7 +215,7 @@ export default function EnquiryVerificationChange({
         </div>
 
         {
-          isApproved && <StudentEnquiryFormDocument profile={profile} />
+          isApproved ? <StudentEnquiryFormDocument profile={profile} /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">

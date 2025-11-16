@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
 import HotelBookingChargeNotice from "../components/documents/HotelBookingChargeNotice";
+import QRPaymentDisplay from "../components/shared/QrCode";
 interface HotelBookingProps {
   nextStep: () => void;
   prevStep: () => void;
@@ -206,7 +207,7 @@ export default function HotelBooking({
         </div>
         
         {
-          isApproved && <HotelBookingChargeNotice profile={profile} />
+          isApproved ? <HotelBookingChargeNotice profile={profile} /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">

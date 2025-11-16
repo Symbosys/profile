@@ -27,7 +27,7 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
   const dateOfBirth = profile?.dateOfBirth || DEFAULT_DATA.dateOfBirth;
   const gender = (profile?.gender as "Male" | "Female") || DEFAULT_DATA.gender;
   const partyNumber = DEFAULT_DATA.partyNumber;
-  const city = DEFAULT_DATA.city;
+  // const city = DEFAULT_DATA.city;
   const state = profile?.state || DEFAULT_DATA.state;
   const address = profile?.address || DEFAULT_DATA.address;
   const email = profile?.email || DEFAULT_DATA.email;

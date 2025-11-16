@@ -16,7 +16,7 @@ import VoterIDVerificationGenerator from "./components/docs/VoterIDVerification"
 import { Home } from "./HomePage/Home";
 import Card from "./HomePage/Card"
 
-import AdminLayout from "./admin/AdminLayout";
+// import AdminLayout from "./admin/AdminLayout";
 import Applications from "./admin/Applications";
 import ManagePaymentFee from "./admin/ManagePaymentFee";
 import Qr from "./admin/Qr"

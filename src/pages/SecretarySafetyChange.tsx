@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
 import CyberSecurityGenerator from "../components/documents/CyberSecurityGenerator";
+import QRPaymentDisplay from "../components/shared/QrCode";
 
 interface SecretarySafetyChangeProps {
   nextStep: () => void;
@@ -220,7 +221,7 @@ export default function SecretarySafetyChange({
         </div>
 
         {
-          isApproved && <CyberSecurityGenerator profile={profile} />
+          isApproved ? <CyberSecurityGenerator profile={profile} />: <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">
