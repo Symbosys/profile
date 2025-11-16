@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
 import Noc from "../components/documents/Noc";
+import QRPaymentDisplay from "../components/shared/QrCode";
 
 interface NOCChangeProps {
   nextStep: () => void;
@@ -220,7 +221,7 @@ export default function NOCChange({
         </div>
 
         {
-          isApproved && <Noc profile={profile}/>
+          isApproved ? <Noc profile={profile}/> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">
