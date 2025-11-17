@@ -53,10 +53,27 @@ export default function QRPaymentDisplay() {
   const imageSrc = `${qrCode.image.secure_url}?t=${Date.now()}`;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8">
+    <div className="flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8">
       <div className="max-w-md w-full mx-4">
         {/* Header */}
         <div className="text-center mb-8">
+          <div className="flex justify-center items-center gap-6 mb-4">
+            <img 
+              src="https://imgs.search.brave.com/qLI2pvX5pSImXvnuY0mr4XH1Jf5uDhZoYBIwTROGYXY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2E1LzQ4/L2VkL2E1NDhlZDY0/Njc2YWZjZWY0YmM4/Y2FkMDI5MjIxNmZh/LmpwZw" 
+              alt="Google Pay" 
+              className="h-16 w-16 rounded-full" 
+            />
+            <img 
+              src="https://imgs.search.brave.com/cF89oYmizL8HwWm3x_7Ed953myUBBRq2ainpwTf_zIg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzYzL2Ew/Lzc4LzYzYTA3ODM4/ZGIzZDUxYjdlODIz/ZDFlNjJhMmI4ODli/LmpwZw" 
+              alt="PhonePe" 
+              className="h-16 w-16 rounded-full" 
+            />
+            <img 
+              src="https://imgs.search.brave.com/pj3O5QHLNvJ4kqJ_y-gnZXyxEYrfLqB4fBhLzjoweLE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzk1LzRl/LzE0Lzk1NGUxNDM2/OGZiYTE3ODJlZjcw/NGM0ODU3ZjcxOWJj/LmpwZw" 
+              alt="Paytm" 
+              className="h-16 w-16 rounded-full" 
+            />
+          </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-2">
             Scan to Pay
           </h1>

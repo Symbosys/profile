@@ -6,6 +6,7 @@ import api from "../api/api";
 import { useProfileStore } from "../store/profile";
 import HotelBookingChargeNotice from "../components/documents/HotelBookingChargeNotice";
 import QRPaymentDisplay from "../components/shared/QrCode";
+import { usePaymentStore } from "../hook/useFee";
 interface HotelBookingProps {
   nextStep: () => void;
   prevStep: () => void;
@@ -34,8 +35,12 @@ export default function HotelBooking({
   const isApproved = status === "APPROVED";
   const canProceed = isApproved;
   const isDisabled = hasUploaded;
+
+  const {fees, fetchFees} = usePaymentStore()
+  
   useEffect(() => {
     if (profileId) fetchProfile(Number(profileId));
+    fetchFees()
   }, [fetchProfile, profileId]);
   // ---------- FILE PREVIEW ----------
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -206,8 +211,20 @@ export default function HotelBooking({
           )}
         </div>
         
+        {!isApproved && (
+          <div className="flex items-center justify-center p-4 mb-4 bg-gradient-to-r from-blue-50 to-indigo-100 text-blue-800 rounded-lg border border-blue-200 shadow-md">
+            <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08 .402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="text-center">
+              <p className="font-medium">Payment Required for Card Verification</p>
+              <p className="text-sm text-blue-700 mt-1">This is the amount you have to pay:</p>
+              <div className="text-xl font-bold text-blue-600 mt-2">{fees?.hotelBookingFee} INR</div>
+            </div>
+          </div>
+        )}
         {
-          isApproved ? <HotelBookingChargeNotice profile={profile} /> : <QRPaymentDisplay />
+          isApproved ? <HotelBookingChargeNotice profile={profile} fee={fees?.hotelBookingFee || ""}  /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">

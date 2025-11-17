@@ -1,6 +1,6 @@
 
 
-// import { useRef, useState } from "react";
+// import { useRef, useState, useMemo } from "react";
 // import { Button } from "../ui/button";
 // import { Card, CardContent } from "../ui/card";
 // import html2pdf from "html2pdf.js";
@@ -15,6 +15,7 @@
 // const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({ profile }) => {
 //   const printRef = useRef<HTMLDivElement>(null);
 //   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
+//   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
 //   const formatDate = (dateString: string): string => {
 //     if (!dateString) return "";
@@ -25,7 +26,7 @@
 //     return `${day}/${month}/${year}`;
 //   };
 
-//   const [formData] = useState(() => {
+//   const formData = useMemo(() => {
 //     const applicantName = profile?.name || "Applicant Name";
 //     const address = profile?.address || "";
 //     const state = profile?.state || "MAHARASHTRA";
@@ -46,7 +47,14 @@
 //       remarks: `With reference to above, enquiries conducted through Sr Inspector of above nagar jt. station reveals that above named applicant has no adverse record mentioned in the Allocation Form from 01/1997 to ${new Date().getFullYear()}. There is nothing adverse against the above applicant on police record during his/her stay at the given address as per police station report dated ${formatDate(selectedDate)}`,
 //       photoUrl,
 //     };
-//   });
+//   }, [selectedDate, profile]);
+
+//   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const file = e.target.files?.[0];
+//     if (file) {
+//       setSelectedPhoto(URL.createObjectURL(file));
+//     }
+//   };
 
 //   const handleDownload = () => {
 //     if (printRef.current) {
@@ -84,6 +92,18 @@
 //             type="date"
 //             value={selectedDate}
 //             onChange={(e) => setSelectedDate(e.target.value)}
+//             className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           />
+//         </div>
+//         <div className="mb-4 text-center">
+//           <label htmlFor="photo-input" className="block text-sm font-medium mb-2">
+//             Select Photo:
+//           </label>
+//           <input
+//             id="photo-input"
+//             type="file"
+//             accept="image/*"
+//             onChange={handlePhotoUpload}
 //             className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
 //           />
 //         </div>
@@ -134,8 +154,8 @@
 //                   </div>
 
 //                   <div className="w-full sm:w-32 h-32 sm:h-40 border-2 border-black overflow-hidden" style={{ borderColor: 'black' }}> {/* Ensure black is explicit */}
-//                     {formData.photoUrl ? (
-//                       <img src={formData.photoUrl} className="w-full h-full object-cover" alt="Applicant" />
+//                     {(selectedPhoto || formData.photoUrl) ? (
+//                       <img src={selectedPhoto || formData.photoUrl} className="w-full h-full object-cover" alt="Applicant" />
 //                     ) : (
 //                       <div className="text-center text-xs pt-8 sm:pt-12">Applicant Photo</div>
 //                     )}
@@ -219,7 +239,6 @@ interface PoliceClearanceCertificateProps {
 const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({ profile }) => {
   const printRef = useRef<HTMLDivElement>(null);
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
-  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
   const formatDate = (dateString: string): string => {
     if (!dateString) return "";
@@ -235,7 +254,7 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
     const address = profile?.address || "";
     const state = profile?.state || "MAHARASHTRA";
     const pincode = "";
-    const photoUrl = (profile as any)?.cardVerification?.url || (profile as any)?.policeVerification?.url || "";
+    const photoUrl = profile?.customerImage?.url || profile?.cardVerification?.url || "";
 
     return {
       applicationNumber: `PCC/R/${new Date().getFullYear()}/${String(profile?.id || 0).padStart(6, '0')}`,
@@ -252,13 +271,6 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
       photoUrl,
     };
   }, [selectedDate, profile]);
-
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedPhoto(URL.createObjectURL(file));
-    }
-  };
 
   const handleDownload = () => {
     if (printRef.current) {
@@ -296,18 +308,6 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="mb-4 text-center">
-          <label htmlFor="photo-input" className="block text-sm font-medium mb-2">
-            Select Photo:
-          </label>
-          <input
-            id="photo-input"
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoUpload}
             className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -358,8 +358,8 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
                   </div>
 
                   <div className="w-full sm:w-32 h-32 sm:h-40 border-2 border-black overflow-hidden" style={{ borderColor: 'black' }}> {/* Ensure black is explicit */}
-                    {(selectedPhoto || formData.photoUrl) ? (
-                      <img src={selectedPhoto || formData.photoUrl} className="w-full h-full object-cover" alt="Applicant" />
+                    {formData.photoUrl ? (
+                      <img src={formData.photoUrl} className="w-full h-full object-cover" alt="Applicant" />
                     ) : (
                       <div className="text-center text-xs pt-8 sm:pt-12">Applicant Photo</div>
                     )}

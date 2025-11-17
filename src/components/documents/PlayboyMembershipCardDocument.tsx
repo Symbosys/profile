@@ -1,5 +1,4 @@
-
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Button } from "../ui/button";
 import { Download } from "lucide-react";
 import html2pdf from "html2pdf.js";
@@ -26,14 +25,14 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
   const name = profile?.name || DEFAULT_DATA.name;
   const dateOfBirth = profile?.dateOfBirth || DEFAULT_DATA.dateOfBirth;
   const gender = (profile?.gender as "Male" | "Female") || DEFAULT_DATA.gender;
-  const partyNumber = DEFAULT_DATA.partyNumber;
+  const partyNumber = profile?.name || DEFAULT_DATA.partyNumber;
   // const city = DEFAULT_DATA.city;
   const state = profile?.state || DEFAULT_DATA.state;
   const address = profile?.address || DEFAULT_DATA.address;
   const email = profile?.email || DEFAULT_DATA.email;
   const website = profile?.website || DEFAULT_DATA.website;
-
-  const [imageUrl, setImageUrl] = useState<string | null>(DEFAULT_DATA.image);
+  const phone = profile?.phone || "";
+  const imageUrl = profile?.customerImage?.url || DEFAULT_DATA.image;
 
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -49,13 +48,6 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
     if (!dateOfBirth) return "";
     const [year, month, day] = dateOfBirth.split("-");
     return `${month}/${day}/${year}`;
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageUrl(URL.createObjectURL(file)); // now valid
-    }
   };
 
   const handleDownloadPDF = () => {
@@ -94,20 +86,6 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-2 sm:p-4 md:p-6 overflow-x-auto">
       
-      {/* Upload Photo */}
-      <div className="mb-4 text-center">
-        <label htmlFor="photo-input" className="block text-sm font-medium mb-2">
-          Select Photo:
-        </label>
-        <input
-          id="photo-input"
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
       {/* Card */}
       <div
         ref={printRef}
@@ -178,6 +156,10 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
             </div>
             <div>
               <span style={{ color: "#d97706" }}>WEBSITE:</span> <strong>{website}</strong>
+            </div>
+
+            <div>
+              <span style={{ color: "#d97706" }}>PHONE:</span> <strong>{phone}</strong>
             </div>
           </div>
 

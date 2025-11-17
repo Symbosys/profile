@@ -1,5 +1,5 @@
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import api from "../api/api";
 import { useProfileStore } from "../store/profile";
 
@@ -29,6 +29,7 @@ export default function EmailVerification({
 
   const { profile, loading, error: profileError, fetchProfile } = useProfileStore();
   const profileId = localStorage.getItem("profileId");
+  
 
   useEffect(() => {
     if (profileId) {
@@ -171,7 +172,6 @@ export default function EmailVerification({
             </button>
           )}
         </div>
-
         {/* OTP Input + Verify Button */}
         {otpSent && (
           <div className="flex w-full items-center gap-2 sm:gap-4">

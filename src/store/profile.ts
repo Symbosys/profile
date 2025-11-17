@@ -24,6 +24,8 @@ export interface Profile {
   ifscCode?: string;
   bankName?: string;
 
+  customerImage?: ImageData | null;
+
   // ----------  IMAGE FIELDS ----------
   cardVerification?: ImageData | null;
   carVefificationStatus: string;          // <-- exact DB column
