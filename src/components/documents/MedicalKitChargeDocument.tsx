@@ -1,9 +1,8 @@
-
 import { useRef } from "react";
 import { Button } from "../ui/button";
 import html2pdf from "html2pdf.js";
 import type { Profile } from "../../store/profile";
-
+import MedicalLogo from "../../assets/medical/medicalKit.jpeg";
 
 const MedicalKitChargeDocument= ({profile}: {profile: Profile | null}) => {
   const printRef = useRef<HTMLDivElement>(null);
@@ -29,6 +28,11 @@ const MedicalKitChargeDocument= ({profile}: {profile: Profile | null}) => {
         ref={printRef}
         className="bg-white p-4 sm:p-10 shadow-xl w-full max-w-[700px] leading-6 sm:leading-7 text-center font-serif text-black mx-auto"
       >
+        <img 
+          src={MedicalLogo} 
+          alt="Company Logo" 
+          className="mx-auto mb-4 h-20 w-auto" 
+        />
         <h2 className="text-base sm:text-lg font-semibold mb-2">Company / Organization Name</h2>
 
         <h1 className="text-base sm:text-xl font-bold mb-4 sm:mb-6">Service Charge Details /</h1>

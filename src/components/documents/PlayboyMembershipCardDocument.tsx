@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Download } from "lucide-react";
 import html2pdf from "html2pdf.js";
 import type { Profile } from "../../store/profile";
+import PlayboyLogo from "../../assets/palyBoyCard/PlayBoyMohar.jpeg";
 
 interface PlayboyMembershipCardDocumentProps {
   profile: Profile | null | undefined;
@@ -17,7 +18,7 @@ const DEFAULT_DATA = {
   state: "CA",
   address: "123 Playboy Blvd",
   email: "john@example.com",
-  website: "https://www.playboy.com",
+  website: "itsecortservice.com",
   image: null as string | null,
 };
 
@@ -151,26 +152,38 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
             <div className="mt-1">
               <span style={{ color: "#d97706" }}>ADDRESS:</span> <strong>{address}</strong>
             </div>
-            <div>
-              <span style={{ color: "#d97706" }}>EMAIL:</span> <strong>{email}</strong>
-            </div>
-            <div>
-              <span style={{ color: "#d97706" }}>WEBSITE:</span> <strong>{website}</strong>
-            </div>
 
-            <div>
-              <span style={{ color: "#d97706" }}>PHONE:</span> <strong>{phone}</strong>
+            {/* Lower details with mohor on right */}
+            <div className="flex justify-between items-start mt-2">
+              <div className="flex flex-col gap-1 text-xs leading-tight w-2/3">
+                <div>
+                  <span style={{ color: "#d97706" }}>EMAIL:</span> <strong>{email}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "#d97706" }}>WEBSITE:</span> <strong>{website}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "#d97706" }}>PHONE:</span> <strong>{phone}</strong>
+                </div>
+              </div>
+              <div className="w-1/3 flex justify-end mt-1">
+                <img 
+                  src={PlayboyLogo} 
+                  alt="Mohor" 
+                  className="w-20 h-20 object-contain" 
+                />
+              </div>
             </div>
           </div>
 
         </div>
 
         {/* Signature */}
-        <div className="pt-4 text-right" style={{ borderTop: "1px solid #d97706" }}>
+        <div className="pt-4" style={{ borderTop: "1px solid #d97706" }}>
           <div className="text-xs text-left mb-1" style={{ color: "#d97706" }}>
             SIGNATURE
           </div>
-          <div className="text-xl italic underline" style={{ fontFamily: "cursive, Arial, sans-serif" }}>
+          <div className="text-xl italic underline justify-start" style={{ fontFamily: "cursive, Arial, sans-serif" }}>
             {generateSignature(name)}
           </div>
         </div>

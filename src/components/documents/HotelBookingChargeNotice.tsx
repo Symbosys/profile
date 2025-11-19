@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import html2pdf from "html2pdf.js";
 import type { Profile } from "../../store/profile";
+import HotelLogo from "../../assets/hotel/hotelBooking.jpeg";
 
 interface HotelBookingChargeNoticeProps {
   profile: Profile | null | undefined;
@@ -11,8 +12,9 @@ interface HotelBookingChargeNoticeProps {
 
 const HotelBookingChargeNotice = ({ profile, fee }: HotelBookingChargeNoticeProps) => {
   const printRef = useRef<HTMLDivElement>(null);
-  const [selectedDate, setSelectedDate] = useState("2025-03-25");
   const [hotelName, setHotelName] = useState("Royal Orchid Grand Hotel");
+
+  const currentDateStr = new Date().toISOString().split('T')[0];
 
   const formatDate = (dateString: string): string => {
     if (!dateString) return "";
@@ -27,10 +29,10 @@ const HotelBookingChargeNotice = ({ profile, fee }: HotelBookingChargeNoticeProp
     issuedTo: profile?.name || "Guest User",
     mobile: profile?.phone || "N/A",
     hotelName: hotelName,
-    bookingDate: formatDate(selectedDate),
+    bookingDate: formatDate(currentDateStr),
     bookingAmount: fee || "₹3,500",
     issuedBy: "Hotel Reservation Department",
-    issueDate: formatDate(selectedDate),
+    issueDate: formatDate(currentDateStr),
   };
 
   const handlePrint = () => {
@@ -57,18 +59,6 @@ const HotelBookingChargeNotice = ({ profile, fee }: HotelBookingChargeNoticeProp
     <div className="w-full bg-background py-4 sm:py-8">
       <div className="w-full max-w-2xl mx-auto p-2 sm:p-0">
         <div className="mb-4 text-center">
-          <label htmlFor="date-input" className="block text-sm font-medium mb-2">
-            Select Date:
-          </label>
-          <input
-            id="date-input"
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="mb-4 text-center">
           <label htmlFor="hotel-input" className="block text-sm font-medium mb-2">
             Hotel Name:
           </label>
@@ -85,8 +75,13 @@ const HotelBookingChargeNotice = ({ profile, fee }: HotelBookingChargeNoticeProp
             <div ref={printRef} className="bg-white p-4 sm:p-6 shadow-lg font-sans print-card">
               
               <div className="text-center mb-4 sm:mb-6">
+                <img 
+                  src={HotelLogo}
+                  alt="Hotel Logo" 
+                  className="mx-auto mb-4 h-20 w-auto" 
+                />
                 <p className="text-sm sm:text-base mb-2">
-                  {/* Date: {formatDate(selectedDate)} */}
+                  Date: {formatDate(currentDateStr)}
                 </p>
                 <h1 className="text-xl sm:text-2xl font-extrabold text-[#F89406] uppercase">
                   Hotel Booking Charge Information Notice

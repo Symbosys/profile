@@ -18,16 +18,16 @@ import HotelBooking from "../pages/HotelBooking";
 const steps: string[] = [
   "Phone Number Verification",
   "Profile Verification",
-  "Card Verification Change",
+  "Card Verification Charge",
   "HotelBooking",
-  "Medical Kit Change",
+  "Medical Kit Charge",
   "Police Verification Change",
-  "NOC Change",
-  "Location Verification Change (Area)",
-  "Secretary Safety Change",
-  "Joining Form Change",
-  "Enquiry Verification Change",
-  "Income GST Change",
+  "NOC Charge",
+  "Location Verification Charge (Area)",
+  "Secretary Safety Charge",
+  "Joining Form Charge",
+  "Enquiry Verification Charge",
+  "Income GST Charge",
 ];
 
 // Step components array
