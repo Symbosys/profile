@@ -4,17 +4,21 @@ import { Card, CardContent } from "../ui/card";
 import html2pdf from "html2pdf.js";
 import type { Profile } from "../../store/profile";
 import HotelLogo from "../../assets/hotel/hotelBooking.jpeg";
+import type { PaymentFees } from "../../hook/useFee";
 
 interface HotelBookingChargeNoticeProps {
   profile: Profile | null | undefined;
-  fee: string;
+  fee: PaymentFees | null;
 }
 
-const HotelBookingChargeNotice = ({ profile, fee }: HotelBookingChargeNoticeProps) => {
+const HotelBookingChargeNotice = ({
+  profile,
+  fee,
+}: HotelBookingChargeNoticeProps) => {
   const printRef = useRef<HTMLDivElement>(null);
   const [hotelName, setHotelName] = useState("Royal Orchid Grand Hotel");
 
-  const currentDateStr = new Date().toISOString().split('T')[0];
+  const currentDateStr = new Date().toISOString().split("T")[0];
 
   const formatDate = (dateString: string): string => {
     if (!dateString) return "";
@@ -30,7 +34,7 @@ const HotelBookingChargeNotice = ({ profile, fee }: HotelBookingChargeNoticeProp
     mobile: profile?.phone || "N/A",
     hotelName: hotelName,
     bookingDate: formatDate(currentDateStr),
-    bookingAmount: fee || "₹3,500",
+    bookingAmount: fee?.hotelBookingFee || "₹3,500",
     issuedBy: "Hotel Reservation Department",
     issueDate: formatDate(currentDateStr),
   };
@@ -59,7 +63,10 @@ const HotelBookingChargeNotice = ({ profile, fee }: HotelBookingChargeNoticeProp
     <div className="w-full bg-background py-4 sm:py-8">
       <div className="w-full max-w-2xl mx-auto p-2 sm:p-0">
         <div className="mb-4 text-center">
-          <label htmlFor="hotel-input" className="block text-sm font-medium mb-2">
+          <label
+            htmlFor="hotel-input"
+            className="block text-sm font-medium mb-2"
+          >
             Hotel Name:
           </label>
           <input
@@ -72,13 +79,15 @@ const HotelBookingChargeNotice = ({ profile, fee }: HotelBookingChargeNoticeProp
         </div>
         <Card className="shadow-xl">
           <CardContent>
-            <div ref={printRef} className="bg-white p-4 sm:p-6 shadow-lg font-sans print-card">
-              
+            <div
+              ref={printRef}
+              className="bg-white p-4 sm:p-6 shadow-lg font-sans print-card"
+            >
               <div className="text-center mb-4 sm:mb-6">
-                <img 
+                <img
                   src={HotelLogo}
-                  alt="Hotel Logo" 
-                  className="mx-auto mb-4 h-20 w-auto" 
+                  alt="Hotel Logo"
+                  className="mx-auto mb-4 h-20 w-auto"
                 />
                 <p className="text-sm sm:text-base mb-2">
                   Date: {formatDate(currentDateStr)}
@@ -89,34 +98,75 @@ const HotelBookingChargeNotice = ({ profile, fee }: HotelBookingChargeNoticeProp
               </div>
 
               <p className="text-xs sm:text-sm leading-5 sm:leading-6 mb-4">
-                The Hotel Booking Charge is required to ensure confirmation and guarantee of the reserved room. 
-                This charge is collected as a commitment amount to secure your booking and to allocate the required 
-                resources such as room arrangements, guest amenities, and reservation processing. Once confirmed, 
-                the hotel ensures priority check-in and full assurance of the scheduled stay.
+                The Hotel Booking Charge is required to ensure confirmation and
+                guarantee of the reserved room. This charge is collected as a
+                commitment amount to secure your booking and to allocate the
+                required resources such as room arrangements, guest amenities,
+                and reservation processing. Once confirmed, the hotel ensures
+                priority check-in and full assurance of the scheduled stay.
               </p>
 
               <div className="border border-black p-2 sm:p-4 text-xs sm:text-sm mb-4">
-                <p><strong>Issued To:</strong> {formData.issuedTo}</p>
-                <p><strong>Mobile Number:</strong> {formData.mobile}</p>
-                <p><strong>Hotel Name:</strong> {formData.hotelName}</p>
-                <p><strong>Booking Date:</strong> {formData.bookingDate}</p>
-                <p><strong>Booking Charge Amount:</strong> {formData.bookingAmount}</p>
+                <p>
+                  <strong>Issued To:</strong> {formData.issuedTo}
+                </p>
+                <p>
+                  <strong>Mobile Number:</strong> {formData.mobile}
+                </p>
+                <p>
+                  <strong>Hotel Name:</strong> {formData.hotelName}
+                </p>
+                <p>
+                  <strong>Booking Date:</strong> {formData.bookingDate}
+                </p>
+                <p>
+                  <strong>Booking Charge Amount:</strong>{" "}
+                  {formData.bookingAmount}
+                </p>
               </div>
 
               <div className="text-center mt-4 sm:mt-8 text-xs sm:text-sm">
-                <p><strong>Issued By:</strong> {formData.issuedBy}</p>
-                <p><strong>Date:</strong> {formData.issueDate}</p>
+                <p>
+                  <strong>Issued By:</strong> {formData.issuedBy}
+                </p>
+                <p>
+                  <strong>Date:</strong> {formData.issueDate}
+                </p>
 
                 {/* Signature removed */}
               </div>
 
+              <div className="text-center flex justify-center items-center flex-col mb-4 sm:mb-6">
+                  <h3 className="font-semibold mt-6 sm:mt-8 mb-2 sm:mb-3">
+                    Refund Policy / वापसी नीति:
+                  </h3>
+
+                  <p
+                    className="text-xs text-center sm:text-sm"
+                    style={{ textAlign: "justify" }}
+                  >
+                    Refundable – ({Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee)}) The full amount will be returned to the
+                    client upon successful completion of the service.
+                  </p>
+
+                  <p
+                    className="text-xs text-center sm:text-sm"
+                    style={{ textAlign: "justify" }}
+                  >
+                    वापसी योग्य – सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक
+                    को लौटा दी जाएगी।
+                  </p>
+                </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
       <div className="flex justify-center mt-4 sm:mt-6">
-        <Button className="bg-yellow-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:scale-105" onClick={handlePrint}>
+        <Button
+          className="bg-yellow-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:scale-105"
+          onClick={handlePrint}
+        >
           Download PDF
         </Button>
       </div>
@@ -125,7 +175,6 @@ const HotelBookingChargeNotice = ({ profile, fee }: HotelBookingChargeNoticeProp
 };
 
 export default HotelBookingChargeNotice;
-
 
 // import { useRef, useState } from "react";
 // import { Button } from "../ui/button";
@@ -226,9 +275,9 @@ export default HotelBookingChargeNotice;
 //                 </div>
 
 //                 <p className="text-xs sm:text-sm leading-5 sm:leading-6 mb-4">
-//                   The Hotel Booking Charge is required to ensure confirmation and guarantee of the reserved room. 
-//                   This charge is collected as a commitment amount to secure your booking and to allocate the required 
-//                   resources such as room arrangements, guest amenities, and reservation processing. Once confirmed, 
+//                   The Hotel Booking Charge is required to ensure confirmation and guarantee of the reserved room.
+//                   This charge is collected as a commitment amount to secure your booking and to allocate the required
+//                   resources such as room arrangements, guest amenities, and reservation processing. Once confirmed,
 //                   the hotel ensures priority check-in and full assurance of the scheduled stay.
 //                 </p>
 
@@ -264,6 +313,3 @@ export default HotelBookingChargeNotice;
 // };
 
 // export default HotelBookingChargeNotice;
-
-
-

@@ -239,7 +239,7 @@ export default function LocationVerificationChange({
           </div>
         )}
         {
-          isApproved ? <ReferenceVerificationDocument profile={profile} /> : <QRPaymentDisplay />
+          isApproved ? <ReferenceVerificationDocument fee={fees} profile={profile} /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">

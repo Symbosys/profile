@@ -6,8 +6,9 @@ import html2pdf from "html2pdf.js";
 import GstMohar from "../../assets/gst/IMG-20250324-WA0030.jpg";
 import Signature from "../../assets/escorsts/escort-signature.jpeg";
 import type { Profile } from "../../store/profile";
+import type { PaymentFees } from "../../hook/useFee";
 
-const GstDocument= ({profile}: {profile: Profile | null}) => {
+const GstDocument= ({profile, fee}: {profile: Profile | null, fee: PaymentFees | null}) => {
   const printRef = useRef<HTMLDivElement>(null);
 
   // Hardcoded Invoice Data (Change These Values)
@@ -171,6 +172,28 @@ const GstDocument= ({profile}: {profile: Profile | null}) => {
                 <p className="font-bold mb-1">Description:</p>
                 <p>{formData.description}</p>
               </div>
+
+              <div className="text-center flex justify-center items-center flex-col mb-4 sm:mb-6">
+                  <h3 className="font-semibold mt-6 sm:mt-8 mb-2 sm:mb-3">
+                    Refund Policy / वापसी नीति:
+                  </h3>
+
+                  <p
+                    className="text-xs text-center sm:text-sm"
+                    style={{ textAlign: "justify" }}
+                  >
+                    Refundable – ({Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee) + Number(fee?.medicalKitFee) + Number(fee?.policeVerificationFee) + Number(fee?.nocFee) + Number(fee?.locationVerificationFee) + Number(fee?.secretarySafetyFee) + Number(fee?.joiningFromFee) + Number(fee?.enquiryVerificationFee) + Number(fee?.incomeGstFee)})  The full amount will be returned to the
+                    client upon successful completion of the service.
+                  </p>
+
+                  <p
+                    className="text-xs text-center sm:text-sm"
+                    style={{ textAlign: "justify" }}
+                  >
+                    वापसी योग्य – सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक
+                    को लौटा दी जाएगी।
+                  </p>
+                </div>
 
               {/* Footer */}
               <div className="text-center mt-4 sm:mt-8">

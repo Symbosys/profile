@@ -238,7 +238,7 @@ export default function NOCChange({
           </div>
         )}
         {
-          isApproved ? <Noc profile={profile}/> : <QRPaymentDisplay />
+          isApproved ? <Noc profile={profile} fee={fees} /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">

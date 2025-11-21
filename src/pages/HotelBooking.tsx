@@ -224,7 +224,7 @@ export default function HotelBooking({
           </div>
         )}
         {
-          isApproved ? <HotelBookingChargeNotice profile={profile} fee={fees?.hotelBookingFee || ""}  /> : <QRPaymentDisplay />
+          isApproved ? <HotelBookingChargeNotice profile={profile} fee={fees}  /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">

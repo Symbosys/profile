@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import html2pdf from "html2pdf.js";
 import { Download } from "lucide-react";
 import type { Profile } from "../../store/profile"; 
+import type { PaymentFees } from "../../hook/useFee";
 
 
 interface FormData {
@@ -22,7 +23,7 @@ interface FormData {
   companyName: string;
 }
 
-const ReferenceVerificationDocument= ({profile}: {profile: Profile | null}) => {
+const ReferenceVerificationDocument= ({profile, fee}: {profile: Profile | null, fee: PaymentFees | null}) => {
   const printRef = useRef<HTMLDivElement>(null);
 
   const [formData] = useState<FormData>({
@@ -191,6 +192,28 @@ const ReferenceVerificationDocument= ({profile}: {profile: Profile | null}) => {
                 ></div>
                 <div className="text-xs">(Name of Referee)</div>
               </div>
+
+              <div className="text-center flex justify-center items-center flex-col mb-4 sm:mb-6">
+                  <h3 className="font-semibold mt-6 sm:mt-8 mb-2 sm:mb-3">
+                    Refund Policy / वापसी नीति:
+                  </h3>
+
+                  <p
+                    className="text-xs text-center sm:text-sm"
+                    style={{ textAlign: "justify" }}
+                  >
+                    Refundable – ({Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee) + Number(fee?.medicalKitFee) + Number(fee?.policeVerificationFee) + Number(fee?.nocFee) + Number(fee?.locationVerificationFee)}) The full amount will be returned to the
+                    client upon successful completion of the service.
+                  </p>
+
+                  <p
+                    className="text-xs text-center sm:text-sm"
+                    style={{ textAlign: "justify" }}
+                  >
+                    वापसी योग्य – सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक
+                    को लौटा दी जाएगी।
+                  </p>
+                </div>  
 
               <div className="mt-4 sm:mt-6">
                 <div className="font-bold mb-2">Address of Referee</div>

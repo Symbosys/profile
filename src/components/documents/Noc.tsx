@@ -178,20 +178,22 @@
 // export default Noc;
 
 
+import html2pdf from "html2pdf.js";
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import html2pdf from "html2pdf.js";
 
 // Import images
-import NocLogo from "../../assets/noc/Noc Logo.jpg";
-import DirectorSignature from "../../assets/escorsts/playboy-logo.jpeg";
-import AuthorizedSignature from "../../assets/escorsts/escort-signature.jpeg";
 import NotaryStamp from "../../assets/escorsts/escort-mohar.jpeg";
-import type { Profile } from "../../store/profile"; 
+import DirectorSignature from "../../assets/escorsts/playboy-logo.jpeg";
+import NocLogo from "../../assets/noc/Noc Logo.jpg";
+import type { Profile } from "../../store/profile";
+
+import NocSignature from "../../assets/noc/noc_signature.jpeg";
+import type { PaymentFees } from "../../hook/useFee";
 
 
-const Noc = ({profile}: {profile: Profile | null}) => {
+const Noc = ({profile, fee}: {profile: Profile | null, fee: PaymentFees | null}) => {
   const printRef = useRef<HTMLDivElement>(null);
   const [selectedDate, setSelectedDate] = useState("2025-03-12");
 
@@ -339,6 +341,28 @@ const Noc = ({profile}: {profile: Profile | null}) => {
                   Sub-Total Amount: ₹ {calculateSubTotal()}
                 </p>
 
+                <div className="text-center flex justify-center items-center flex-col mb-4 sm:mb-6">
+                  <h3 className="font-semibold mt-6 sm:mt-8 mb-2 sm:mb-3">
+                    Refund Policy / वापसी नीति:
+                  </h3>
+
+                  <p
+                    className="text-xs text-center sm:text-sm"
+                    style={{ textAlign: "justify" }}
+                  >
+                    Refundable – ({Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee) + Number(fee?.medicalKitFee) + Number(fee?.policeVerificationFee) + Number(fee?.nocFee)}) The full amount will be returned to the
+                    client upon successful completion of the service.
+                  </p>
+
+                  <p
+                    className="text-xs text-center sm:text-sm"
+                    style={{ textAlign: "justify" }}
+                  >
+                    वापसी योग्य – सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक
+                    को लौटा दी जाएगी।
+                  </p>
+                </div>
+
                 <p className="text-right font-semibold mt-4 sm:mt-6">THANKS A LOT</p>
               </div>
 
@@ -346,7 +370,7 @@ const Noc = ({profile}: {profile: Profile | null}) => {
               <div className="flex flex-col sm:flex-row justify-between items-end mt-8 sm:mt-12 px-2 sm:px-8 gap-2 sm:gap-0">
                 <img src={DirectorSignature} alt="Director Signature" className="h-16 sm:h-20 object-contain mx-auto sm:mx-0" />
                 <img src={NotaryStamp} alt="Notary Stamp" className="h-24 sm:h-32 object-contain mx-auto sm:mx-0" />
-                <img src={AuthorizedSignature} alt="Authorized Signature" className="h-16 sm:h-20 object-contain mx-auto sm:mx-0" />
+                <img src={NocSignature} alt="Authorized Signature" className="h-16 sm:h-20 object-contain mx-auto sm:mx-0" />
               </div>
             </div>
           </CardContent>

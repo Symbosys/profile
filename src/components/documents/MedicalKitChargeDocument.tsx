@@ -3,8 +3,9 @@ import { Button } from "../ui/button";
 import html2pdf from "html2pdf.js";
 import type { Profile } from "../../store/profile";
 import MedicalLogo from "../../assets/medical/medicalKit.jpeg";
+import type { PaymentFees } from "../../hook/useFee";
 
-const MedicalKitChargeDocument= ({profile}: {profile: Profile | null}) => {
+const MedicalKitChargeDocument= ({profile, fee}: {profile: Profile | null, fee: PaymentFees | null}) => {
   const printRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadPDF = () => {
@@ -66,7 +67,7 @@ const MedicalKitChargeDocument= ({profile}: {profile: Profile | null}) => {
         <h3 className="font-semibold mt-6 sm:mt-8 mb-2 sm:mb-3">Refund Policy / वापसी नीति:</h3>
 
         <p className="text-xs sm:text-sm" style={{ textAlign: "justify" }}>
-          Refundable – The full amount will be returned to the client upon successful completion of the service.
+          Refundable – ({Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee) + Number(fee?.medicalKitFee)}) The full amount will be returned to the client upon successful completion of the service.
         </p>
 
         <p className="text-xs sm:text-sm" style={{ textAlign: "justify" }}>

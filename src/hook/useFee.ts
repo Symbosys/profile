@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import api from "../api/api";
 
 // Define the shape of the payment fees data
-interface PaymentFees {
+export interface PaymentFees {
   cardVerificationFee: string;
   hotelBookingFee: string;
   medicalKitFee: string;

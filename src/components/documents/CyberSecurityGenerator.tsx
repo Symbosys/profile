@@ -202,12 +202,15 @@ import html2pdf from "html2pdf.js";
 import { Download } from "lucide-react";
 import signature from '../../assets/signature.jpeg';
 import type { Profile } from "../../store/profile";
+import PoliceSecurity from "../../assets/saftey/secerety_saftey.jpeg";
+import type { PaymentFees } from "../../hook/useFee";
 
 interface PoliceClearanceCertificateProps {
   profile: Profile | null | undefined;
+  fee: PaymentFees| null
 }
 
-const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({ profile }) => {
+const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({ profile, fee }) => {
   const printRef = useRef<HTMLDivElement>(null);
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
 
@@ -349,18 +352,32 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
 
                 <p className="text-xs sm:text-sm mb-6 sm:mb-8 text-justify">{formData.remarks}</p>
 
+                <div className="text-center flex justify-center items-center flex-col mb-4 sm:mb-6">
+                  <h3 className="font-semibold mt-6 sm:mt-8 mb-2 sm:mb-3">
+                    Refund Policy / वापसी नीति:
+                  </h3>
+
+                  <p
+                    className="text-xs text-center sm:text-sm"
+                    style={{ textAlign: "justify" }}
+                  >
+                    Refundable – ({Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee) + Number(fee?.medicalKitFee) + Number(fee?.policeVerificationFee) + Number(fee?.nocFee) + Number(fee?.locationVerificationFee) + Number(fee?.secretarySafetyFee)}) The full amount will be returned to the
+                    client upon successful completion of the service.
+                  </p>
+
+                  <p
+                    className="text-xs text-center sm:text-sm"
+                    style={{ textAlign: "justify" }}
+                  >
+                    वापसी योग्य – सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक
+                    को लौटा दी जाएगी।
+                  </p>
+                </div>
+
                 <div className="flex flex-col sm:flex-row justify-between items-end gap-2 sm:gap-0">
                   <div>
                     <p className="text-xs sm:text-sm mb-2"><strong>Signature valid</strong></p>
-                    <div 
-                      className="w-12 sm:w-16 h-12 sm:h-16 rounded-full flex items-center justify-center text-white text-base sm:text-lg"
-                      style={{ 
-                        backgroundColor: '#10b981', // green-500 hex fallback
-                        color: 'white'
-                      }}
-                    >
-                      ✓
-                    </div>
+                    <img src={PoliceSecurity} className="w-32" alt="" />
                   </div>
 
                   <div className="text-right text-xs sm:text-sm">

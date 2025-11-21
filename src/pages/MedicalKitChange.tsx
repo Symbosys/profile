@@ -1,4 +1,3 @@
-
 import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import api from "../api/api";
@@ -36,7 +35,9 @@ export default function MedicalKitChange({
   const status = profile?.medicalKitStatus || '';
   const isApproved = status === 'APPROVED';
   const canProceed = isApproved;
-  const isDisabled = hasUploaded;
+  const showUploadForm = !hasUploaded || status === 'REJECTED';
+  const isDisabled = hasUploaded && status !== 'REJECTED';
+  const currentPreview = medicalKitPreview || (hasUploaded ? profile?.medicalKit?.url || null : null);
 
   const {fees, fetchFees} = usePaymentStore()
   
@@ -167,8 +168,9 @@ export default function MedicalKitChange({
     <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto p-4 sm:p-8 bg-gradient-to-br from-white to-gray-50 shadow-xl rounded-xl transition-all duration-300">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col items-center">
-          {!hasUploaded ? (
+          {showUploadForm ? (
             <>
+              {status === 'REJECTED' && renderStatusMessage()}
               <label className="block text-sm font-semibold text-gray-800 mb-2">Upload Medical Kit Verification</label>
               <input
                 type="file"
@@ -177,10 +179,10 @@ export default function MedicalKitChange({
                 className="mb-4 sm:mb-6 w-full border border-gray-300 rounded-lg p-3 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-teal-100 file:text-teal-700 file:font-medium file:hover:bg-teal-200 disabled:bg-gray-100 disabled:file:bg-gray-200 transition-all duration-300"
                 accept="image/*"
               />
-              {medicalKitPreview && (
+              {currentPreview && (
                 <img
-                  src={medicalKitPreview}
-                  alt="Preview"
+                  src={currentPreview}
+                  alt={status === 'REJECTED' && !medicalKitPreview ? "Previously uploaded (rejected)" : "Preview"}
                   className="mb-4 sm:mb-6 w-full max-h-[300px] rounded-lg shadow-md object-contain"
                 />
               )}
@@ -201,7 +203,7 @@ export default function MedicalKitChange({
                     Uploading...
                   </span>
                 ) : (
-                  "Submit Verification"
+                  status === 'REJECTED' ? "Re-submit Verification" : "Submit Verification"
                 )}
               </button>
               {uploadError && (
@@ -239,7 +241,7 @@ export default function MedicalKitChange({
         )}
 
         {
-          isApproved ? <MedicalKitChargeDocument profile={profile}/> : <QRPaymentDisplay />
+          isApproved ? <MedicalKitChargeDocument profile={profile} fee={fees} /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">
