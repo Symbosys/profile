@@ -1,4 +1,3 @@
-
 import { useRef } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -11,19 +10,18 @@ const JoiningLetterDocument = ({profile, fee}: {profile: Profile | null, fee: Pa
 
   // Hardcoded data (Edit here)
   const formData = {
-    yourName: profile?.name,
-    yourAddress: profile?.address,
-    yourCity: "Delhi, India",
-    yourPhone: profile?.phone,
-    yourEmail: profile?.email,
-    recipientName: profile?.name,
-    recipientAddress: profile?.address,
-    recipientCity: "Delhi, India",
-    collegeName: "ABC College of Arts and Science",
-    departmentName: "Computer Science",
-    salary: "₹45,000 / Month",
+    companyName: "www.itsecortservice.com",
+    companyAddress: "Thane, Maharashtra",
+    companyCity: "Thane, Maharashtra",
+    companyPhone: profile?.phone,
+    companyEmail: profile?.email,
+    senderName: "Authorized Signatory",
+    date: "25/11/2025",
+    candidateName: profile?.name,
+    candidateAddress: profile?.address,
+    candidateCity: "Delhi, India",
+    salary: `₹${Number(fee?.joiningFromFee) || 0} per month`,
     contractPeriod: "One Year",
-    date: "2025-03-25",
   };
 
   const handlePrint = () => {
@@ -33,7 +31,7 @@ const JoiningLetterDocument = ({profile, fee}: {profile: Profile | null, fee: Pa
         const element = printRef.current!;
         const opt = {
           margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
-          filename: `Joining_Letter_${formData?.yourPhone?.replace(/\s+/g, "_")}.pdf`,
+          filename: `Joining_Letter_${formData?.companyPhone?.replace(/\s+/g, "_")}.pdf`,
           image: { type: "jpeg", quality: 0.98 },
           html2canvas: { 
             scale: 2, 
@@ -72,7 +70,7 @@ const JoiningLetterDocument = ({profile, fee}: {profile: Profile | null, fee: Pa
                   className="text-xs sm:text-sm mb-2 sm:mb-3"
                   style={{ color: '#ec4899' }} // text-pink-500 hex fallback
                 >
-                  www.letterseasy.com
+                  www.itsecortservice.com
                 </div>
                 <h1 
                   className="text-xl sm:text-2xl font-bold"
@@ -84,7 +82,7 @@ const JoiningLetterDocument = ({profile, fee}: {profile: Profile | null, fee: Pa
                   className="text-lg sm:text-xl font-bold"
                   style={{ color: '#ec4899' }} // text-pink-500 hex fallback
                 >
-                  College Lecturer
+                  Companion & Hospitality Service
                 </h2>
               </div>
 
@@ -92,11 +90,11 @@ const JoiningLetterDocument = ({profile, fee}: {profile: Profile | null, fee: Pa
                 className="text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 space-y-0.5 sm:space-y-1"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
-                <p>{formData.yourName}</p>
-                <p>{formData.yourAddress}</p>
-                <p>{formData.yourCity}</p>
-                <p>{formData.yourPhone}</p>
-                <p>{formData.yourEmail}</p>
+                <p>{formData.companyName}</p>
+                <p>{formData.companyAddress}</p>
+                <p>{formData.companyCity}</p>
+                <p>{formData.companyPhone}</p>
+                <p>{formData.companyEmail}</p>
                 <p>{formData.date}</p>
               </div>
 
@@ -104,50 +102,58 @@ const JoiningLetterDocument = ({profile, fee}: {profile: Profile | null, fee: Pa
                 className="text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 space-y-0.5 sm:space-y-1"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
-                <p>{formData.recipientName}</p>
-                <p>{formData.recipientAddress}</p>
-                <p>{formData.recipientCity}</p>
+                <p>{formData.candidateName}</p>
+                <p>{formData.candidateAddress}</p>
+                <p>{formData.candidateCity}</p>
               </div>
 
               <p 
                 className="text-xs sm:text-sm font-semibold mb-2 sm:mb-4"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
-                Subject: Appointment Letter for the Position of Lecturer
+                Subject: Joining Letter for the Position of Hospitality Companion
               </p>
 
               <p 
                 className="text-xs sm:text-sm mb-2 sm:mb-4"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
-                Dear {formData.recipientName},
+                Dear {formData.candidateName},
               </p>
 
               <p 
                 className="text-xs sm:text-sm mb-2 sm:mb-4"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
-                It is with great pleasure that I offer you the position of Lecturer in the
-                Department of <b>{formData.departmentName}</b> at <b>{formData.collegeName}</b>.
-                We believe that your expertise and experience will make a valuable contribution
-                to our college.
+                We are pleased to welcome you to <b>{formData.companyName}</b> as a Hospitality Companion. Your communication skills, personality, and professional attitude have been highly appreciated, and we are confident that you will contribute positively to our organization.
               </p>
 
               <p 
                 className="text-xs sm:text-sm mb-2 sm:mb-4"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
-                As per the terms of your appointment, your initial contract will be for a
-                period of <b>{formData.contractPeriod}</b>. You will be paid a salary of <b>{formData.salary}</b>
-                as well as other benefits and allowances as per the college policies.
+                As per the terms of your role, your initial contract will be for a period of <b>{formData.contractPeriod}</b>. You will receive a monthly remuneration of <b>{formData.salary}</b>, along with additional allowances and benefits as per company policies.
               </p>
 
               <p 
                 className="text-xs sm:text-sm mb-2 sm:mb-4"
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
-                Please review the enclosed documents and return a signed copy at the earliest.
-                We look forward to welcoming you to our esteemed institution.
+                Your responsibilities will include:
+              </p>
+
+              <ul className="text-xs sm:text-sm mb-2 sm:mb-4 list-disc list-inside" style={{ color: '#3b82f6' }}>
+                <li>Providing professional companionship during events and client engagements</li>
+                <li>Maintaining confidentiality and professionalism at all times</li>
+                <li>Ensuring high standards of client service and conduct</li>
+                <li>Following all guidelines and protocols issued by the agency</li>
+              </ul>
+
+              <p 
+                className="text-xs sm:text-sm mb-2 sm:mb-4"
+                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
+              >
+                Please acknowledge your joining by signing and returning a copy of this letter. We look forward to working with you.
               </p>
 
               <div className="text-center flex justify-center items-center flex-col mb-4 sm:mb-6 text-blue-500">
@@ -177,7 +183,8 @@ const JoiningLetterDocument = ({profile, fee}: {profile: Profile | null, fee: Pa
                 style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
               >
                 Sincerely,<br /><br />
-                <b>{formData.yourName}</b>
+                <b>{formData.senderName}</b><br />
+                <b>{formData.companyName}</b>
               </p>
             </div>
           </CardContent>

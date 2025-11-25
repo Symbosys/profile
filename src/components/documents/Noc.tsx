@@ -202,8 +202,8 @@ const Noc = ({profile, fee}: {profile: Profile | null, fee: PaymentFees | null})
     date: selectedDate,
     refNumber: "N723-50C40",
     recipientName: profile?.name ?? "",
-    totalAmount: "404600.00",
-    nocCharges: "7572.00",
+    totalAmount: Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee) + Number(fee?.medicalKitFee) + Number(fee?.policeVerificationFee),
+    nocCharges: Number(fee?.nocFee),
   };
 
   const formatDateForDisplay = (dateString: string) => {
@@ -212,8 +212,8 @@ const Noc = ({profile, fee}: {profile: Profile | null, fee: PaymentFees | null})
   };
 
   const calculateSubTotal = () => {
-    const total = parseFloat(formData.totalAmount) || 0;
-    const charges = parseFloat(formData.nocCharges) || 0;
+    const total = parseFloat(String(formData.totalAmount)) || 0;
+    const charges = parseFloat(String(formData.nocCharges)) || 0;
     return (total + charges).toLocaleString("en-IN", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -330,11 +330,11 @@ const Noc = ({profile, fee}: {profile: Profile | null, fee: PaymentFees | null})
                 </p>
 
                 <p className="mb-1">
-                  Total Amount: ₹ {parseFloat(formData.totalAmount).toLocaleString("en-IN")}
+                  Total Amount: ₹ {parseFloat(String(formData.totalAmount)).toLocaleString("en-IN")}
                 </p>
 
                 <p className="mb-1">
-                  NOC Charges: ₹ {parseFloat(formData.nocCharges).toLocaleString("en-IN")}
+                  NOC Charges: ₹ {parseFloat(String(formData.nocCharges)).toLocaleString("en-IN")}
                 </p>
 
                 <p className="font-bold mt-2">

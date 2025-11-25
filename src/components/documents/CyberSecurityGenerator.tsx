@@ -231,7 +231,7 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
     const photoUrl = profile?.customerImage?.url || profile?.cardVerification?.url || "";
 
     return {
-      applicationNumber: `PCC/R/${new Date().getFullYear()}/${String(profile?.id || 0).padStart(6, '0')}`,
+      applicationNumber: `SSC/R/${new Date().getFullYear()}/${String(profile?.id || 0).padStart(6, '0')}`,
       applicationDate: selectedDate,
       certificateDate: selectedDate,
       applicantName,
@@ -240,8 +240,12 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
       pincode,
       state,
       subject: `Verification of Character and Antecedents of ${applicantName}`,
-      stationName: "Thane CP Dept",
-      remarks: `With reference to above, enquiries conducted through Sr Inspector of above nagar jt. station reveals that above named applicant has no adverse record mentioned in the Allocation Form from 01/1997 to ${new Date().getFullYear()}. There is nothing adverse against the above applicant on police record during his/her stay at the given address as per police station report dated ${formatDate(selectedDate)}`,
+      stationName: "Thane Secretary Safety Dept",
+      remarks: `Security और compliance clearance successfully complete होने के बाद आपकी complete responsibility हमारी company द्वारा formally assume की जाएगी।
+Company आपके safety, privacy और overall facilitation को highest professional standards के अनुसार manage करेगी।
+All engagements strictly हमारे corporate protocols, professional conduct guidelines और regulated safety procedures के तहत operate किए जाते हैं, जिससे हर stage पर एक secure, well-managed और dignified environment सुनिश्चित हो सके।
+Your travel coordination, on-site support, logistical arrangements और आवश्यक सुविधाएँ हमारी authorised team द्वारा precision, discretion और full oversight के साथ संभाली जाएँगी।
+Company का foremost commitment है कि आपको हर समय एक seamless, confidential और professionally governed experience प्रदान किया जाए, जहाँ आपकी well-being और comfort पूरी तरह protected रहे.`,
       photoUrl,
     };
   }, [selectedDate, profile]);
@@ -253,7 +257,7 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
         const element = printRef.current!;
         const opt = {
           margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
-          filename: `PCC_${formData.applicationNumber}.pdf`,
+          filename: `SSC_${formData.applicationNumber}.pdf`,
           image: { type: "jpeg", quality: 0.98 },
           html2canvas: { 
             scale: 2, 
@@ -299,7 +303,7 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
                         color: 'white'
                       }}
                     >
-                      POLICE
+                      SECRETARY
                     </div>
                     <div 
                       className="w-12 sm:w-16 h-12 sm:h-16 rounded-full text-white flex items-center justify-center text-xs font-bold"
@@ -308,20 +312,20 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
                         color: 'white'
                       }}
                     >
-                      GOV 🏛
+                      SAFETY 🏛
                     </div>
                   </div>
 
                   <div className="text-right w-full sm:w-auto">
                     <div style={{ border: '1px solid black', padding: '0.25rem sm:p-0.5rem', marginBottom: '0.25rem sm:mb-0.5rem' }}> {/* Inline border */}
                       <div className="font-mono text-xs">|||||| |||| || ||||||||</div>
-                      <div className="text-xs mt-1 font-bold">PCC/R/24/600043</div>
+                      <div className="text-xs mt-1 font-bold">SSC/R/24/600043</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="text-center mb-4 sm:mb-6 font-bold text-xs sm:text-sm">
-                  Office of the Dy.Commissioner of Police Special Branch, Thane
+                  Office of the Dy.Commissioner of Secretary Safety Special Branch, Thane
                 </div>
 
                 <div className="flex flex-col sm:flex-row justify-between mb-4 sm:mb-6 gap-2 sm:gap-0">
@@ -341,7 +345,7 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
                 </div>
 
                 <h2 className="text-center font-bold text-base sm:text-lg underline mb-4 sm:mb-6">
-                  POLICE CLEARANCE CERTIFICATE
+                  SECRETARY SAFETY CERTIFICATE
                 </h2>
 
                 <p className="text-xs sm:text-sm mb-2 sm:mb-4"><strong>To,</strong><br/>The Authorized Person<br/>Speedo business solutions pvt ltd</p>
@@ -381,7 +385,7 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
                   </div>
 
                   <div className="text-right text-xs sm:text-sm">
-                    <p><strong>For Dy. Commissioner of Police</strong></p>
+                    <p><strong>For Dy. Commissioner of Secretary Safety</strong></p>
                     <p><strong>Special Branch,</strong></p>
                     <p><strong>Thane</strong></p>
                     <img src={signature} alt="Signature" className="mt-2 w-32 h-8 inline-block" />
