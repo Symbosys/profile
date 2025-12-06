@@ -1,24 +1,20 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, Download, Trash2 } from "lucide-react";
-import apiClient from "../api/api"; // 👈 your configured axios instance
-import type { Application } from "../types/types"
+import apiClient from "../api/api";
+import type { Application } from "../types/types";
 import api from "../api/api";
 
 const ApplicationsTable: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
 
-  // ✅ Fetch all profiles (applications)
   const fetchApplications = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/profile"); // 👈 backend route
-      console.log("Fetched profiles:", response.data);
-
+      const response = await api.get("/profile");
+      
       if (response.data?.data?.profiles) {
         const apps = response.data.data.profiles.map((profile: any) => ({
           id: profile.id,
@@ -26,7 +22,7 @@ const ApplicationsTable: React.FC = () => {
           email: profile.email,
           phone: profile.phone,
           created: new Date(profile.createdAt || Date.now()).toLocaleString(),
-          status: 
+          status:
             profile.carVefificationStatus ||
             profile.medicalKitStatus ||
             profile.policeVerificationStatus ||
@@ -50,14 +46,11 @@ const ApplicationsTable: React.FC = () => {
     fetchApplications();
   }, []);
 
-  // ✅ Handle View button - navigate to details route
   const navigate = useNavigate();
   const handleView = (app: Application) => {
-    // Navigate to nested route /applications/:id (parent route mounts this component at /applications)
     navigate(`/${app.id}`);
   };
 
-  // ✅ Handle Download button
   const handleDownload = async (app: Application) => {
     try {
       const response = await apiClient.get(`/profile/${app.id}`, {
@@ -76,10 +69,8 @@ const ApplicationsTable: React.FC = () => {
     }
   };
 
-  // ✅ Handle Delete button
   const handleDelete = async (id: number) => {
     if (!window.confirm("Are you sure you want to delete this profile?")) return;
-
     try {
       await api.delete(`/profile/${id}`);
       setApplications((prev) => prev.filter((app) => app.id !== id));
@@ -98,72 +89,78 @@ const ApplicationsTable: React.FC = () => {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <table className="min-w-full border-collapse">
-          <thead>
-            <tr className="text-left bg-gray-100 border-b">
-              <th className="p-4 font-medium text-gray-600">Name</th>
-              <th className="p-4 font-medium text-gray-600">Email</th>
-              <th className="p-4 font-medium text-gray-600">Created</th>
-              <th className="p-4 font-medium text-gray-600">Status</th>
-              <th className="p-4 font-medium text-gray-600 text-center">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {applications.length > 0 ? (
-              applications.map((app) => (
-                <tr
-                  key={app.id}
-                  className="border-b hover:bg-gray-50 transition-colors"
-                >
-                  <td className="p-4">{app.name}</td>
-                  <td className="p-4">{app.email}</td>
-                  <td className="p-4">{app.created}</td>
-                  <td className="p-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        app.status === "Approved"
-                          ? "bg-green-100 text-green-700"
-                          : app.status === "Rejected"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-yellow-100 text-yellow-700"
-                      }`}
-                    >
-                      {app.status}
-                    </span>
-                  </td>
-                  <td className="p-4 flex justify-center gap-3">
-                    <button
-                      onClick={() => handleView(app)}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      <Eye size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDownload(app)}
-                      className="text-green-600 hover:text-green-800"
-                    >
-                      <Download size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(app.id)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+        /* Added responsive wrapper here */
+        <div className="overflow-x-auto">
+          <table className="min-w-full border-collapse whitespace-nowrap">
+            <thead>
+              <tr className="text-left bg-gray-100 border-b">
+                <th className="p-4 font-medium text-gray-600">Name</th>
+                <th className="p-4 font-medium text-gray-600">Email</th>
+                <th className="p-4 font-medium text-gray-600">Created</th>
+                <th className="p-4 font-medium text-gray-600">Status</th>
+                <th className="p-4 font-medium text-gray-600 text-center">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {applications.length > 0 ? (
+                applications.map((app) => (
+                  <tr
+                    key={app.id}
+                    className="border-b hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="p-4">{app.name}</td>
+                    <td className="p-4">{app.email}</td>
+                    <td className="p-4">{app.created}</td>
+                    <td className="p-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          app.status === "Approved"
+                            ? "bg-green-100 text-green-700"
+                            : app.status === "Rejected"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                      >
+                        {app.status}
+                      </span>
+                    </td>
+                    <td className="p-4 flex justify-center gap-3">
+                      <button
+                        onClick={() => handleView(app)}
+                        className="text-blue-600 hover:text-blue-800"
+                        title="View"
+                      >
+                        <Eye size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleDownload(app)}
+                        className="text-green-600 hover:text-green-800"
+                        title="Download"
+                      >
+                        <Download size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(app.id)}
+                        className="text-red-600 hover:text-red-800"
+                        title="Delete"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="text-center p-6 text-gray-500">
+                    No applications found.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={5} className="text-center p-6 text-gray-500">
-                  No applications found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
