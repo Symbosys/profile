@@ -1,7 +1,5 @@
 
 import { useRef } from "react";
-import { Button } from "../ui/button";
-import { Card, CardContent } from "../ui/card";
 import html2pdf from "html2pdf.js";
 import { Download } from "lucide-react";
 import type { Profile } from "../../store/profile"; 
@@ -54,126 +52,170 @@ const StudentEnquiryFormDocument = ({profile, fee}: {profile: Profile | null, fe
   };
 
   return (
-    <div className="w-full bg-background py-4 sm:py-8 flex justify-center">
-      <div className="w-full max-w-[750px]">
+    <div style={{ width: "100%", backgroundColor: "#f3f4f6", paddingTop: "1rem", paddingBottom: "2rem" }}>
+      <div style={{ width: "100%", maxWidth: "750px", margin: "0 auto", paddingLeft: "0.5rem", paddingRight: "0.5rem" }}>
+        <div style={{ backgroundColor: "white", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)", border: "2px solid #d1d5db", borderRadius: "0.75rem", overflow: "hidden" }}>
+          
+          <div ref={printRef} style={{ width: "100%", fontFamily: "sans-serif", padding: "2rem", backgroundColor: "white" }}>
+            
+            {/* Header */}
+            <div style={{ textAlign: "center", marginBottom: "2rem", paddingBottom: "1.5rem", borderBottom: "3px solid #2563eb" }}>
+              <h1 style={{ fontSize: "1.75rem", fontWeight: "700", color: "#2563eb", margin: "0 0 0.5rem 0", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                Student Enquiry Form
+              </h1>
+              <p style={{ fontSize: "0.85rem", color: "#6b7280", margin: "0" }}>Academic Information Request</p>
+            </div>
 
-        <Card className="shadow-xl">
-          <CardContent>
-            <div 
-              ref={printRef} 
-              className="w-full font-sans p-4 sm:p-6"
-              style={{ 
-                backgroundColor: 'white',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', // shadow-lg equivalent
-                fontFamily: 'sans-serif'
-              }}
-            >
-
-              {/* Title */}
-              <div className="text-center mb-4 sm:mb-6">
-                <h1 
-                  className="text-xl sm:text-2xl font-bold uppercase pb-1 sm:pb-2"
-                  style={{ 
-                    color: '#2563eb', // text-blue-600 hex fallback
-                    borderBottom: '2px solid #2563eb' // border-b-2 border-blue-600 hex
-                  }}
-                >
-                  Student Enquiry Form
-                </h1>
-              </div>
-
-              {/* Personal Information */}
-              <div className="mb-4 sm:mb-6">
-                <h2 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">Personal Information</h2>
-                <p className="text-sm sm:text-base"><strong>Name:</strong> {formData.name}</p>
-                <p className="text-sm sm:text-base"><strong>Age:</strong> {formData.age}</p>
-                <p className="text-sm sm:text-base"><strong>Current Level of Education:</strong> {formData.educationLevel}</p>
-              </div>
-
-              {/* Enquiry Area */}
-              <div className="mb-4 sm:mb-6">
-                <h2 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">Enquiry Area of Interest</h2>
-                <p className="text-sm sm:text-base"><strong>Reason for Enquiry:</strong> {formData.reasonForEnquiry}</p>
-
-                <div className="ml-2 sm:ml-4 mt-1 sm:mt-2">
-                  <p className="text-sm sm:text-base">☐ Course Information {formData.courseInfo && "✅"}</p>
-                  <p className="text-sm sm:text-base">☐ Admission Process {formData.admissionProcess && "✅"}</p>
-                  <p className="text-sm sm:text-base">☐ Scholarship Opportunities {formData.scholarshipOpportunities && "✅"}</p>
+            {/* Personal Information Section */}
+            <div style={{ marginBottom: "1.75rem", paddingBottom: "1.5rem", borderBottom: "1px solid #e5e7eb" }}>
+              <h2 style={{ fontSize: "0.95rem", fontWeight: "700", color: "#1f2937", margin: "0 0 1rem 0", textTransform: "uppercase", letterSpacing: "0.05em", paddingLeft: "0.5rem", borderLeft: "4px solid #2563eb" }}>
+                Personal Information
+              </h2>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div>
+                  <p style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: "600", margin: "0 0 0.25rem 0" }}>Full Name</p>
+                  <p style={{ fontSize: "0.9rem", color: "#1f2937", margin: "0" }}>{formData.name}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: "600", margin: "0 0 0.25rem 0" }}>Age</p>
+                  <p style={{ fontSize: "0.9rem", color: "#1f2937", margin: "0" }}>{formData.age}</p>
                 </div>
               </div>
-
-              {/* Contact Preferences */}
-              <div className="mb-4 sm:mb-6">
-                <h2 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">Contact Preferences</h2>
-                <p className="text-sm sm:text-base">
-                  <strong>Preferred Method:</strong>{" "}
-                  {formData.preferredMethodEmail && "Email"}{" "}
-                  {formData.preferredMethodPhone && "Phone"}
-                </p>
-                <p className="text-sm sm:text-base"><strong>Best Time to Contact:</strong> {formData.bestTimeToContact}</p>
-              </div>
-
-              {/* Questions */}
-              <div className="mb-4 sm:mb-6">
-                <h2 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">Questions or Comments</h2>
-                <p className="text-sm sm:text-base">{formData.questionsComments}</p>
-              </div>
-
-              {/* Checklist */}
-              <div>
-                <h2 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">Requested Items</h2>
-                <div className="ml-2 sm:ml-4 mt-1 sm:mt-2">
-                  <p className="text-sm sm:text-base">☐ Information Packet {formData.infoPacket && "✅"}</p>
-                  <p className="text-sm sm:text-base">☐ Guidance Counselor Appointment {formData.guidanceCounselor && "✅"}</p>
-                  <p className="text-sm sm:text-base">☐ Campus Tour Scheduled {formData.campusTour && "✅"}</p>
-                </div>
-              </div>
-
-              <div className="text-center flex justify-center items-center flex-col mb-4 sm:mb-6">
-                  <h3 className="font-semibold mt-6 sm:mt-8 mb-2 sm:mb-3">
-                    Refund Policy / वापसी नीति:
-                  </h3>
-
-                  <p
-                    className="text-xs text-center sm:text-sm"
-                    style={{ textAlign: "justify" }}
-                  >
-                    Refundable – ({Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee) + Number(fee?.medicalKitFee) + Number(fee?.policeVerificationFee) + Number(fee?.nocFee) + Number(fee?.locationVerificationFee) + Number(fee?.secretarySafetyFee) + Number(fee?.joiningFromFee) + Number(fee?.enquiryVerificationFee)}) The full amount will be returned to the
-                    client upon successful completion of the service.
-                  </p>
-
-                  <p
-                    className="text-xs text-center sm:text-sm"
-                    style={{ textAlign: "justify" }}
-                  >
-                    वापसी योग्य – सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक
-                    को लौटा दी जाएगी।
-                  </p>
-                </div>
-
-              {/* Footer */}
-              <div 
-                className="text-center text-xs sm:text-sm mt-4 sm:mt-8 border-t pt-2 sm:pt-4"
-                style={{ 
-                  color: '#6b7280', // text-gray-500 hex fallback
-                  borderTopColor: 'black' // border-t implicit black
-                }}
-              >
-                <p>© 2025 Sampleforms.com</p>
+              <div style={{ marginTop: "1rem" }}>
+                <p style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: "600", margin: "0 0 0.25rem 0" }}>Current Level of Education</p>
+                <p style={{ fontSize: "0.9rem", color: "#1f2937", margin: "0" }}>{formData.educationLevel}</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        <div className="flex justify-center mt-4 sm:mt-6">
-          <Button
-            onClick={handleDownload}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:scale-105 transition-all"
-          >
-            <Download className="mr-2 h-4 sm:h-5 w-4 sm:w-5" /> Download PDF
-          </Button>
+            {/* Enquiry Area Section */}
+            <div style={{ marginBottom: "1.75rem", paddingBottom: "1.5rem", borderBottom: "1px solid #e5e7eb" }}>
+              <h2 style={{ fontSize: "0.95rem", fontWeight: "700", color: "#1f2937", margin: "0 0 1rem 0", textTransform: "uppercase", letterSpacing: "0.05em", paddingLeft: "0.5rem", borderLeft: "4px solid #2563eb" }}>
+                Enquiry Area of Interest
+              </h2>
+              <div style={{ marginBottom: "1rem" }}>
+                <p style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: "600", margin: "0 0 0.5rem 0" }}>Reason for Enquiry</p>
+                <p style={{ fontSize: "0.9rem", color: "#1f2937", margin: "0" }}>{formData.reasonForEnquiry}</p>
+              </div>
+              <div style={{ backgroundColor: "#f3f4f6", padding: "1rem", borderRadius: "0.5rem" }}>
+                <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "#374151", margin: "0 0 0.75rem 0" }}>Areas of Interest</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ fontSize: "1rem", color: formData.courseInfo ? "#22c55e" : "#d1d5db" }}>✓</span>
+                    <span style={{ fontSize: "0.9rem", color: "#374151" }}>Course Information</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ fontSize: "1rem", color: formData.admissionProcess ? "#22c55e" : "#d1d5db" }}>✓</span>
+                    <span style={{ fontSize: "0.9rem", color: "#374151" }}>Admission Process</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ fontSize: "1rem", color: formData.scholarshipOpportunities ? "#22c55e" : "#d1d5db" }}>✓</span>
+                    <span style={{ fontSize: "0.9rem", color: "#374151" }}>Scholarship Opportunities</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Preferences Section */}
+            <div style={{ marginBottom: "1.75rem", paddingBottom: "1.5rem", borderBottom: "1px solid #e5e7eb" }}>
+              <h2 style={{ fontSize: "0.95rem", fontWeight: "700", color: "#1f2937", margin: "0 0 1rem 0", textTransform: "uppercase", letterSpacing: "0.05em", paddingLeft: "0.5rem", borderLeft: "4px solid #2563eb" }}>
+                Contact Preferences
+              </h2>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div>
+                  <p style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: "600", margin: "0 0 0.5rem 0" }}>Preferred Method</p>
+                  <p style={{ fontSize: "0.9rem", color: "#1f2937", margin: "0" }}>
+                    {formData.preferredMethodEmail && "Email"}
+                    {formData.preferredMethodEmail && formData.preferredMethodPhone && " & "}
+                    {formData.preferredMethodPhone && "Phone"}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: "600", margin: "0 0 0.5rem 0" }}>Best Time to Contact</p>
+                  <p style={{ fontSize: "0.9rem", color: "#1f2937", margin: "0" }}>{formData.bestTimeToContact}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Questions Section */}
+            <div style={{ marginBottom: "1.75rem", paddingBottom: "1.5rem", borderBottom: "1px solid #e5e7eb" }}>
+              <h2 style={{ fontSize: "0.95rem", fontWeight: "700", color: "#1f2937", margin: "0 0 1rem 0", textTransform: "uppercase", letterSpacing: "0.05em", paddingLeft: "0.5rem", borderLeft: "4px solid #2563eb" }}>
+                Questions or Comments
+              </h2>
+              <p style={{ fontSize: "0.9rem", color: "#374151", margin: "0", lineHeight: "1.6", textAlign: "justify" }}>{formData.questionsComments}</p>
+            </div>
+
+            {/* Requested Items Section */}
+            <div style={{ marginBottom: "1.75rem", paddingBottom: "1.5rem", borderBottom: "1px solid #e5e7eb" }}>
+              <h2 style={{ fontSize: "0.95rem", fontWeight: "700", color: "#1f2937", margin: "0 0 1rem 0", textTransform: "uppercase", letterSpacing: "0.05em", paddingLeft: "0.5rem", borderLeft: "4px solid #2563eb" }}>
+                Requested Items
+              </h2>
+              <div style={{ backgroundColor: "#f3f4f6", padding: "1rem", borderRadius: "0.5rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ fontSize: "1rem", color: formData.infoPacket ? "#22c55e" : "#d1d5db" }}>✓</span>
+                  <span style={{ fontSize: "0.9rem", color: "#374151" }}>Information Packet</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ fontSize: "1rem", color: formData.guidanceCounselor ? "#22c55e" : "#d1d5db" }}>✓</span>
+                  <span style={{ fontSize: "0.9rem", color: "#374151" }}>Guidance Counselor Appointment</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ fontSize: "1rem", color: formData.campusTour ? "#22c55e" : "#d1d5db" }}>✓</span>
+                  <span style={{ fontSize: "0.9rem", color: "#374151" }}>Campus Tour Scheduled</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Refund Policy Section */}
+            <div style={{ padding: "1rem", backgroundColor: "#eff6ff", border: "2px solid #93c5fd", borderRadius: "0.5rem", marginBottom: "2rem" }}>
+              <h3 style={{ fontSize: "0.8rem", fontWeight: "700", color: "#1f2937", margin: "0 0 0.75rem 0", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                Refund Policy / वापसी नीति
+              </h3>
+              <p style={{ fontSize: "0.85rem", textAlign: "justify", margin: "0 0 0.75rem 0", color: "#374151", lineHeight: "1.6" }}>
+                <strong>Refundable:</strong> ₹{Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee) + Number(fee?.medicalKitFee) + Number(fee?.policeVerificationFee) + Number(fee?.nocFee) + Number(fee?.locationVerificationFee) + Number(fee?.secretarySafetyFee) + Number(fee?.joiningFromFee) + Number(fee?.enquiryVerificationFee)} – The full amount will be returned to the client upon successful completion of the service.
+              </p>
+              <p style={{ fontSize: "0.85rem", textAlign: "justify", margin: "0", color: "#374151", lineHeight: "1.6" }}>
+                <strong>वापसी योग्य:</strong> सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक को लौटा दी जाएगी।
+              </p>
+            </div>
+
+            {/* Footer */}
+            <div style={{ textAlign: "center", paddingTop: "1rem", borderTop: "1px solid #e5e7eb", fontSize: "0.8rem", color: "#6b7280" }}>
+              <p style={{ margin: "0" }}>© 2025 Speedo Business Solutions Pvt Ltd</p>
+            </div>
+          </div>
         </div>
 
+        {/* Download Button */}
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+          <button
+            onClick={handleDownload}
+            style={{
+              backgroundColor: "#2563eb",
+              color: "white",
+              padding: "0.75rem 1.5rem",
+              borderRadius: "0.5rem",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "1rem",
+              fontWeight: "600",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              transition: "all 0.3s ease"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#1d4ed8";
+              e.currentTarget.style.boxShadow = "0 20px 25px -5px rgba(0, 0, 0, 0.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#2563eb";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            <Download style={{ width: "1.25rem", height: "1.25rem" }} />
+            Download PDF
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
-import { Card, CardContent } from "../ui/card";
 import html2pdf from "html2pdf.js";
 import type { Profile } from "../../store/profile";
 import HotelLogo from "../../assets/hotel/hotelBooking.jpeg";
@@ -60,12 +59,12 @@ const HotelBookingChargeNotice = ({
   };
 
   return (
-    <div className="w-full bg-background py-4 sm:py-8">
-      <div className="w-full max-w-2xl mx-auto p-2 sm:p-0">
-        <div className="mb-4 text-center">
+    <div style={{ width: "100%", backgroundColor: "#f9fafb", paddingTop: "1rem", paddingBottom: "1rem" }}>
+      <div style={{ width: "100%", maxWidth: "56rem", margin: "0 auto", padding: "0.5rem" }}>
+        <div style={{ marginBottom: "1rem", textAlign: "center" }}>
           <label
             htmlFor="hotel-input"
-            className="block text-sm font-medium mb-2"
+            style={{ display: "block", fontSize: "0.875rem", fontWeight: "500", marginBottom: "0.5rem" }}
           >
             Hotel Name:
           </label>
@@ -74,97 +73,138 @@ const HotelBookingChargeNotice = ({
             type="text"
             value={hotelName}
             onChange={(e) => setHotelName(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            style={{
+              border: "1px solid #d1d5db",
+              borderRadius: "6px",
+              padding: "8px 12px",
+              outline: "none",
+              transition: "box-shadow 0.2s",
+              width: "100%",
+              maxWidth: "300px"
+            }}
+            onFocus={(e) => e.target.style.boxShadow = "0 0 0 2px #3b82f6"}
+            onBlur={(e) => e.target.style.boxShadow = "none"}
           />
         </div>
-        <Card className="shadow-xl">
-          <CardContent>
+        <div style={{ boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
+          <div>
             <div
               ref={printRef}
-              className="bg-white p-4 sm:p-6 shadow-lg font-sans print-card"
+              style={{ 
+                minHeight: "600px",
+                backgroundColor: "#ffffff",
+                border: "2px solid #e5e7eb",
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                padding: "2rem",
+                fontFamily: "serif"
+              }}
             >
-              <div className="text-center mb-4 sm:mb-6">
+              {/* Header Section */}
+              <div style={{ textAlign: "center", marginBottom: "2rem", paddingBottom: "1.5rem", borderBottom: "2px solid #d1d5db" }}>
                 <img
                   src={HotelLogo}
                   alt="Hotel Logo"
-                  className="mx-auto mb-4 h-20 w-auto"
+                  style={{ display: "block", margin: "0 auto 1rem", height: "112px", width: "auto" }}
                 />
-                <p className="text-sm sm:text-base mb-2">
-                  Date: {formatDate(currentDateStr)}
-                </p>
-                <h1 className="text-xl sm:text-2xl font-extrabold text-[#F89406] uppercase">
-                  Hotel Booking Charge Information Notice
+                <h1 style={{ fontSize: "1.875rem", fontWeight: "bold", color: "#1f2937", marginBottom: "0.25rem", letterSpacing: "0.05em" }}>
+                  HOTEL BOOKING CHARGE
                 </h1>
+                <h2 style={{ fontSize: "1rem", fontWeight: "600", color: "#4b5563", marginBottom: "0.75rem" }}>
+                  Information Notice
+                </h2>
+                <div style={{ fontSize: "0.875rem", color: "#374151" }}>
+                  <p style={{ marginBottom: "0.25rem" }}>Document Date: <strong>{formatDate(currentDateStr)}</strong></p>
+                  <p>Reference: <strong>HBC-{new Date().getTime().toString().slice(-6)}</strong></p>
+                </div>
               </div>
 
-              <p className="text-xs sm:text-sm leading-5 sm:leading-6 mb-4">
-                The Hotel Booking Charge is required to ensure confirmation and
-                guarantee of the reserved room. This charge is collected as a
-                commitment amount to secure your booking and to allocate the
-                required resources such as room arrangements, guest amenities,
-                and reservation processing. Once confirmed, the hotel ensures
-                priority check-in and full assurance of the scheduled stay.
-              </p>
-
-              <div className="border border-black p-2 sm:p-4 text-xs sm:text-sm mb-4">
-                <p>
-                  <strong>Issued To:</strong> {formData.issuedTo}
-                </p>
-                <p>
-                  <strong>Mobile Number:</strong> {formData.mobile}
-                </p>
-                <p>
-                  <strong>Hotel Name:</strong> {formData.hotelName}
-                </p>
-                <p>
-                  <strong>Booking Date:</strong> {formData.bookingDate}
-                </p>
-                <p>
-                  <strong>Booking Charge Amount:</strong>{" "}
-                  {formData.bookingAmount}
+              {/* Description Section */}
+              <div style={{ marginBottom: "2rem" }}>
+                <p style={{ fontSize: "0.875rem", lineHeight: "1.75", color: "#1f2937", textAlign: "justify", fontFamily: "serif" }}>
+                  The Hotel Booking Charge is required to ensure confirmation and
+                  guarantee of the reserved room. This charge is collected as a
+                  commitment amount to secure your booking and to allocate the
+                  required resources such as room arrangements, guest amenities,
+                  and reservation processing. Once confirmed, the hotel ensures
+                  priority check-in and full assurance of the scheduled stay.
                 </p>
               </div>
 
-              <div className="text-center mt-4 sm:mt-8 text-xs sm:text-sm">
-                <p>
-                  <strong>Issued By:</strong> {formData.issuedBy}
-                </p>
-                <p>
-                  <strong>Date:</strong> {formData.issueDate}
-                </p>
-
-                {/* Signature removed */}
+              {/* Details Section */}
+              <div style={{ marginBottom: "2rem", backgroundColor: "#f3f4f6", border: "2px solid #9ca3af", padding: "1.25rem", borderRadius: "0.5rem" }}>
+                <h3 style={{ fontSize: "0.875rem", fontWeight: "bold", color: "#1f2937", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Booking Details
+                </h3>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "0.75rem", fontSize: "0.875rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #d1d5db", paddingBottom: "0.5rem" }}>
+                    <span style={{ fontWeight: "600", color: "#374151" }}>Issued To:</span>
+                    <span style={{ color: "#111827" }}>{formData.issuedTo}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #d1d5db", paddingBottom: "0.5rem" }}>
+                    <span style={{ fontWeight: "600", color: "#374151" }}>Mobile Number:</span>
+                    <span style={{ color: "#111827" }}>{formData.mobile}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #d1d5db", paddingBottom: "0.5rem" }}>
+                    <span style={{ fontWeight: "600", color: "#374151" }}>Hotel Name:</span>
+                    <span style={{ color: "#111827" }}>{formData.hotelName}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #d1d5db", paddingBottom: "0.5rem" }}>
+                    <span style={{ fontWeight: "600", color: "#374151" }}>Booking Date:</span>
+                    <span style={{ color: "#111827" }}>{formData.bookingDate}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.5rem", backgroundColor: "#fef3c7", padding: "0.5rem", borderRadius: "0.25rem" }}>
+                    <span style={{ fontWeight: "bold", color: "#1f2937" }}>Booking Charge Amount:</span>
+                    <span style={{ fontWeight: "bold", color: "#F89406", fontSize: "1.125rem" }}>{formData.bookingAmount}</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="text-center flex justify-center items-center flex-col mb-4 sm:mb-6">
-                  <h3 className="font-semibold mt-6 sm:mt-8 mb-2 sm:mb-3">
-                    Refund Policy / वापसी नीति:
-                  </h3>
-
-                  <p
-                    className="text-xs text-center sm:text-sm"
-                    style={{ textAlign: "justify" }}
-                  >
-                    Refundable – ({Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee)}) The full amount will be returned to the
+              {/* Refund Policy Section */}
+              <div style={{ marginBottom: "2rem", backgroundColor: "#eff6ff", border: "2px solid #93c5fd", padding: "1.25rem", borderRadius: "0.5rem" }}>
+                <h3 style={{ fontWeight: "bold", fontSize: "0.875rem", color: "#1f2937", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Refund Policy / वापसी नीति
+                </h3>
+                <div style={{ display: "grid", gap: "0.75rem" }}>
+                  <p style={{ fontSize: "0.875rem", color: "#1f2937", textAlign: "justify", lineHeight: "1.5" }}>
+                    <strong>Refundable:</strong> ({Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee)}) The full amount will be returned to the
                     client upon successful completion of the service.
                   </p>
-
-                  <p
-                    className="text-xs text-center sm:text-sm"
-                    style={{ textAlign: "justify" }}
-                  >
-                    वापसी योग्य – सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक
+                  <p style={{ fontSize: "0.875rem", color: "#1f2937", textAlign: "justify", lineHeight: "1.5" }}>
+                    <strong>वापसी योग्य:</strong> सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक
                     को लौटा दी जाएगी।
                   </p>
                 </div>
+              </div>
+
+              {/* Footer Section */}
+              <div style={{ paddingTop: "1.5rem", borderTop: "2px solid #d1d5db", textAlign: "center", fontSize: "0.875rem" }}>
+                <p style={{ marginBottom: "0.5rem", color: "#374151" }}>
+                  <strong>Issued By:</strong> {formData.issuedBy}
+                </p>
+                <p style={{ marginBottom: "1rem", color: "#374151" }}>
+                  <strong>Date:</strong> {formData.issueDate}
+                </p>
+                <p style={{ fontSize: "0.75rem", color: "#4b5563", fontStyle: "italic" }}>
+                  This is an official document. Please retain for your records.
+                </p>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
-      <div className="flex justify-center mt-4 sm:mt-6">
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
         <Button
-          className="bg-yellow-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:scale-105"
+          style={{ 
+            backgroundColor: "#b45309",
+            color: "white",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "0.5rem",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "1rem",
+            fontWeight: "500"
+          }}
           onClick={handlePrint}
         >
           Download PDF

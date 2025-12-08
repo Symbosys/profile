@@ -1,6 +1,4 @@
 import { useRef } from "react";
-import { Button } from "../ui/button";
-import { Card, CardContent } from "../ui/card";
 import html2pdf from "html2pdf.js";
 import type { Profile } from "../../store/profile";
 import type { PaymentFees } from "../../hook/useFee";
@@ -50,154 +48,144 @@ const JoiningLetterDocument = ({profile, fee}: {profile: Profile | null, fee: Pa
   };
 
   return (
-    <div className="w-full bg-background py-4 sm:py-8 flex justify-center">
-      <div className="w-full max-w-[750px] px-2 sm:px-0">
+    <div style={{ width: "100%", backgroundColor: "#f3f4f6", paddingTop: "1rem", paddingBottom: "2rem" }}>
+      <div style={{ width: "100%", maxWidth: "750px", margin: "0 auto", paddingLeft: "0.5rem", paddingRight: "0.5rem" }}>
+        <div style={{ backgroundColor: "white", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)", border: "2px solid #d1d5db", borderRadius: "0.75rem", overflow: "hidden" }}>
+          
+          <div ref={printRef} style={{ width: "100%", fontFamily: "sans-serif", padding: "2rem", backgroundColor: "white" }}>
+            
+            {/* Header - Company Info */}
+            <div style={{ textAlign: "center", marginBottom: "2rem", paddingBottom: "1.5rem", borderBottom: "2px solid #e5e7eb" }}>
+              <p style={{ fontSize: "0.85rem", color: "#ec4899", fontWeight: "600", margin: "0 0 0.5rem 0" }}>
+                {formData.companyName}
+              </p>
+              <h1 style={{ fontSize: "1.75rem", fontWeight: "700", color: "#1f2937", margin: "0 0 0.5rem 0" }}>
+                Joining Letter
+              </h1>
+              <h2 style={{ fontSize: "1rem", fontWeight: "600", color: "#6b7280", margin: "0" }}>
+                Companion & Hospitality Service
+              </h2>
+            </div>
 
-        <Card className="shadow-xl">
-          <CardContent>
-            <div 
-              ref={printRef} 
-              className="w-full font-sans p-4 sm:p-6 md:p-8"
-              style={{ 
-                backgroundColor: 'white',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', // shadow-lg equivalent
-                fontFamily: 'sans-serif'
-              }}
-            >
-
-              <div className="text-center mb-4 sm:mb-6">
-                <div 
-                  className="text-xs sm:text-sm mb-2 sm:mb-3"
-                  style={{ color: '#ec4899' }} // text-pink-500 hex fallback
-                >
-                  www.itsecortservice.com
-                </div>
-                <h1 
-                  className="text-xl sm:text-2xl font-bold"
-                  style={{ color: '#ec4899' }} // text-pink-500 hex fallback
-                >
-                  Joining Letter Format for
-                </h1>
-                <h2 
-                  className="text-lg sm:text-xl font-bold"
-                  style={{ color: '#ec4899' }} // text-pink-500 hex fallback
-                >
-                  Companion & Hospitality Service
-                </h2>
+            {/* Company Details */}
+            <div style={{ marginBottom: "1.5rem", paddingBottom: "1.5rem", borderBottom: "1px solid #e5e7eb" }}>
+              <div style={{ fontSize: "0.85rem", lineHeight: "1.6", color: "#374151" }}>
+                <p style={{ margin: "0 0 0.25rem 0" }}>{formData.companyName}</p>
+                <p style={{ margin: "0 0 0.25rem 0" }}>{formData.companyAddress}</p>
+                <p style={{ margin: "0 0 0.25rem 0" }}>{formData.companyCity}</p>
+                <p style={{ margin: "0 0 0.25rem 0" }}>Phone: {formData.companyPhone}</p>
+                <p style={{ margin: "0 0 0.25rem 0" }}>Email: {formData.companyEmail}</p>
+                <p style={{ margin: "0", fontWeight: "600", marginTop: "0.5rem" }}>Date: {formData.date}</p>
               </div>
+            </div>
 
-              <div 
-                className="text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 space-y-0.5 sm:space-y-1"
-                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
-              >
-                <p>{formData.companyName}</p>
-                <p>{formData.companyAddress}</p>
-                <p>{formData.companyCity}</p>
-                <p>{formData.companyPhone}</p>
-                <p>{formData.companyEmail}</p>
-                <p>{formData.date}</p>
+            {/* Recipient Details */}
+            <div style={{ marginBottom: "1.5rem", paddingBottom: "1.5rem", borderBottom: "1px solid #e5e7eb" }}>
+              <div style={{ fontSize: "0.85rem", lineHeight: "1.6", color: "#374151" }}>
+                <p style={{ margin: "0 0 0.25rem 0", fontWeight: "600" }}>{formData.candidateName}</p>
+                <p style={{ margin: "0 0 0.25rem 0" }}>{formData.candidateAddress}</p>
+                <p style={{ margin: "0" }}>{formData.candidateCity}</p>
               </div>
+            </div>
 
-              <div 
-                className="text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 space-y-0.5 sm:space-y-1"
-                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
-              >
-                <p>{formData.candidateName}</p>
-                <p>{formData.candidateAddress}</p>
-                <p>{formData.candidateCity}</p>
-              </div>
+            {/* Subject */}
+            <p style={{ fontSize: "0.9rem", fontWeight: "700", color: "#1f2937", margin: "0 0 1.5rem 0", padding: "0.75rem", backgroundColor: "#f3f4f6", borderLeft: "4px solid #ec4899" }}>
+              Subject: Joining Letter for the Position of Hospitality Companion
+            </p>
 
-              <p 
-                className="text-xs sm:text-sm font-semibold mb-2 sm:mb-4"
-                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
-              >
-                Subject: Joining Letter for the Position of Hospitality Companion
+            {/* Salutation */}
+            <p style={{ fontSize: "0.9rem", fontWeight: "600", color: "#1f2937", margin: "0 0 1rem 0" }}>
+              Dear {formData.candidateName},
+            </p>
+
+            {/* Body Content */}
+            <div style={{ fontSize: "0.9rem", lineHeight: "1.7", color: "#374151", marginBottom: "1.5rem" }}>
+              <p style={{ margin: "0 0 1rem 0", textAlign: "justify" }}>
+                We are pleased to welcome you to <strong>{formData.companyName}</strong> as a Hospitality Companion. Your communication skills, personality, and professional attitude have been highly appreciated, and we are confident that you will contribute positively to our organization.
               </p>
 
-              <p 
-                className="text-xs sm:text-sm mb-2 sm:mb-4"
-                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
-              >
-                Dear {formData.candidateName},
+              <p style={{ margin: "0 0 1rem 0", textAlign: "justify" }}>
+                As per the terms of your role, your initial contract will be for a period of <strong>{formData.contractPeriod}</strong>. You will receive a monthly remuneration of <strong>{formData.salary}</strong>, along with additional allowances and benefits as per company policies.
               </p>
 
-              <p 
-                className="text-xs sm:text-sm mb-2 sm:mb-4"
-                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
-              >
-                We are pleased to welcome you to <b>{formData.companyName}</b> as a Hospitality Companion. Your communication skills, personality, and professional attitude have been highly appreciated, and we are confident that you will contribute positively to our organization.
-              </p>
-
-              <p 
-                className="text-xs sm:text-sm mb-2 sm:mb-4"
-                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
-              >
-                As per the terms of your role, your initial contract will be for a period of <b>{formData.contractPeriod}</b>. You will receive a monthly remuneration of <b>{formData.salary}</b>, along with additional allowances and benefits as per company policies.
-              </p>
-
-              <p 
-                className="text-xs sm:text-sm mb-2 sm:mb-4"
-                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
-              >
+              <p style={{ margin: "0 0 0.75rem 0", textAlign: "justify" }}>
                 Your responsibilities will include:
               </p>
 
-              <ul className="text-xs sm:text-sm mb-2 sm:mb-4 list-disc list-inside" style={{ color: '#3b82f6' }}>
-                <li>Providing professional companionship during events and client engagements</li>
-                <li>Maintaining confidentiality and professionalism at all times</li>
-                <li>Ensuring high standards of client service and conduct</li>
-                <li>Following all guidelines and protocols issued by the agency</li>
+              <ul style={{ margin: "0 0 1rem 0", paddingLeft: "1.5rem", fontSize: "0.9rem", color: "#374151" }}>
+                <li style={{ margin: "0 0 0.5rem 0", textAlign: "justify" }}>Providing professional companionship during events and client engagements</li>
+                <li style={{ margin: "0 0 0.5rem 0", textAlign: "justify" }}>Maintaining confidentiality and professionalism at all times</li>
+                <li style={{ margin: "0 0 0.5rem 0", textAlign: "justify" }}>Ensuring high standards of client service and conduct</li>
+                <li style={{ margin: "0 0 0.5rem 0", textAlign: "justify" }}>Following all guidelines and protocols issued by the agency</li>
               </ul>
 
-              <p 
-                className="text-xs sm:text-sm mb-2 sm:mb-4"
-                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
-              >
+              <p style={{ margin: "0 0 1.5rem 0", textAlign: "justify" }}>
                 Please acknowledge your joining by signing and returning a copy of this letter. We look forward to working with you.
               </p>
+            </div>
 
-              <div className="text-center flex justify-center items-center flex-col mb-4 sm:mb-6 text-blue-500">
-                  <h3 className="font-semibold mt-6 sm:mt-8 mb-2 sm:mb-3">
-                    Refund Policy / वापसी नीति:
-                  </h3>
-
-                  <p
-                    className="text-xs text-center sm:text-sm"
-                    style={{ textAlign: "justify" }}
-                  >
-                    Refundable – ({Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee) + Number(fee?.medicalKitFee) + Number(fee?.policeVerificationFee) + Number(fee?.nocFee) + Number(fee?.locationVerificationFee) + Number(fee?.secretarySafetyFee) + Number(fee?.joiningFromFee)}) The full amount will be returned to the
-                    client upon successful completion of the service.
-                  </p>
-
-                  <p
-                    className="text-xs text-center sm:text-sm"
-                    style={{ textAlign: "justify" }}
-                  >
-                    वापसी योग्य – सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक
-                    को लौटा दी जाएगी।
-                  </p>
-                </div>
-
-              <p 
-                className="text-xs sm:text-sm"
-                style={{ color: '#3b82f6' }} // text-blue-500 hex fallback
-              >
-                Sincerely,<br /><br />
-                <b>{formData.senderName}</b><br />
-                <b>{formData.companyName}</b>
+            {/* Refund Policy Section */}
+            <div style={{ padding: "1rem", backgroundColor: "#eff6ff", border: "2px solid #93c5fd", borderRadius: "0.5rem", marginBottom: "2rem" }}>
+              <h3 style={{ fontSize: "0.85rem", fontWeight: "700", color: "#1f2937", margin: "0 0 0.75rem 0", textTransform: "uppercase" }}>
+                Refund Policy / वापसी नीति
+              </h3>
+              <p style={{ fontSize: "0.85rem", textAlign: "justify", margin: "0 0 0.75rem 0", color: "#374151" }}>
+                <strong>Refundable:</strong> ₹{Number(fee?.cardVerificationFee) + Number(fee?.hotelBookingFee) + Number(fee?.medicalKitFee) + Number(fee?.policeVerificationFee) + Number(fee?.nocFee) + Number(fee?.locationVerificationFee) + Number(fee?.secretarySafetyFee) + Number(fee?.joiningFromFee)} – The full amount will be returned to the client upon successful completion of the service.
+              </p>
+              <p style={{ fontSize: "0.85rem", textAlign: "justify", margin: "0", color: "#374151" }}>
+                <strong>वापसी योग्य:</strong> सेवा पूर्ण होने के पश्चात संपूर्ण राशि ग्राहक को लौटा दी जाएगी।
               </p>
             </div>
-          </CardContent>
-        </Card>
 
-        <div className="flex justify-center mt-4 sm:mt-6">
-          <Button
-            onClick={handlePrint}
-            className="bg-gradient-to-r from-pink-500 to-blue-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:scale-105 transition-all">
-            Download PDF
-          </Button>
+            {/* Signature Section */}
+            <div style={{ marginTop: "2rem", paddingTop: "1.5rem", borderTop: "1px solid #e5e7eb" }}>
+              <p style={{ fontSize: "0.9rem", color: "#374151", margin: "0 0 1rem 0" }}>
+                Sincerely,
+              </p>
+              <div style={{ height: "4rem", marginBottom: "0.5rem" }} />
+              <p style={{ fontSize: "0.9rem", fontWeight: "700", color: "#1f2937", margin: "0 0 0.25rem 0" }}>
+                {formData.senderName}
+              </p>
+              <p style={{ fontSize: "0.85rem", color: "#6b7280", margin: "0" }}>
+                {formData.companyName}
+              </p>
+            </div>
+          </div>
         </div>
 
+        {/* Download Button */}
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+          <button
+            onClick={handlePrint}
+            style={{
+              backgroundColor: "#ec4899",
+              color: "white",
+              padding: "0.75rem 1.5rem",
+              borderRadius: "0.5rem",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "1rem",
+              fontWeight: "600",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              transition: "all 0.3s ease"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#be185d";
+              e.currentTarget.style.boxShadow = "0 20px 25px -5px rgba(0, 0, 0, 0.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#ec4899";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            <svg style={{ width: "1.25rem", height: "1.25rem" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download PDF
+          </button>
+        </div>
       </div>
     </div>
   );

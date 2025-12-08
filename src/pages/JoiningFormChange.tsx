@@ -111,29 +111,38 @@ export default function JoiningFormChange({
 
     if (status === 'PENDING') {
       return (
-        <div className="flex items-center p-2 sm:p-4 mb-4 sm:mb-6 bg-gradient-to-r from-yellow-50 to-yellow-100 text-yellow-800 rounded-lg border-l-4 border-yellow-400 shadow-md animate-fade-in">
-          <svg className="w-4 sm:w-6 h-4 sm:h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div style={{ padding: "1rem", backgroundColor: "#fef3c7", border: "1px solid #fcd34d", borderRadius: "0.5rem", display: "flex", gap: "0.75rem", marginBottom: "1.5rem" }}>
+          <svg style={{ width: "1.25rem", height: "1.25rem", color: "#d97706", flexShrink: 0, marginTop: "0.125rem" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span className="font-medium">Verification Pending</span>: Awaiting administrator approval for joining form verification.
+          <div>
+            <p style={{ fontSize: "0.9rem", fontWeight: "600", color: "#92400e", margin: "0 0 0.25rem 0" }}>Verification Pending</p>
+            <p style={{ fontSize: "0.85rem", color: "#b45309", margin: "0" }}>Awaiting administrator approval for joining form verification.</p>
+          </div>
         </div>
       );
     } else if (status === 'REJECTED') {
       return (
-        <div className="flex items-center p-2 sm:p-4 mb-4 sm:mb-6 bg-gradient-to-r from-red-50 to-red-100 text-red-800 rounded-lg border-l-4 border-red-400 shadow-md animate-fade-in">
-          <svg className="w-4 sm:w-6 h-4 sm:h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div style={{ padding: "1rem", backgroundColor: "#fee2e2", border: "1px solid #fecaca", borderRadius: "0.5rem", display: "flex", gap: "0.75rem", marginBottom: "1.5rem" }}>
+          <svg style={{ width: "1.25rem", height: "1.25rem", color: "#dc2626", flexShrink: 0, marginTop: "0.125rem" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span className="font-medium">Verification Rejected</span>: The submitted joining form verification was not approved.
+          <div>
+            <p style={{ fontSize: "0.9rem", fontWeight: "600", color: "#991b1b", margin: "0 0 0.25rem 0" }}>Verification Rejected</p>
+            <p style={{ fontSize: "0.85rem", color: "#7f1d1d", margin: "0" }}>The submitted joining form verification was not approved.</p>
+          </div>
         </div>
       );
     } else if (status === 'APPROVED') {
       return (
-        <div className="flex items-center p-2 sm:p-4 mb-4 sm:mb-6 bg-gradient-to-r from-green-50 to-green-100 text-green-800 rounded-lg border-l-4 border-green-400 shadow-md animate-fade-in">
-          <svg className="w-4 sm:w-6 h-4 sm:h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div style={{ padding: "1rem", backgroundColor: "#dcfce7", border: "1px solid #bbf7d0", borderRadius: "0.5rem", display: "flex", gap: "0.75rem", marginBottom: "1.5rem" }}>
+          <svg style={{ width: "1.25rem", height: "1.25rem", color: "#16a34a", flexShrink: 0, marginTop: "0.125rem" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-          <span className="font-medium">Verification Approved</span>: The joining form verification has been successfully approved.
+          <div>
+            <p style={{ fontSize: "0.9rem", fontWeight: "600", color: "#166534", margin: "0 0 0.25rem 0" }}>Verification Approved</p>
+            <p style={{ fontSize: "0.85rem", color: "#15803d", margin: "0" }}>The joining form verification has been successfully approved.</p>
+          </div>
         </div>
       );
     }
@@ -143,125 +152,259 @@ export default function JoiningFormChange({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-2 sm:p-4 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-800 rounded-lg shadow-md animate-fade-in">
-        <svg className="w-4 sm:w-6 h-4 sm:h-6 mr-3 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v4m0 4v4m-4-4H4m4 4h4m4-4h4m-4-4v4" />
-        </svg>
-        <span className="font-medium">Loading Profile...</span>
+      <div style={{ width: "100%", maxWidth: "56rem", margin: "2rem auto", padding: "0.5rem" }}>
+        <div style={{ padding: "1.5rem", backgroundColor: "#eff6ff", border: "2px solid #93c5fd", borderRadius: "0.5rem", display: "flex", alignItems: "center", gap: "1rem" }}>
+          <svg style={{ width: "1.5rem", height: "1.5rem", color: "#1e40af", animation: "spin 1s linear infinite", flexShrink: 0 }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v4m0 4v4m-4-4H4m4 4h4m4-4h4m-4-4v4" />
+          </svg>
+          <span style={{ fontSize: "0.95rem", fontWeight: "600", color: "#1e40af" }}>Loading Profile...</span>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center p-2 sm:p-4 bg-gradient-to-r from-red-50 to-red-100 text-red-800 rounded-lg border-l-4 border-red-400 shadow-md animate-fade-in">
-        <svg className="w-4 sm:w-6 h-4 sm:h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span className="font-medium">Error</span>: {error}
+      <div style={{ width: "100%", maxWidth: "56rem", margin: "2rem auto", padding: "0.5rem" }}>
+        <div style={{ padding: "1.5rem", backgroundColor: "#fee2e2", border: "2px solid #fecaca", borderRadius: "0.5rem", display: "flex", alignItems: "flex-start", gap: "1rem" }}>
+          <svg style={{ width: "1.5rem", height: "1.5rem", color: "#dc2626", flexShrink: 0, marginTop: "0.125rem" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <p style={{ fontSize: "0.95rem", fontWeight: "600", color: "#991b1b", margin: "0 0 0.25rem 0" }}>Error</p>
+            <p style={{ fontSize: "0.85rem", color: "#7f1d1d", margin: "0" }}>{error}</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto p-4 sm:p-8 bg-gradient-to-br from-white to-gray-50 shadow-xl rounded-xl transition-all duration-300">
-      <form onSubmit={handleSubmit}>
-        <div className="flex flex-col items-center">
-          {!hasUploaded ? (
-            <>
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Upload Joining Form Verification</label>
-              <input
-                type="file"
-                onChange={handleFileChange}
-                disabled={isDisabled}
-                className="mb-4 sm:mb-6 w-full border border-gray-300 rounded-lg p-3 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-teal-100 file:text-teal-700 file:font-medium file:hover:bg-teal-200 disabled:bg-gray-100 disabled:file:bg-gray-200 transition-all duration-300"
-                accept="image/*"
-              />
-              {joiningPreview && (
-                <img
-                  src={joiningPreview}
-                  alt="Preview"
-                  className="mb-4 sm:mb-6 w-full max-h-[300px] rounded-lg shadow-md object-contain"
-                />
-              )}
-              <button
-                type="submit"
-                disabled={isUploading || !joiningFile}
-                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${
-                  isUploading || !joiningFile
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
-                }`}
-              >
-                {isUploading ? (
-                  <span className="flex items-center justify-center">
-                    <svg className="w-4 sm:w-5 h-4 sm:h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v4m0 4v4m-4-4H4m4 4h4m4-4h4m-4-4v4" />
-                    </svg>
-                    Uploading...
-                  </span>
-                ) : (
-                  "Submit Verification"
-                )}
-              </button>
-              {uploadError && (
-                <div className="flex items-center mt-2 sm:mt-4 p-2 sm:p-4 bg-gradient-to-r from-red-50 to-red-100 text-red-800 rounded-lg border-l-4 border-red-400 shadow-md animate-fade-in">
-                  <svg className="w-4 sm:w-6 h-4 sm:h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="font-medium">Error</span>: {uploadError}
-                </div>
-              )}
-            </>
-          ) : (
-            <>
-              <img
-                src={profile?.joiningFromChange?.url || ''}
-                alt="Uploaded Joining Form Verification"
-                className="mb-4 sm:mb-6 w-full max-h-[300px] rounded-lg shadow-md object-contain"
-              />
-              {renderStatusMessage()}
-            </>
-          )}
-        </div>
-        {!isApproved && (
-          <div className="flex items-center justify-center p-4 mb-4 bg-gradient-to-r from-blue-50 to-indigo-100 text-blue-800 rounded-lg border border-blue-200 shadow-md">
-            <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08 .402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div className="text-center">
-              <p className="font-medium">Payment Required for Card Verification</p>
-              <p className="text-sm text-blue-700 mt-1">This is the amount you have to pay:</p>
-              <div className="text-xl font-bold text-blue-600 mt-2">{fees?.joiningFromFee} INR</div>
-            </div>
+    <div style={{ width: "100%", backgroundColor: "#f3f4f6", paddingTop: "1rem", paddingBottom: "2rem" }}>
+      <div style={{ width: "100%", maxWidth: "56rem", margin: "0 auto", padding: "0.5rem" }}>
+        <div style={{ backgroundColor: "white", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)", border: "2px solid #d1d5db", borderRadius: "0.75rem", overflow: "hidden" }}>
+          {/* Header Section */}
+          <div style={{ background: "linear-gradient(to right, #1e40af, #1e3a8a)", color: "white", padding: "2rem" }}>
+            <h1 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 0.5rem 0" }}>Joining Letter Verification</h1>
+            <p style={{ fontSize: "0.9rem", margin: "0", opacity: "0.9" }}>Upload and verify your joining letter document</p>
           </div>
-        )}
-        {
-          isApproved ? <JoiningLetterDocument profile={profile} fee={fees} /> : <QRPaymentDisplay />
-        }
 
-        <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">
-          <button
-            type="button"
-            className="w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-slate-200 rounded-lg text-slate-800 font-semibold text-base sm:text-lg shadow-md transition-all duration-300 hover:bg-slate-300 hover:shadow-lg active:scale-95"
-            onClick={prevStep}
-          >
-            Previous
-          </button>
-          <button
-            type="button"
-            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${
-              canProceed
-                ? "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg active:scale-95"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
-            onClick={nextStep}
-            disabled={!canProceed}
-          >
-            Next
-          </button>
+          <form onSubmit={handleSubmit} style={{ padding: "2rem" }}>
+            {/* Upload Section */}
+            {!hasUploaded ? (
+              <div style={{ marginBottom: "2rem" }}>
+                <label style={{ display: "block", fontSize: "1rem", fontWeight: "600", color: "#1f2937", marginBottom: "1rem" }}>
+                  📄 Upload Joining Letter
+                </label>
+                <div style={{
+                  position: "relative",
+                  border: "2px dashed #93c5fd",
+                  borderRadius: "0.5rem",
+                  padding: "2rem",
+                  textAlign: "center",
+                  backgroundColor: "#eff6ff",
+                  transition: "all 0.3s ease"
+                }}>
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    disabled={isDisabled}
+                    style={{
+                      position: "absolute",
+                      top: "0",
+                      left: "0",
+                      width: "100%",
+                      height: "100%",
+                      opacity: "0",
+                      cursor: isDisabled ? "not-allowed" : "pointer"
+                    }}
+                    accept="image/*"
+                  />
+                  <div style={{ pointerEvents: "none" }}>
+                    <svg style={{ width: "2.5rem", height: "2.5rem", margin: "0 auto 0.5rem", color: "#3b82f6" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+                    </svg>
+                    <p style={{ fontSize: "0.95rem", fontWeight: "600", color: "#1f2937", margin: "0.5rem 0 0.25rem 0" }}>
+                      {joiningFile ? joiningFile.name : "Click to upload or drag and drop"}
+                    </p>
+                    <p style={{ fontSize: "0.85rem", color: "#6b7280", margin: "0" }}>PNG, JPG or PDF (Max 10MB)</p>
+                  </div>
+                </div>
+
+                {joiningPreview && (
+                  <div style={{ marginTop: "1.5rem" }}>
+                    <p style={{ fontSize: "0.9rem", fontWeight: "600", color: "#1f2937", marginBottom: "0.75rem" }}>Preview:</p>
+                    <img
+                      src={joiningPreview}
+                      alt="Preview"
+                      style={{ width: "100%", maxHeight: "300px", borderRadius: "0.5rem", boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)", objectFit: "contain" }}
+                    />
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isUploading || !joiningFile}
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem 1.5rem",
+                    marginTop: "1.5rem",
+                    backgroundColor: isUploading || !joiningFile ? "#d1d5db" : "#1e40af",
+                    color: "white",
+                    fontSize: "1rem",
+                    fontWeight: "600",
+                    border: "none",
+                    borderRadius: "0.5rem",
+                    cursor: isUploading || !joiningFile ? "not-allowed" : "pointer",
+                    transition: "all 0.3s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.5rem"
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isUploading && joiningFile) {
+                      e.currentTarget.style.backgroundColor = "#1e3a8a";
+                      e.currentTarget.style.boxShadow = "0 20px 25px -5px rgba(0, 0, 0, 0.2)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isUploading && joiningFile) {
+                      e.currentTarget.style.backgroundColor = "#1e40af";
+                      e.currentTarget.style.boxShadow = "none";
+                    }
+                  }}
+                >
+                  {isUploading ? (
+                    <>
+                      <svg style={{ width: "1.25rem", height: "1.25rem", animation: "spin 1s linear infinite" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v4m0 4v4m-4-4H4m4 4h4m4-4h4m-4-4v4" />
+                      </svg>
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <svg style={{ width: "1.25rem", height: "1.25rem" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Submit Verification
+                    </>
+                  )}
+                </button>
+
+                {uploadError && (
+                  <div style={{ marginTop: "1rem", padding: "1rem", backgroundColor: "#fee2e2", border: "1px solid #fecaca", borderRadius: "0.5rem", display: "flex", gap: "0.75rem" }}>
+                    <svg style={{ width: "1.25rem", height: "1.25rem", color: "#dc2626", flexShrink: 0 }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p style={{ fontSize: "0.9rem", fontWeight: "600", color: "#991b1b", margin: "0 0 0.25rem 0" }}>Error</p>
+                      <p style={{ fontSize: "0.85rem", color: "#7f1d1d", margin: "0" }}>{uploadError}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div style={{ marginBottom: "2rem" }}>
+                <p style={{ fontSize: "0.9rem", fontWeight: "600", color: "#1f2937", marginBottom: "1rem" }}>Uploaded Document:</p>
+                <img
+                  src={profile?.joiningFromChange?.url || ''}
+                  alt="Uploaded Joining Letter"
+                  style={{ width: "100%", maxHeight: "400px", borderRadius: "0.5rem", boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)", objectFit: "contain", marginBottom: "1.5rem" }}
+                />
+                {renderStatusMessage()}
+              </div>
+            )}
+
+            {/* Payment Section */}
+            {!isApproved && (
+              <div style={{ padding: "1.5rem", backgroundColor: "#eff6ff", border: "2px solid #93c5fd", borderRadius: "0.5rem", marginBottom: "2rem" }}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}>
+                  <svg style={{ width: "1.5rem", height: "1.5rem", color: "#1e40af", flexShrink: 0, marginTop: "0.25rem" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <h3 style={{ fontSize: "0.95rem", fontWeight: "700", color: "#1f2937", margin: "0 0 0.5rem 0" }}>Payment Required</h3>
+                    <p style={{ fontSize: "0.85rem", color: "#374151", margin: "0 0 0.75rem 0" }}>Complete the payment to proceed with joining letter verification</p>
+                    <div style={{ padding: "1rem", backgroundColor: "white", borderRadius: "0.375rem", border: "1px solid #d1d5db", textAlign: "center" }}>
+                      <p style={{ fontSize: "0.8rem", color: "#6b7280", margin: "0 0 0.25rem 0" }}>Amount Due</p>
+                      <p style={{ fontSize: "1.75rem", fontWeight: "700", color: "#1e40af", margin: "0" }}>₹{fees?.joiningFromFee}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Document or QR Display */}
+            <div style={{ marginBottom: "2rem" }}>
+              {isApproved ? (
+                <JoiningLetterDocument profile={profile} fee={fees} />
+              ) : (
+                <QRPaymentDisplay />
+              )}
+            </div>
+
+            {/* Navigation Buttons */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <button
+                type="button"
+                style={{
+                  padding: "0.75rem 1.5rem",
+                  backgroundColor: "#f3f4f6",
+                  color: "#374151",
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "0.5rem",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease"
+                }}
+                onClick={prevStep}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#e5e7eb";
+                  e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f3f4f6";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              >
+                ← Previous
+              </button>
+              <button
+                type="button"
+                style={{
+                  padding: "0.75rem 1.5rem",
+                  backgroundColor: canProceed ? "#10b981" : "#d1d5db",
+                  color: "white",
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  border: "none",
+                  borderRadius: "0.5rem",
+                  cursor: canProceed ? "pointer" : "not-allowed",
+                  transition: "all 0.3s ease"
+                }}
+                onClick={nextStep}
+                disabled={!canProceed}
+                onMouseEnter={(e) => {
+                  if (canProceed) {
+                    e.currentTarget.style.backgroundColor = "#059669";
+                    e.currentTarget.style.boxShadow = "0 20px 25px -5px rgba(0, 0, 0, 0.2)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (canProceed) {
+                    e.currentTarget.style.backgroundColor = "#10b981";
+                    e.currentTarget.style.boxShadow = "none";
+                  }
+                }}
+              >
+                Next →
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
