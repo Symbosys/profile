@@ -1,3 +1,4 @@
+// src/store/profile.ts
 import { create } from 'zustand';
 import api from '../api/api';
 
@@ -7,7 +8,7 @@ interface ImageData {
   url: string;
 }
 
-interface Profile {
+export interface Profile {
   id: number;
   email: string;
   name?: string;
@@ -19,10 +20,17 @@ interface Profile {
   website?: string;
   upi?: string;
   url?: string;
+  bankAccountNumber?: string;
+  ifscCode?: string;
+  bankName?: string;
 
+  customerImage?: ImageData | null;
 
+  // ----------  IMAGE FIELDS ----------
   cardVerification?: ImageData | null;
-  carVefificationStatus: string;
+  carVefificationStatus: string;          // <-- exact DB column
+  hotelBooking?: ImageData | null;
+  hotelBookingStatus: string;
   medicalKit?: ImageData | null;
   medicalKitStatus: string;
   policeVerification?: ImageData | null;
