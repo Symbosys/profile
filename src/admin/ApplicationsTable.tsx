@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, Download, Trash2 } from "lucide-react";
-import apiClient from "../api/api";
 import type { Application } from "../types/types";
 import api from "../api/api";
 
@@ -10,11 +9,16 @@ const ApplicationsTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchApplications = async () => {
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const LIMIT = 10;
+
+  const fetchApplications = async (page: number = 1) => {
     try {
       setLoading(true);
-      const response = await api.get("/profile");
-      
+      const response = await api.get(`/profile?page=${page}&limit=${LIMIT}`);
+
       if (response.data?.data?.profiles) {
         const apps = response.data.data.profiles.map((profile: any) => ({
           id: profile.id,
@@ -30,8 +34,14 @@ const ApplicationsTable: React.FC = () => {
         }));
 
         setApplications(apps);
+        // Update pagination details from response
+        const { totalPages: total, currentPage: current } = response.data.data;
+        setTotalPages(total || 1);
+        setCurrentPage(current || 1);
       } else {
         setApplications([]);
+        setTotalPages(1);
+        setCurrentPage(1);
       }
       setError(null);
     } catch (err: any) {
@@ -43,8 +53,14 @@ const ApplicationsTable: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchApplications();
-  }, []);
+    fetchApplications(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   const navigate = useNavigate();
   const handleView = (app: Application) => {
@@ -53,7 +69,7 @@ const ApplicationsTable: React.FC = () => {
 
   const handleDownload = async (app: Application) => {
     try {
-      const response = await apiClient.get(`/profile/${app.id}`, {
+      const response = await api.get(`/profile/${app.id}`, {
         responseType: "blob",
       });
 
@@ -115,13 +131,12 @@ const ApplicationsTable: React.FC = () => {
                     <td className="p-4">{app.created}</td>
                     <td className="p-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          app.status === "Approved"
-                            ? "bg-green-100 text-green-700"
-                            : app.status === "Rejected"
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${app.status === "Approved"
+                          ? "bg-green-100 text-green-700"
+                          : app.status === "Rejected"
                             ? "bg-red-100 text-red-700"
                             : "bg-yellow-100 text-yellow-700"
-                        }`}
+                          }`}
                       >
                         {app.status}
                       </span>
@@ -160,6 +175,37 @@ const ApplicationsTable: React.FC = () => {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      {applications.length > 0 && !loading && !error && (
+        <div className="flex justify-between items-center mt-4 pt-4 border-t">
+          <span className="text-sm text-gray-600">
+            Page {currentPage} of {totalPages}
+          </span>
+          <div className="flex gap-3">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${currentPage === 1
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 shadow-sm"
+                }`}
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${currentPage === totalPages
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 shadow-sm"
+                }`}
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
     </div>

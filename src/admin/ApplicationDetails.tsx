@@ -548,7 +548,7 @@ const ApplicationDetails: React.FC = () => {
       <div className="p-8 text-center">
         <p className="text-gray-500">No application found</p>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/applications")}
           className="text-blue-600 hover:underline flex items-center gap-1 mt-2"
         >
           <ChevronLeft size={18} /> Go Back
@@ -565,7 +565,7 @@ const ApplicationDetails: React.FC = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div className="flex items-center gap-4 flex-wrap">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/applications")}
               className="flex items-center gap-2 text-gray-700 hover:text-gray-900 bg-gray-100 px-3 py-2 rounded-md"
             >
               <ChevronLeft size={18} /> Back
