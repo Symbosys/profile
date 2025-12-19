@@ -410,7 +410,7 @@
 //             </div>
 //           )}
 //         </div>
-        
+
 
 //         {/* Submit button centered */}
 //         <div className="flex justify-center mt-4 sm:mt-6">
@@ -464,17 +464,15 @@ import { useProfileStore } from "../store/profile";
 import api from "../api/api";
 
 export type RefundFormData = {
+  email?: string;
   name?: string;
   dob?: string;
   state?: string;
   phone?: string;
   address?: string;
-  upi?: string;
   gender?: string;
-  bankAccountNumber?: string;
-  ifscCode?: string;
-  bankName?: string;
   customerImage?: File | null;
+  // Kept generic for other fields if needed, but removed bank/upi specific types here if strict
 };
 
 interface Props {
@@ -495,16 +493,13 @@ export default function CreateRefundStep({
   disabledStep = false,
 }: Props) {
   const [local, setLocal] = useState<RefundFormData>({
+    email: formData.email || "",
     name: formData.name || "",
     dob: formData.dob || "",
     state: formData.state || "",
     phone: formData.phone || "",
     address: formData.address || "",
-    upi: formData.upi || "",
     gender: formData.gender || "",
-    bankAccountNumber: formData.bankAccountNumber || "",
-    ifscCode: formData.ifscCode || "",
-    bankName: formData.bankName || "",
     customerImage: formData.customerImage || null,
   });
   const [isSubmitted, setIsSubmitted] = useState(false); // Track submission status
@@ -514,20 +509,21 @@ export default function CreateRefundStep({
   const { profile, fetchProfile, loading, error } = useProfileStore();
   const profileId = localStorage.getItem("profileId");
 
-  // Check if profile has required fields filled
+  // Check if profile has required fields filled (Adjusted for new fields)
   const isPrefilled = Boolean(
     profile?.name &&
+    profile?.email &&
     profile?.phone &&
-    profile?.upi &&
     profile?.gender
   );
 
   // Check if all required fields are filled in local state
   const isAllFilled = Boolean(
     local.name?.trim() &&
+    local.email?.trim() &&
     local.phone?.trim() &&
-    local.upi?.trim() &&
-    local.gender?.trim()
+    local.gender?.trim() &&
+    local.customerImage
   );
 
   // Next button should be enabled only if prefilled OR successfully submitted
@@ -547,19 +543,16 @@ export default function CreateRefundStep({
   useEffect(() => {
     if (profile) {
       const updatedLocal = {
+        email: profile.email || "",
         name: profile.name || "",
         dob: profile.dateOfBirth || "",
         state: profile.state || "",
         phone: profile.phone || "",
         address: profile.address || "",
-        upi: profile.upi || "",
         gender: profile.gender || "",
-        bankAccountNumber: profile.bankAccountNumber || "",
-        ifscCode: profile.ifscCode || "",
-        bankName: profile.bankName || "",
-        customerImage: null,
+        customerImage: null, // Image usually not prefilled as File object from backend URL
       };
-      setLocal(updatedLocal);
+      setLocal((prev) => ({ ...prev, ...updatedLocal }));
       // Update parent formData
       Object.entries(updatedLocal).forEach(([k, v]) => updateData(k, v));
     }
@@ -580,49 +573,43 @@ export default function CreateRefundStep({
     const file = e.target.files?.[0] || null;
     setLocal((prev) => ({ ...prev, customerImage: file }));
     updateData('customerImage', file);
+    setServerError((prev) => ({ ...prev, customerImage: "" }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!isAllFilled) {
-      setFormError("Please fill required fields: Name, Phone, UPI, Gender");
-      return;
-    }
-
-    if (!profileId) {
-      setFormError("Profile ID is missing");
+      setFormError("Please fill required fields: Name, Email, Phone, Gender, Customer Image");
       return;
     }
 
     try {
-      // Prepare payload for backend, matching updateProfileSchema
-      const payload = {
-        name: local.name,
-        dateOfBirth: local.dob,
-        state: local.state,
-        phone: local.phone,
-        address: local.address,
-        upi: local.upi,
-        gender: local.gender,
-        bankAccountNumber: local.bankAccountNumber,
-        ifscCode: local.ifscCode,
-        bankName: local.bankName,
-      };
-
+      // Prepare payload for backend
       const formDataPayload = new FormData();
-      Object.entries(payload).forEach(([key, value]) => {
-        if (value) {
-          formDataPayload.append(key, value as string);
-        }
-      });
+      formDataPayload.append("email", local.email || "");
+      formDataPayload.append("name", local.name || "");
+      formDataPayload.append("phone", local.phone || "");
+      formDataPayload.append("state", local.state || "");
+      formDataPayload.append("gender", local.gender || "");
+      formDataPayload.append("address", local.address || "");
+      if (local.dob) formDataPayload.append("dateOfBirth", local.dob);
       if (local.customerImage) {
         formDataPayload.append('customerImage', local.customerImage);
       }
 
-      // Send update request to backend
-      await api.put(`/profile/update/${profileId}`, formDataPayload, {
+      // Always call create profile
+      // The backend handles logic: if exists -> returns existing; if new -> creates new.
+      const response = await api.post(`/profile/create`, formDataPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+
+      console.log(response.data);
+
+      // Save valid profileId
+      if (response.data.data?.data?.id) {
+        localStorage.setItem("profileId", response.data.data?.data?.id);
+        fetchProfile(response.data.data?.data?.id);
+      }
 
       // Clear any previous errors
       setServerError({});
@@ -634,22 +621,17 @@ export default function CreateRefundStep({
       // Update parent formData and trigger onSubmit
       Object.entries(local).forEach(([k, v]) => updateData(k, v));
       onSubmit(e);
+      nextStep();
+
     } catch (err: any) {
       if (err.response?.data?.errors) {
-        // Handle Zod validation errors
-        const zodErrors = err.response.data.errors.reduce(
-          (acc: Record<string, string>, error: any) => {
-            const field = error.path[0]; // e.g., "name", "phone"
-            acc[field] = error.message;
-            return acc;
-          },
-          {}
-        );
-        setServerError(zodErrors);
-        setFormError(null);
+        // Handle Zod validation errors (if any, though manual FormData construction usually leads to generic errors if schema mismatch)
+        // Or specific field errors if backend returns them mapped
+        // Assuming backend returns simple message or standard error format
+        setFormError(err.response?.data?.message || "Validation failed");
       } else {
         setServerError({});
-        setFormError(err.response?.data?.message || "Failed to update profile");
+        setFormError(err.response?.data?.message || "Failed to save profile");
       }
     }
   };
@@ -681,7 +663,23 @@ export default function CreateRefundStep({
         </div>
       )}
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
-        {/* Form Inputs */}
+
+        {/* Email Input */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-800">Email *</label>
+          <input
+            name="email"
+            type="email"
+            value={local.email}
+            onChange={handleChange}
+            disabled={isDisabled}
+            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
+            placeholder="Email Address"
+            required
+          />
+        </div>
+
+        {/* Name Input */}
         <div>
           <label className="block text-sm font-semibold text-gray-800">Name *</label>
           <input
@@ -695,16 +693,14 @@ export default function CreateRefundStep({
           />
           {serverError.name && (
             <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.name}
+              <span className="mr-2">⚠</span>{serverError.name}
             </div>
           )}
         </div>
 
+        {/* Customer Image */}
         <div>
-          <label className="block text-sm font-semibold text-gray-800">Customer Image</label>
+          <label className="block text-sm font-semibold text-gray-800">Customer Image *</label>
           <input
             type="file"
             name="customerImage"
@@ -712,13 +708,11 @@ export default function CreateRefundStep({
             disabled={isDisabled}
             accept="image/*"
             className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
+            required={!profileId} // Required only if creating new (or update logic if image mandatory)
           />
           {serverError.customerImage && (
             <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.customerImage}
+              <span className="mr-2">⚠</span>{serverError.customerImage}
             </div>
           )}
         </div>
@@ -733,14 +727,6 @@ export default function CreateRefundStep({
             disabled={isDisabled}
             className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
           />
-          {serverError.dateOfBirth && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.dateOfBirth}
-            </div>
-          )}
         </div>
 
         <div>
@@ -753,14 +739,6 @@ export default function CreateRefundStep({
             className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
             placeholder="State"
           />
-          {serverError.state && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.state}
-            </div>
-          )}
         </div>
 
         <div>
@@ -775,14 +753,6 @@ export default function CreateRefundStep({
             placeholder="10-digit number"
             required
           />
-          {serverError.phone && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.phone}
-            </div>
-          )}
         </div>
 
         <div>
@@ -800,14 +770,6 @@ export default function CreateRefundStep({
             <option value="FEMALE">Female</option>
             <option value="OTHER">Other</option>
           </select>
-          {serverError.gender && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.gender}
-            </div>
-          )}
         </div>
 
         <div>
@@ -821,138 +783,50 @@ export default function CreateRefundStep({
             rows={4}
             placeholder="Full address"
           />
-          {serverError.address && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.address}
-            </div>
-          )}
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold text-gray-800">UPI ID (Optional)</label>
-          <input
-            name="upi"
-            value={local.upi}
-            onChange={handleChange}
-            disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
-            placeholder="example@upi"
-          />
-          {serverError.upi && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.upi}
-            </div>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-gray-800">Bank Name *</label>
-          <input
-            name="bankName"
-            value={local.bankName}
-            onChange={handleChange}
-            disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
-            placeholder="Bank Name"
-          />
-          {serverError.bankName && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.bankName}
-            </div>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-gray-800">Bank Account Number *</label>
-          <input
-            name="bankAccountNumber"
-            value={local.bankAccountNumber}
-            onChange={handleChange}
-            disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
-            placeholder="Account Number"
-          />
-          {serverError.bankAccountNumber && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.bankAccountNumber}
-            </div>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-gray-800">IFSC Code *</label>
-          <input
-            name="ifscCode"
-            value={local.ifscCode}
-            onChange={handleChange}
-            disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
-            placeholder="IFSC Code"
-          />
-          {serverError.ifscCode && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {serverError.ifscCode}
-            </div>
-          )}
-        </div>
-        
-
-        {/* Submit button centered */}
-        <div className="flex justify-center mt-4 sm:mt-6">
+        {/* Buttons */}
+        <div className="flex flex-col gap-4 mt-6">
           <button
             type="submit"
             disabled={isDisabled}
-            className={`px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${
-              isDisabled
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
-            }`}
+            className={`w-full px-6 py-3 rounded-lg text-white font-semibold text-lg shadow-lg transition-all duration-300 ${isDisabled
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
+              }`}
           >
             Submit
           </button>
-        </div>
 
-        {/* Previous / Next buttons below Submit */}
-        <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-6 gap-2 sm:gap-4">
-          <button
-            type="button"
-            onClick={prevStep}
-            className="w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-slate-200 rounded-lg text-slate-800 font-semibold text-base sm:text-lg shadow-md hover:bg-slate-300 hover:shadow-lg transition-all duration-200 active:scale-95"
-          >
-            Previous
-          </button>
+          <div className="flex justify-between gap-4">
+            {/* Previous button hidden if this is Step 1 and there is no previous step in the new flow? 
+                 Actually Card.tsx passes prevStep/nextStep. Since it is now index 0, prevStep might not be useful or check if can go back.
+                 But keeping it structure wise is fine. */}
+            <button
+              type="button"
+              onClick={prevStep}
+              className="flex-1 px-4 py-3 bg-slate-200 rounded-lg text-slate-800 font-semibold text-lg shadow-md hover:bg-slate-300 hover:shadow-lg transition-all active:scale-95"
+            >
+              Previous
+            </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              Object.entries(local).forEach(([k, v]) => updateData(k, v));
-              nextStep();
-            }}
-            disabled={!canProceedToNext}
-            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${
-              !canProceedToNext
+            <button
+              type="button"
+              onClick={() => {
+                Object.entries(local).forEach(([k, v]) => updateData(k, v));
+                nextStep();
+              }}
+              disabled={!canProceedToNext}
+              className={`flex-1 px-4 py-3 rounded-lg text-white font-semibold text-lg shadow-md transition-all duration-300 ${!canProceedToNext
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl active:scale-95"
-            }`}
-          >
-            Next
-          </button>
+                }`}
+            >
+              Next
+            </button>
+          </div>
         </div>
+
       </div>
     </form>
   );

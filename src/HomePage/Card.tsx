@@ -1,6 +1,6 @@
 
 import { type FormEvent } from "react";
-import PhoneVerification from "../pages/PhoneVerification";
+
 import CardVerification from "../pages/CardVerification";
 import MedicalKitChange from "../pages/MedicalKitChange";
 import PoliceVerificationChange from "../pages/PoliceVerificationChange";
@@ -14,9 +14,10 @@ import ProfileVrification from "../pages/profileVrification";
 import { useFormStore } from "../store/formStore";
 import HotelBooking from "../pages/HotelBooking";
 
+
 // Step titles
 const steps: string[] = [
-  "Phone Number Verification",
+
   "Profile Verification",
   "Card Verification Charge",
   "HotelBooking",
@@ -32,7 +33,7 @@ const steps: string[] = [
 
 // Step components array
 const stepComponents = [
-  PhoneVerification,
+
   ProfileVrification,
   CardVerification,
   HotelBooking,
@@ -83,4 +84,3 @@ export default function Card() {
     </div>
   );
 }
- 

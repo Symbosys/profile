@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  // baseURL: "http://192.168.1.5:3000/api/v1",
+  // baseURL: "http://localhost:3000/api/v1",
   baseURL: "https://escort-kappa.vercel.app/api/v1",
   timeout: 10000, // optional (10s timeout)
   headers: {
