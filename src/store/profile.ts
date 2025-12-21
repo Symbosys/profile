@@ -1,6 +1,7 @@
 // src/store/profile.ts
 import { create } from 'zustand';
 import api from '../api/api';
+import { AxiosError } from 'axios';
 
 interface ImageData {
   uploaded: boolean;
@@ -68,6 +69,12 @@ export const useProfileStore = create<ProfileState>((set) => ({
       const response = await api.get(`/profile/${profileId}`);
       set({ profile: response.data.data, loading: false, error: null });
     } catch (err: any) {
+      if(err instanceof  AxiosError) {
+        if(err.response?.status === 404) {
+          localStorage.removeItem("profileId");
+          window.location.reload();
+        }
+      }
       set({
         error: err.response?.data?.message || 'Failed to fetch profile',
         loading: false,

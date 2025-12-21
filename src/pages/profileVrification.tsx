@@ -459,7 +459,8 @@
 // }
 
 
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useState } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { useProfileStore } from "../store/profile";
 import api from "../api/api";
 
@@ -471,8 +472,7 @@ export type RefundFormData = {
   phone?: string;
   address?: string;
   gender?: string;
-  customerImage?: File | null;
-  // Kept generic for other fields if needed, but removed bank/upi specific types here if strict
+  customerImage?: File | FileList | null; // Accepts File (from parent state) or FileList (from input)
 };
 
 interface Props {
@@ -480,7 +480,7 @@ interface Props {
   updateData: (key: string, value: unknown) => void;
   prevStep: () => void;
   nextStep: () => void;
-  onSubmit: (e?: FormEvent) => void;
+  onSubmit: (e?: any) => void;
   disabledStep?: boolean;
 }
 
@@ -489,48 +489,54 @@ export default function CreateRefundStep({
   updateData,
   prevStep,
   nextStep,
-  onSubmit,
+  onSubmit, // Note: This might be less used now if we handle submit internally
   disabledStep = false,
 }: Props) {
-  const [local, setLocal] = useState<RefundFormData>({
-    email: formData.email || "",
-    name: formData.name || "",
-    dob: formData.dob || "",
-    state: formData.state || "",
-    phone: formData.phone || "",
-    address: formData.address || "",
-    gender: formData.gender || "",
-    customerImage: formData.customerImage || null,
-  });
-  const [isSubmitted, setIsSubmitted] = useState(false); // Track submission status
-  const [serverError, setServerError] = useState<Record<string, string>>({});
-  const [formError, setFormError] = useState<string | null>(null); // Track form validation errors
 
-  const { profile, fetchProfile, loading, error } = useProfileStore();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors, isSubmitting, isSubmitSuccessful },
+  } = useForm<RefundFormData>({
+    mode: "onChange",
+    defaultValues: {
+      email: formData.email || "",
+      name: formData.name || "",
+      dob: formData.dob || "",
+      state: formData.state || "",
+      phone: formData.phone || "",
+      address: formData.address || "",
+      gender: formData.gender || "",
+    },
+  });
+
+  const [_, setServerError] = useState<Record<string, string>>({});
+  const [generalError, setGeneralError] = useState<string | null>(null);
+
+  const { profile, fetchProfile, loading: profileLoading, error: profileError } = useProfileStore();
   const profileId = localStorage.getItem("profileId");
 
-  // Check if profile has required fields filled (Adjusted for new fields)
-  const isPrefilled = Boolean(
-    profile?.name &&
-    profile?.email &&
-    profile?.phone &&
-    profile?.gender
-  );
-
-  // Check if all required fields are filled in local state
-  const isAllFilled = Boolean(
-    local.name?.trim() &&
-    local.email?.trim() &&
-    local.phone?.trim() &&
-    local.gender?.trim() &&
-    local.customerImage
-  );
-
-  // Next button should be enabled only if prefilled OR successfully submitted
-  const canProceedToNext = isPrefilled || isSubmitted;
-
-  // Inputs and submit button are disabled if prefilled or successfully submitted
-  const isDisabled = disabledStep || isPrefilled || isSubmitted;
+  // Sync RHF values to parent state (optional, but keeps formData up to date)
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name) {
+        // Handle file separately if needed or just pass value
+        if (name === 'customerImage') {
+          const img = value.customerImage;
+          if (img instanceof FileList && img.length > 0) {
+            updateData(name, img[0]);
+          } else if (img instanceof File) {
+            updateData(name, img);
+          }
+        } else {
+          updateData(name, value[name as keyof RefundFormData]);
+        }
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, updateData]);
 
   // Fetch profile on mount
   useEffect(() => {
@@ -542,7 +548,7 @@ export default function CreateRefundStep({
   // Prefill form with profile data
   useEffect(() => {
     if (profile) {
-      const updatedLocal = {
+      reset({
         email: profile.email || "",
         name: profile.name || "",
         dob: profile.dateOfBirth || "",
@@ -550,95 +556,81 @@ export default function CreateRefundStep({
         phone: profile.phone || "",
         address: profile.address || "",
         gender: profile.gender || "",
-        customerImage: null, // Image usually not prefilled as File object from backend URL
-      };
-      setLocal((prev) => ({ ...prev, ...updatedLocal }));
-      // Update parent formData
-      Object.entries(updatedLocal).forEach(([k, v]) => updateData(k, v));
+
+        // Image is usually not prefilled as a File object
+      });
+
+      // Also update parent
+      if (profile.email) updateData("email", profile.email);
+      if (profile.name) updateData("name", profile.name);
+      if (profile.dateOfBirth) updateData("dob", profile.dateOfBirth);
+      if (profile.state) updateData("state", profile.state);
+      if (profile.phone) updateData("phone", profile.phone);
+      if (profile.address) updateData("address", profile.address);
+      if (profile.gender) updateData("gender", profile.gender);
     }
-  }, [profile, updateData]);
+  }, [profile, reset, updateData]);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setLocal((prev) => ({ ...prev, [name]: value }));
-    updateData(name, value);
-    // Clear server error for this field when user starts typing
-    setServerError((prev) => ({ ...prev, [name]: "" }));
-    setFormError(null); // Clear form error on input change
-  };
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setLocal((prev) => ({ ...prev, customerImage: file }));
-    updateData('customerImage', file);
-    setServerError((prev) => ({ ...prev, customerImage: "" }));
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!isAllFilled) {
-      setFormError("Please fill required fields: Name, Email, Phone, Gender, Customer Image");
-      return;
-    }
+  const onFormSubmit: SubmitHandler<RefundFormData> = async (data) => {
+    setServerError({});
+    setGeneralError(null);
 
     try {
       // Prepare payload for backend
       const formDataPayload = new FormData();
-      formDataPayload.append("email", local.email || "");
-      formDataPayload.append("name", local.name || "");
-      formDataPayload.append("phone", local.phone || "");
-      formDataPayload.append("state", local.state || "");
-      formDataPayload.append("gender", local.gender || "");
-      formDataPayload.append("address", local.address || "");
-      if (local.dob) formDataPayload.append("dateOfBirth", local.dob);
-      if (local.customerImage) {
-        formDataPayload.append('customerImage', local.customerImage);
+      formDataPayload.append("email", data.email || "");
+      formDataPayload.append("name", data.name || "");
+      formDataPayload.append("phone", data.phone || "");
+      formDataPayload.append("state", data.state || "");
+      formDataPayload.append("gender", data.gender || "");
+      formDataPayload.append("address", data.address || "");
+      if (data.dob) formDataPayload.append("dateOfBirth", data.dob);
+
+      // Handle File
+      if (data.customerImage instanceof FileList && data.customerImage.length > 0) {
+        formDataPayload.append('customerImage', data.customerImage[0]);
+      } else if (data.customerImage instanceof File) {
+        formDataPayload.append('customerImage', data.customerImage);
       }
 
-      // Always call create profile
-      // The backend handles logic: if exists -> returns existing; if new -> creates new.
       const response = await api.post(`/profile/create`, formDataPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       console.log(response.data);
 
-      // Save valid profileId
       if (response.data.data?.data?.id) {
         localStorage.setItem("profileId", response.data.data?.data?.id);
         fetchProfile(response.data.data?.data?.id);
       }
 
-      // Clear any previous errors
-      setServerError({});
-      setFormError(null);
-
-      // Mark as submitted to disable inputs and submit button
-      setIsSubmitted(true);
-
-      // Update parent formData and trigger onSubmit
-      Object.entries(local).forEach(([k, v]) => updateData(k, v));
-      onSubmit(e);
+      // Logic to proceed
+      if (onSubmit) onSubmit(); // Trigger parent submit logic if valid
       nextStep();
 
     } catch (err: any) {
       if (err.response?.data?.errors) {
-        // Handle Zod validation errors (if any, though manual FormData construction usually leads to generic errors if schema mismatch)
-        // Or specific field errors if backend returns them mapped
-        // Assuming backend returns simple message or standard error format
-        setFormError(err.response?.data?.message || "Validation failed");
+        // Assuming backend returns array of validation errors
+        // We can try to map them to fields manually if needed
+        setGeneralError("Validation failed. Please check inputs.");
       } else {
-        setServerError({});
-        setFormError(err.response?.data?.message || "Failed to save profile");
+        setGeneralError(err.response?.data?.message || "Failed to save profile");
       }
     }
   };
 
+  // Determine if we can proceed (Prefilled or Submitted)
+  // With RHF, we usually check if submitted successfully, or if profile is loaded.
+  // The 'Next' button logic might rely on successful submission.
+  const isProfileLoaded = Boolean(profile?.id);
+  const canProceedToNext = isProfileLoaded || isSubmitSuccessful;
+
+  // Disable inputs if profile is loaded or already submitted successfully
+  const isDisabled = disabledStep || (isSubmitSuccessful && !!profileId) || isProfileLoaded;
+
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md sm:max-w-lg mx-auto p-4 sm:p-8 bg-gradient-to-br from-white to-gray-50 shadow-xl rounded-xl transition-all duration-300">
-      {loading && (
+    <form onSubmit={handleSubmit(onFormSubmit)} className="w-full max-w-md sm:max-w-lg mx-auto p-4 sm:p-8 bg-gradient-to-br from-white to-gray-50 shadow-xl rounded-xl transition-all duration-300">
+      {profileLoading && (
         <div className="flex items-center justify-center p-2 sm:p-4 mb-4 sm:mb-6 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-800 rounded-lg shadow-md">
           <svg className="w-4 sm:w-6 h-4 sm:h-6 mr-3 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v4m0 4v4m-4-4H4m4 4h4m4-4h4m-4-4v4" />
@@ -646,56 +638,53 @@ export default function CreateRefundStep({
           <span className="font-medium">Loading Profile...</span>
         </div>
       )}
-      {error && (
+      {profileError && (
         <div className="flex items-center p-2 sm:p-4 mb-4 sm:mb-6 bg-gradient-to-r from-red-50 to-red-100 text-red-800 rounded-lg border-l-4 border-red-400 shadow-md animate-fade-in">
           <svg className="w-4 sm:w-6 h-4 sm:h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span className="font-medium">Error</span>: {error}
+          <span className="font-medium">Error</span>: {profileError}
         </div>
       )}
-      {formError && (
+      {generalError && (
         <div className="flex items-center p-2 sm:p-4 mb-4 sm:mb-6 bg-gradient-to-r from-red-50 to-red-100 text-red-800 rounded-lg border-l-4 border-red-400 shadow-md animate-fade-in">
           <svg className="w-4 sm:w-6 h-4 sm:h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span className="font-medium">Error</span>: {formError}
+          <span className="font-medium">Error</span>: {generalError}
         </div>
       )}
+
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
 
         {/* Email Input */}
         <div>
           <label className="block text-sm font-semibold text-gray-800">Email *</label>
           <input
-            name="email"
-            type="email"
-            value={local.email}
-            onChange={handleChange}
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address"
+              }
+            })}
             disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
+            className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-teal-500 disabled:bg-gray-100 transition-all duration-200 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
             placeholder="Email Address"
-            required
           />
+          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
 
         {/* Name Input */}
         <div>
           <label className="block text-sm font-semibold text-gray-800">Name *</label>
           <input
-            name="name"
-            value={local.name}
-            onChange={handleChange}
+            {...register("name", { required: "Name is required" })}
             disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
+            className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-teal-500 disabled:bg-gray-100 transition-all duration-200 ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
             placeholder="Full name"
-            required
           />
-          {serverError.name && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <span className="mr-2">⚠</span>{serverError.name}
-            </div>
-          )}
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
         </div>
 
         {/* Customer Image */}
@@ -703,105 +692,109 @@ export default function CreateRefundStep({
           <label className="block text-sm font-semibold text-gray-800">Customer Image *</label>
           <input
             type="file"
-            name="customerImage"
-            onChange={handleFileChange}
-            disabled={isDisabled}
             accept="image/*"
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
-            required={!profileId} // Required only if creating new (or update logic if image mandatory)
+            {...register("customerImage", {
+              required: !profileId ? "Customer image is required" : false
+            })}
+            disabled={isDisabled}
+            className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-teal-500 disabled:bg-gray-100 transition-all duration-200 ${errors.customerImage ? 'border-red-500' : 'border-gray-300'}`}
           />
-          {serverError.customerImage && (
-            <div className="flex items-center mt-1 text-red-600 text-sm animate-fade-in">
-              <span className="mr-2">⚠</span>{serverError.customerImage}
-            </div>
-          )}
+          {errors.customerImage && <p className="text-red-500 text-sm mt-1">{errors.customerImage.message}</p>}
         </div>
 
+        {/* Date of Birth */}
         <div>
-          <label className="block text-sm font-semibold text-gray-800">Date of Birth</label>
+          <label className="block text-sm font-semibold text-gray-800">Date of Birth *</label>
           <input
             type="date"
-            name="dob"
-            value={String(local.dob || "")}
-            onChange={handleChange}
+            {...register("dob", { required: "Date of Birth is required" })}
             disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
+            className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-teal-500 disabled:bg-gray-100 transition-all duration-200 ${errors.dob ? 'border-red-500' : 'border-gray-300'}`}
           />
+          {errors.dob && <p className="text-red-500 text-sm mt-1">{errors.dob.message}</p>}
         </div>
 
+        {/* State */}
         <div>
-          <label className="block text-sm font-semibold text-gray-800">State</label>
+          <label className="block text-sm font-semibold text-gray-800">State *</label>
           <input
-            name="state"
-            value={local.state}
-            onChange={handleChange}
+            {...register("state", { required: "State is required" })}
             disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
+            className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-teal-500 disabled:bg-gray-100 transition-all duration-200 ${errors.state ? 'border-red-500' : 'border-gray-300'}`}
             placeholder="State"
           />
+          {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state.message}</p>}
         </div>
 
+        {/* Phone Number */}
         <div>
           <label className="block text-sm font-semibold text-gray-800">Phone Number *</label>
           <input
-            name="phone"
-            value={local.phone}
-            onChange={handleChange}
-            pattern="\d{10}"
+            {...register("phone", {
+              required: "Phone Number is required",
+              pattern: {
+                value: /^\d{10}$/,
+                message: "Phone number must be 10 digits"
+              }
+            })}
             disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
+            className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-teal-500 disabled:bg-gray-100 transition-all duration-200 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
             placeholder="10-digit number"
-            required
           />
+          {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
         </div>
 
+        {/* Gender */}
         <div>
           <label className="block text-sm font-semibold text-gray-800">Gender *</label>
           <select
-            name="gender"
-            value={local.gender}
-            onChange={handleChange}
+            {...register("gender", { required: "Gender is required" })}
             disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200"
-            required
+            className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-teal-500 disabled:bg-gray-100 transition-all duration-200 ${errors.gender ? 'border-red-500' : 'border-gray-300'}`}
           >
             <option value="">Select Gender</option>
             <option value="MALE">Male</option>
             <option value="FEMALE">Female</option>
             <option value="OTHER">Other</option>
           </select>
+          {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender.message}</p>}
         </div>
 
+        {/* Address */}
         <div>
-          <label className="block text-sm font-semibold text-gray-800">Address</label>
+          <label className="block text-sm font-semibold text-gray-800">Address *</label>
           <textarea
-            name="address"
-            value={local.address}
-            onChange={handleChange}
+            {...register("address", { required: "Address is required" })}
             disabled={isDisabled}
-            className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 transition-all duration-200 resize-y"
+            className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-teal-500 disabled:bg-gray-100 transition-all duration-200 resize-y ${errors.address ? 'border-red-500' : 'border-gray-300'}`}
             rows={4}
             placeholder="Full address"
           />
+          {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
         </div>
 
         {/* Buttons */}
         <div className="flex flex-col gap-4 mt-6">
           <button
             type="submit"
-            disabled={isDisabled}
-            className={`w-full px-6 py-3 rounded-lg text-white font-semibold text-lg shadow-lg transition-all duration-300 ${isDisabled
+            disabled={isDisabled || isSubmitting}
+            className={`w-full px-6 py-3 rounded-lg text-white font-semibold text-lg shadow-lg transition-all duration-300 flex items-center justify-center ${isDisabled || isSubmitting
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
               }`}
           >
-            Submit
+            {isSubmitting ? (
+              <>
+                <svg className="w-5 h-5 mr-3 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Processing...
+              </>
+            ) : "Submit"}
           </button>
 
           <div className="flex justify-between gap-4">
-            {/* Previous button hidden if this is Step 1 and there is no previous step in the new flow? 
-                 Actually Card.tsx passes prevStep/nextStep. Since it is now index 0, prevStep might not be useful or check if can go back.
-                 But keeping it structure wise is fine. */}
             <button
               type="button"
               onClick={prevStep}
@@ -812,8 +805,9 @@ export default function CreateRefundStep({
 
             <button
               type="button"
+              // When clicking next here, we assume form is already submitted or prefilled. 
+              // If not, we could trigger handleSubmit, but usually this is just navigation.
               onClick={() => {
-                Object.entries(local).forEach(([k, v]) => updateData(k, v));
                 nextStep();
               }}
               disabled={!canProceedToNext}
@@ -825,6 +819,16 @@ export default function CreateRefundStep({
               Next
             </button>
           </div>
+          <button
+            type="button"
+            onClick={() => {
+              localStorage.removeItem("profileId");
+              window.location.reload();
+            }}
+            className="mt-4 text-gray-500 hover:text-teal-600 font-medium text-sm sm:text-base transition-colors duration-200 underline block mx-auto cursor-pointer"
+          >
+            Check another profile with different email?
+          </button>
         </div>
 
       </div>
