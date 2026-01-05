@@ -17,6 +17,7 @@ interface LocationVerificationChangeProps {
     locationPreview?: string | null;
     [key: string]: unknown;
   };
+  isAdminApproved?: boolean;
 }
 
 export default function LocationVerificationChange({
@@ -24,6 +25,7 @@ export default function LocationVerificationChange({
   prevStep,
   updateData,
   formData,
+  isAdminApproved = false,
 }: LocationVerificationChangeProps) {
   const [locationPreview, setLocationPreview] = useState<string | null>(formData.locationPreview || null);
   const [locationFile, setLocationFile] = useState<File | null>(formData.locationFile || null);
@@ -39,8 +41,8 @@ export default function LocationVerificationChange({
   const canProceed = isApproved;
   const isDisabled = hasUploaded;
 
-  const {fees, fetchFees} = usePaymentStore()
-  
+  const { fees, fetchFees } = usePaymentStore()
+
 
   useEffect(() => {
     if (profileId) {
@@ -188,11 +190,10 @@ export default function LocationVerificationChange({
               <button
                 type="submit"
                 disabled={isUploading || !locationFile}
-                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${
-                  isUploading || !locationFile
+                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${isUploading || !locationFile
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
-                }`}
+                  }`}
               >
                 {isUploading ? (
                   <span className="flex items-center justify-center">
@@ -252,13 +253,12 @@ export default function LocationVerificationChange({
           </button>
           <button
             type="button"
-            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${
-              canProceed
+            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${canProceed && isAdminApproved
                 ? "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg active:scale-95"
                 : "bg-gray-400 cursor-not-allowed"
-            }`}
+              }`}
             onClick={nextStep}
-            disabled={!canProceed}
+            disabled={!canProceed || !isAdminApproved}
           >
             Next
           </button>

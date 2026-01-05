@@ -4,6 +4,20 @@ import { Eye, Download, Trash2 } from "lucide-react";
 import type { Application } from "../types/types";
 import api from "../api/api";
 
+const stepsList = [
+  "Profile Verification",
+  "Card Verification Charge",
+  "HotelBooking",
+  "Medical Kit Charge",
+  "Police Verification Change",
+  "NOC Charge",
+  "Location Verification Charge (Area)",
+  "Secretary Safety Charge",
+  "Joining Form Charge",
+  "Enquiry Verification Charge",
+  "Income GST Charge",
+];
+
 const ApplicationsTable: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,6 +45,8 @@ const ApplicationsTable: React.FC = () => {
             profile.medicalKitStatus ||
             profile.policeVerificationStatus ||
             "Pending",
+          currentStep: profile.currentStep,
+          currentStepName: stepsList[profile.currentStep] || `Step ${profile.currentStep}`,
         }));
 
         setApplications(apps);
@@ -114,6 +130,7 @@ const ApplicationsTable: React.FC = () => {
                 <th className="p-4 font-medium text-gray-600">Email</th>
                 <th className="p-4 font-medium text-gray-600">Created</th>
                 <th className="p-4 font-medium text-gray-600">Status</th>
+                <th className="p-4 font-bold text-blue-600">Current Step</th>
                 <th className="p-4 font-medium text-gray-600 text-center">
                   Actions
                 </th>
@@ -140,6 +157,14 @@ const ApplicationsTable: React.FC = () => {
                       >
                         {app.status}
                       </span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold text-blue-700">{app.currentStep + 1}. {app.currentStepName}</span>
+                        <div className="w-24 bg-gray-200 rounded-full h-1.5 mt-1">
+                          <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: `${((app.currentStep + 1) / 11) * 100}%` }}></div>
+                        </div>
+                      </div>
                     </td>
                     <td className="p-4 flex justify-center gap-3">
                       <button

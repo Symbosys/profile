@@ -482,6 +482,7 @@ interface Props {
   nextStep: () => void;
   onSubmit: (e?: any) => void;
   disabledStep?: boolean;
+  isAdminApproved?: boolean;
 }
 
 export default function CreateRefundStep({

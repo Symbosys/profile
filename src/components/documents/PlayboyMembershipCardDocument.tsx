@@ -33,7 +33,7 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
   const email = profile?.email || DEFAULT_DATA.email;
   const website = profile?.website || DEFAULT_DATA.website;
   const phone = profile?.phone || "";
-  const imageUrl = profile?.customerImage?.url || DEFAULT_DATA.image;
+  const imageUrl = profile?.customerImage?.secure_url || profile?.customerImage?.url || DEFAULT_DATA.image;
 
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -86,7 +86,7 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-2 sm:p-4 md:p-6 overflow-x-auto">
-      
+
       {/* Card */}
       <div
         ref={printRef}
@@ -116,7 +116,7 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
 
         {/* Body */}
         <div className="flex flex-col gap-3">
-          
+
           {/* Image + Name */}
           <div className="flex gap-4">
             <div
@@ -167,10 +167,10 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
                 </div>
               </div>
               <div className="w-1/3 flex justify-end mt-1">
-                <img 
-                  src={PlayboyLogo} 
-                  alt="Mohor" 
-                  className="w-20 h-20 object-contain" 
+                <img
+                  src={PlayboyLogo}
+                  alt="Mohor"
+                  className="w-20 h-20 object-contain"
                 />
               </div>
             </div>
@@ -189,7 +189,7 @@ const PlayboyMembershipCardDocument: React.FC<PlayboyMembershipCardDocumentProps
         </div>
       </div>
 
-      {/* Download Button */} 
+      {/* Download Button */}
       <div className="flex justify-center mt-4 sm:mt-6 w-full max-w-[350px]">
         <Button
           onClick={handleDownloadPDF}

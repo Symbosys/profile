@@ -15,6 +15,7 @@ interface MedicalKitChangeProps {
     medicalKitPreview?: string | null;
     [key: string]: unknown;
   };
+  isAdminApproved?: boolean;
 }
 
 export default function MedicalKitChange({
@@ -22,6 +23,7 @@ export default function MedicalKitChange({
   prevStep,
   updateData,
   formData,
+  isAdminApproved = false,
 }: MedicalKitChangeProps) {
   const [medicalKitPreview, setMedicalKitPreview] = useState<string | null>(formData.medicalKitPreview || null);
   const [medicalKitFile, setMedicalKitFile] = useState<File | null>(formData.medicalKitFile || null);
@@ -39,8 +41,8 @@ export default function MedicalKitChange({
   const isDisabled = hasUploaded && status !== 'REJECTED';
   const currentPreview = medicalKitPreview || (hasUploaded ? profile?.medicalKit?.url || null : null);
 
-  const {fees, fetchFees} = usePaymentStore()
-  
+  const { fees, fetchFees } = usePaymentStore()
+
 
   useEffect(() => {
     if (profileId) {
@@ -189,11 +191,10 @@ export default function MedicalKitChange({
               <button
                 type="submit"
                 disabled={isUploading || !medicalKitFile}
-                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${
-                  isUploading || !medicalKitFile
+                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${isUploading || !medicalKitFile
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
-                }`}
+                  }`}
               >
                 {isUploading ? (
                   <span className="flex items-center justify-center">
@@ -253,13 +254,12 @@ export default function MedicalKitChange({
             Previous
           </button>
           <button
-            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${
-              canProceed
+            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${canProceed && isAdminApproved
                 ? "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg active:scale-95"
                 : "bg-gray-400 cursor-not-allowed"
-            }`}
+              }`}
             onClick={nextStep}
-            disabled={!canProceed}
+            disabled={!canProceed || !isAdminApproved}
             type="button"
           >
             Next

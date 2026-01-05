@@ -258,7 +258,7 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
     const state = profile?.state || "MAHARASHTRA";
     const pincode = "";
     const photoUrl =
-      profile?.customerImage?.url || profile?.cardVerification?.url || "";
+      profile?.customerImage?.secure_url || profile?.customerImage?.url || profile?.cardVerification?.url || "";
 
     return {
       applicationNumber: `PCC/R/${new Date().getFullYear()}/${String(
@@ -407,11 +407,11 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
           {/* Main Content Section */}
           <div style={{ marginBottom: "1.5rem" }}>
             <p style={{ fontSize: "0.85rem", marginBottom: "0.75rem", color: "#1f2937" }}>
-              <strong>To,</strong><br/>The Authorized Person<br/>Speedo business solutions pvt ltd
+              <strong>To,</strong><br />The Authorized Person<br />Speedo business solutions pvt ltd
             </p>
 
             <p style={{ fontSize: "0.85rem", marginBottom: "0.75rem", textAlign: "justify", color: "#1f2937" }}>
-              <strong>Subject: {formData.subject}</strong><br/>
+              <strong>Subject: {formData.subject}</strong><br />
               Residing at {formData.address}, Thane- {formData.pincode}, {formData.state}
             </p>
 

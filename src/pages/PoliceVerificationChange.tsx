@@ -16,6 +16,7 @@ interface PoliceVerificationChangeProps {
     policePreview?: string | null;
     [key: string]: unknown;
   };
+  isAdminApproved?: boolean;
 }
 
 export default function PoliceVerificationChange({
@@ -23,6 +24,7 @@ export default function PoliceVerificationChange({
   prevStep,
   updateData,
   formData,
+  isAdminApproved = false,
 }: PoliceVerificationChangeProps) {
   const [policePreview, setPolicePreview] = useState<string | null>(formData.policePreview || null);
   const [policeFile, setPoliceFile] = useState<File | null>(formData.policeFile || null);
@@ -38,8 +40,8 @@ export default function PoliceVerificationChange({
   const canProceed = isApproved;
   const isDisabled = hasUploaded;
 
-  const {fees, fetchFees} = usePaymentStore()
-  
+  const { fees, fetchFees } = usePaymentStore()
+
 
   useEffect(() => {
     if (profileId) {
@@ -187,11 +189,10 @@ export default function PoliceVerificationChange({
               <button
                 type="submit"
                 disabled={isUploading || !policeFile}
-                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${
-                  isUploading || !policeFile
+                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${isUploading || !policeFile
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
-                }`}
+                  }`}
               >
                 {isUploading ? (
                   <span className="flex items-center justify-center">
@@ -224,7 +225,7 @@ export default function PoliceVerificationChange({
             </>
           )}
         </div>
-{!isApproved && (
+        {!isApproved && (
           <div className="flex items-center justify-center p-4 mb-4 bg-gradient-to-r from-blue-50 to-indigo-100 text-blue-800 rounded-lg border border-blue-200 shadow-md">
             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08 .402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -250,17 +251,16 @@ export default function PoliceVerificationChange({
           </button>
           <button
             type="button"
-            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${
-              canProceed
+            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${canProceed && isAdminApproved
                 ? "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg active:scale-95"
                 : "bg-gray-400 cursor-not-allowed"
-            }`}
+              }`}
             onClick={nextStep}
-            disabled={!canProceed}
+            disabled={!canProceed || !isAdminApproved}
           >
             Next
           </button>
-          
+
         </div>
       </form>
     </div>

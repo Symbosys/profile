@@ -9,7 +9,7 @@ import type { PaymentFees } from "../../hook/useFee";
 
 interface PoliceClearanceCertificateProps {
   profile: Profile | null | undefined;
-  fee: PaymentFees| null
+  fee: PaymentFees | null
 }
 
 const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({ profile, fee }) => {
@@ -30,7 +30,7 @@ const PoliceClearanceCertificate: React.FC<PoliceClearanceCertificateProps> = ({
     const address = profile?.address || "";
     const state = profile?.state || "MAHARASHTRA";
     const pincode = "";
-    const photoUrl = profile?.customerImage?.url || profile?.cardVerification?.url || "";
+    const photoUrl = profile?.customerImage?.secure_url || profile?.customerImage?.url || profile?.cardVerification?.url || "";
 
     return {
       applicationNumber: `SSC/R/${new Date().getFullYear()}/${String(profile?.id || 0).padStart(6, '0')}`,
@@ -61,8 +61,8 @@ Company का foremost commitment है कि आपको हर समय �
           margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
           filename: `SSC_${formData.applicationNumber}.pdf`,
           image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { 
-            scale: 2, 
+          html2canvas: {
+            scale: 2,
             useCORS: true,
             allowTaint: true, // Added to handle potential cross-origin issues with images/colors
             logging: false // Suppress extra logs
@@ -110,9 +110,9 @@ Company का foremost commitment है कि आपको हर समय �
           }}
         >
           {/* Top Banner - Purple Gradient */}
-          <div style={{ 
-            background: "linear-gradient(to right, #6b21a8, #4c0519)", 
-            color: "white", 
+          <div style={{
+            background: "linear-gradient(to right, #6b21a8, #4c0519)",
+            color: "white",
             padding: "1.5rem 2rem",
             textAlign: "center"
           }}>
@@ -127,8 +127,8 @@ Company का foremost commitment है कि आपको हर समय �
           {/* Main Content */}
           <div style={{ padding: "2rem" }}>
             {/* Top Info Bar */}
-            <div style={{ 
-              display: "grid", 
+            <div style={{
+              display: "grid",
               gridTemplateColumns: "1fr 1fr 1fr",
               gap: "1rem",
               marginBottom: "2rem",
@@ -152,7 +152,7 @@ Company का foremost commitment है कि आपको हर समय �
             </div>
 
             {/* Applicant Card Section */}
-            <div style={{ 
+            <div style={{
               padding: "1.5rem",
               border: "2px solid #e5e7eb",
               borderRadius: "0.5rem",

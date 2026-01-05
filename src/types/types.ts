@@ -18,4 +18,6 @@ export interface Application {
   created: string;
   details: string;
   status: Status;
+  currentStep: number;
+  currentStepName: string;
 }

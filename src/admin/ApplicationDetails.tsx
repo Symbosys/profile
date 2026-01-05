@@ -375,6 +375,20 @@ interface Application {
   [key: string]: any;
 }
 
+const stepsList: string[] = [
+  "Profile Verification",
+  "Card Verification Charge",
+  "HotelBooking",
+  "Medical Kit Charge",
+  "Police Verification Change",
+  "NOC Charge",
+  "Location Verification Charge (Area)",
+  "Secretary Safety Charge",
+  "Joining Form Charge",
+  "Enquiry Verification Charge",
+  "Income GST Charge",
+];
+
 /* --------------------------------------------------------------- */
 /*  Helpers                                                        */
 /* --------------------------------------------------------------- */
@@ -393,18 +407,23 @@ const extractAllImages = (
   const walk = (value: any, currentPath: string) => {
     if (!value || typeof value !== "object") return;
 
-    if (value.url && typeof value.url === "string") {
+    const imageUrl = value.secure_url || value.url;
+    if (imageUrl && typeof imageUrl === "string") {
       const key = currentPath.split(".").pop()!;
 
       // ----  FORCE THE EXACT DB FIELD ----
-      const statusField =
-        key.toLowerCase().includes("car") || key.toLowerCase().includes("card")
-          ? "carVefificationStatus"          // <-- DB column
-          : key + "Status";
+      let statusField = key + "Status";
+      if (key.toLowerCase().includes("car") || key.toLowerCase().includes("card")) {
+        statusField = "carVefificationStatus";
+      } else if (key === "phoneVerification") {
+        statusField = "phoneVerificationVerifiedStatus";
+      } else if (key === "customerImage") {
+        statusField = ""; // Customer Image has no status in DB
+      }
 
       result.push({
         title: toTitle(key),
-        url: value.url,
+        url: imageUrl,
         statusField,
       });
       return;
@@ -540,6 +559,22 @@ const ApplicationDetails: React.FC = () => {
     }
   };
 
+  const updateStep = async (newStep: number) => {
+    if (!application) return;
+    setSavingField("currentStep");
+    try {
+      await api.put(`/profile/update/${id}`, { currentStep: newStep });
+      setApplication((prev) => ({
+        ...prev!,
+        currentStep: newStep,
+      }));
+    } catch (e: any) {
+      setError(e.message || "Failed to update step");
+    } finally {
+      setSavingField("");
+    }
+  };
+
   /* ----------------------- RENDER ----------------------- */
   if (loading) return <div className="p-8 text-center">Loading...</div>;
 
@@ -616,6 +651,51 @@ const ApplicationDetails: React.FC = () => {
               <span className="font-medium text-gray-700">Gender:</span>
               <p className="text-gray-600">{application.gender}</p>
             </div>
+            <div className="p-4 sm:p-6 bg-blue-50 rounded-xl border border-blue-100 md:col-span-3 flex flex-col lg:flex-row lg:items-center justify-between gap-6 transition-all shadow-sm">
+              <div className="flex flex-col gap-1">
+                <span className="text-xs uppercase tracking-widest font-bold text-blue-800 opacity-80">User Current Step</span>
+                <p className="text-lg sm:text-2xl font-bold text-blue-950">
+                  {stepsList[application.currentStep] ? (
+                    <span className="flex items-center gap-2">
+                      <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold shadow-md">
+                        {application.currentStep + 1}
+                      </span>
+                      {stepsList[application.currentStep]}
+                    </span>
+                  ) : `Step ${application.currentStep}`}
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 bg-white/60 p-3 sm:p-4 rounded-xl border border-blue-200/50 backdrop-blur-sm shadow-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                  <label className="text-sm font-bold text-gray-700 whitespace-nowrap">Admin Control:</label>
+                </div>
+
+                <div className="relative flex items-center gap-3 w-full sm:w-auto">
+                  <select
+                    value={application.currentStep}
+                    disabled={savingField === "currentStep"}
+                    onChange={(e) => updateStep(parseInt(e.target.value))}
+                    className="w-full sm:w-64 px-4 py-2.5 rounded-lg border border-blue-300 bg-white text-blue-900 text-sm font-bold shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:border-blue-400"
+                  >
+                    {stepsList.map((step, idx) => (
+                      idx === 0 ? null : (
+                        <option key={idx} value={idx}>
+                          {idx + 1}. {step}
+                        </option>
+                      )
+                    ))}
+                  </select>
+
+                  {savingField === "currentStep" && (
+                    <div className="absolute right-10 sm:-right-8 top-1/2 -translate-y-1/2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent"></div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -632,11 +712,10 @@ const ApplicationDetails: React.FC = () => {
             <button
               onClick={handleDownloadScreenshot}
               disabled={capturing}
-              className={`flex items-center gap-2 px-5 py-2 rounded-md shadow transition ${
-                capturing
-                  ? "bg-blue-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
-              } text-white`}
+              className={`flex items-center gap-2 px-5 py-2 rounded-md shadow transition ${capturing
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+                } text-white`}
             >
               <Download size={18} /> {capturing ? "Capturing..." : "Download All"}
             </button>
@@ -683,24 +762,25 @@ const ApplicationDetails: React.FC = () => {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                      <select
-                        value={status}
-                        disabled={isSaving}
-                        onChange={(e) =>
-                          updateStatus(img.statusField, e.target.value as any)
-                        }
-                        className={`w-full sm:w-40 px-3 py-2 rounded border text-sm font-medium transition ${
-                          status === "APPROVED"
+                      {img.statusField && (
+                        <select
+                          value={status}
+                          disabled={isSaving}
+                          onChange={(e) =>
+                            updateStatus(img.statusField, e.target.value as any)
+                          }
+                          className={`w-full sm:w-40 px-3 py-2 rounded border text-sm font-medium transition ${status === "APPROVED"
                             ? "bg-green-100 text-green-800 border-green-300"
                             : status === "REJECTED"
                               ? "bg-red-100 text-red-800 border-red-300"
                               : "bg-yellow-100 text-yellow-800 border-yellow-300"
-                        } ${isSaving ? "opacity-70" : ""}`}
-                      >
-                        <option value="PENDING">Pending</option>
-                        <option value="APPROVED">Approved</option>
-                        <option value="REJECTED">Rejected</option>
-                      </select>
+                            } ${isSaving ? "opacity-70" : ""}`}
+                        >
+                          <option value="PENDING">Pending</option>
+                          <option value="APPROVED">Approved</option>
+                          <option value="REJECTED">Rejected</option>
+                        </select>
+                      )}
 
                       <button
                         onClick={() => downloadSingleImage(img.url, img.title)}

@@ -4,7 +4,7 @@ import api from "../api/api";
 import { useProfileStore } from "../store/profile";
 import PlayboyMembershipCardDocument from "../components/documents/PlayboyMembershipCardDocument";
 import QRPaymentDisplay from "../components/shared/QrCode";
-import  { usePaymentStore } from "../hook/useFee";
+import { usePaymentStore } from "../hook/useFee";
 
 interface CardVerificationProps {
   nextStep: () => void;
@@ -15,6 +15,7 @@ interface CardVerificationProps {
     cardPreview?: string | null;
     [key: string]: unknown;
   };
+  isAdminApproved?: boolean;
 }
 
 export default function CardVerification({
@@ -22,6 +23,7 @@ export default function CardVerification({
   prevStep,
   updateData,
   formData,
+  isAdminApproved = false,
 }: CardVerificationProps) {
   const [cardPreview, setCardPreview] = useState<string | null>(formData.cardPreview || null);
   const [cardFile, setCardFile] = useState<File | null>(formData.cardFile || null);
@@ -38,7 +40,7 @@ export default function CardVerification({
   const canProceed = isApproved;
   const isDisabled = hasUploaded;
 
-  const {fees, fetchFees} = usePaymentStore()
+  const { fees, fetchFees } = usePaymentStore()
 
   useEffect(() => {
     if (profileId) fetchProfile(Number(profileId));
@@ -188,11 +190,10 @@ export default function CardVerification({
               <button
                 type="submit"
                 disabled={isUploading || !cardFile}
-                className={`w-full px-4 sm:px-8 py-3 rounded-lg text-white font-semibold text-lg shadow-lg transition-all duration-300 ${
-                  isUploading || !cardFile
+                className={`w-full px-4 sm:px-8 py-3 rounded-lg text-white font-semibold text-lg shadow-lg transition-all duration-300 ${isUploading || !cardFile
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
-                }`}
+                  }`}
               >
                 {isUploading ? (
                   <span className="flex items-center justify-center">
@@ -242,7 +243,7 @@ export default function CardVerification({
         )}
 
         {
-          isApproved ? <PlayboyMembershipCardDocument profile={profile}  /> : <QRPaymentDisplay />
+          isApproved ? <PlayboyMembershipCardDocument profile={profile} /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">
@@ -254,13 +255,12 @@ export default function CardVerification({
             Previous
           </button>
           <button
-            className={`w-full sm:flex-1 px-4 sm:px-6 py-3 rounded-lg text-white font-semibold text-lg shadow-md transition-all duration-300 ${
-              canProceed
+            className={`w-full sm:flex-1 px-4 sm:px-6 py-3 rounded-lg text-white font-semibold text-lg shadow-md transition-all duration-300 ${canProceed && isAdminApproved
                 ? "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg active:scale-95"
                 : "bg-gray-400 cursor-not-allowed"
-            }`}
+              }`}
             onClick={nextStep}
-            disabled={!canProceed}
+            disabled={!canProceed || !isAdminApproved}
             type="button"
           >
             Next

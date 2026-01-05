@@ -16,6 +16,7 @@ interface JoiningFormChangeProps {
     joiningPreview?: string | null;
     [key: string]: unknown;
   };
+  isAdminApproved?: boolean;
 }
 
 export default function JoiningFormChange({
@@ -23,6 +24,7 @@ export default function JoiningFormChange({
   prevStep,
   updateData,
   formData,
+  isAdminApproved = false,
 }: JoiningFormChangeProps) {
   const [joiningPreview, setJoiningPreview] = useState<string | null>(formData.joiningPreview || null);
   const [joiningFile, setJoiningFile] = useState<File | null>(formData.joiningFile || null);
@@ -38,8 +40,8 @@ export default function JoiningFormChange({
   const canProceed = isApproved;
   const isDisabled = hasUploaded;
 
-  const {fees, fetchFees} = usePaymentStore()
-  
+  const { fees, fetchFees } = usePaymentStore()
+
 
   useEffect(() => {
     if (profileId) {
@@ -375,25 +377,25 @@ export default function JoiningFormChange({
                 type="button"
                 style={{
                   padding: "0.75rem 1.5rem",
-                  backgroundColor: canProceed ? "#10b981" : "#d1d5db",
+                  backgroundColor: canProceed && isAdminApproved ? "#10b981" : "#d1d5db",
                   color: "white",
                   fontSize: "1rem",
                   fontWeight: "600",
                   border: "none",
                   borderRadius: "0.5rem",
-                  cursor: canProceed ? "pointer" : "not-allowed",
+                  cursor: canProceed && isAdminApproved ? "pointer" : "not-allowed",
                   transition: "all 0.3s ease"
                 }}
                 onClick={nextStep}
-                disabled={!canProceed}
+                disabled={!canProceed || !isAdminApproved}
                 onMouseEnter={(e) => {
-                  if (canProceed) {
+                  if (canProceed && isAdminApproved) {
                     e.currentTarget.style.backgroundColor = "#059669";
                     e.currentTarget.style.boxShadow = "0 20px 25px -5px rgba(0, 0, 0, 0.2)";
                   }
                 }}
                 onMouseLeave={(e) => {
-                  if (canProceed) {
+                  if (canProceed && isAdminApproved) {
                     e.currentTarget.style.backgroundColor = "#10b981";
                     e.currentTarget.style.boxShadow = "none";
                   }

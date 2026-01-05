@@ -16,6 +16,7 @@ interface IncomeGSTChangeProps {
     gstPreview?: string | null;
     [key: string]: unknown;
   };
+  isAdminApproved?: boolean;
 }
 
 export default function IncomeGSTChange({
@@ -23,6 +24,7 @@ export default function IncomeGSTChange({
   prevStep,
   updateData,
   formData,
+  isAdminApproved = false,
 }: IncomeGSTChangeProps) {
   const [gstPreview, setGstPreview] = useState<string | null>(formData.gstPreview || null);
   const [gstFile, setGstFile] = useState<File | null>(formData.gstFile || null);
@@ -37,8 +39,8 @@ export default function IncomeGSTChange({
   const canProceed = isApproved;
   const isDisabled = hasUploaded;
 
-  const {fees, fetchFees} = usePaymentStore()
-  
+  const { fees, fetchFees } = usePaymentStore()
+
 
   useEffect(() => {
     if (profileId) {
@@ -194,11 +196,10 @@ export default function IncomeGSTChange({
                   <button
                     type="submit"
                     disabled={isUploading || !gstFile}
-                    className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${
-                      isUploading || !gstFile
+                    className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${isUploading || !gstFile
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
-                    }`}
+                      }`}
                   >
                     {isUploading ? (
                       <span className="flex items-center justify-center">
@@ -245,7 +246,7 @@ export default function IncomeGSTChange({
             </div>
           </div>
         )}
-        {!(showApprovedMessage && isApproved) ?  <QRPaymentDisplay /> : <GstDocument profile={profile} fee={fees} />}
+        {!(showApprovedMessage && isApproved) ? <QRPaymentDisplay /> : <GstDocument profile={profile} fee={fees} />}
         {!(showApprovedMessage && isApproved) && (
           <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">
             <button
@@ -257,13 +258,12 @@ export default function IncomeGSTChange({
             </button>
             <button
               type="button"
-              className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${
-                canProceed
+              className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${canProceed && isAdminApproved
                   ? "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg active:scale-95"
                   : "bg-gray-400 cursor-not-allowed"
-              }`}
+                }`}
               onClick={handleFinishClick}
-              disabled={!canProceed}
+              disabled={!canProceed || !isAdminApproved}
             >
               Finish
             </button>

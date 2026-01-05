@@ -16,6 +16,7 @@ interface EnquiryVerificationProps {
     enquiryPreview?: string | null;
     [key: string]: unknown;
   };
+  isAdminApproved?: boolean;
 }
 
 export default function EnquiryVerificationChange({
@@ -23,6 +24,7 @@ export default function EnquiryVerificationChange({
   prevStep,
   updateData,
   formData,
+  isAdminApproved = false,
 }: EnquiryVerificationProps) {
   const [enquiryPreview, setEnquiryPreview] = useState<string | null>(formData.enquiryPreview || null);
   const [enquiryFile, setEnquiryFile] = useState<File | null>(formData.enquiryFile || null);
@@ -37,7 +39,7 @@ export default function EnquiryVerificationChange({
   const isApproved = status === "APPROVED";
   const canProceed = isApproved;
   const isDisabled = hasUploaded;
-  const {fees, fetchFees} = usePaymentStore()
+  const { fees, fetchFees } = usePaymentStore()
 
   useEffect(() => {
     if (profileId) fetchProfile(Number(profileId));
@@ -177,11 +179,10 @@ export default function EnquiryVerificationChange({
               <button
                 type="submit"
                 disabled={isUploading || !enquiryFile}
-                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${
-                  isUploading || !enquiryFile
+                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${isUploading || !enquiryFile
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
-                }`}
+                  }`}
               >
                 {isUploading ? (
                   <span className="flex items-center justify-center">
@@ -243,13 +244,12 @@ export default function EnquiryVerificationChange({
             Previous
           </button>
           <button
-            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${
-              canProceed
+            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${canProceed && isAdminApproved
                 ? "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg active:scale-95"
                 : "bg-gray-400 cursor-not-allowed"
-            }`}
+              }`}
             onClick={nextStep}
-            disabled={!canProceed}
+            disabled={!canProceed || !isAdminApproved}
             type="button"
           >
             Next

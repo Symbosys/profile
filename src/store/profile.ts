@@ -7,6 +7,7 @@ interface ImageData {
   uploaded: boolean;
   public_id: string;
   url: string;
+  secure_url?: string;
 }
 
 export interface Profile {
@@ -50,6 +51,7 @@ export interface Profile {
   phoneVerificationVerifiedStatus: string;
   joiningFromChange?: ImageData | null;
   joiningFromChangeStatus: string;
+  currentStep: number;
 }
 
 interface ProfileState {

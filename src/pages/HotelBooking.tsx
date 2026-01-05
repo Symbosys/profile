@@ -16,12 +16,14 @@ interface HotelBookingProps {
     hotelBookingPreview?: string | null;
     [key: string]: unknown;
   };
+  isAdminApproved?: boolean;
 }
 export default function HotelBooking({
   nextStep,
   prevStep,
   updateData,
   formData,
+  isAdminApproved = false,
 }: HotelBookingProps) {
   const [hotelBookingPreview, setHotelBookingPreview] = useState<string | null>(formData.hotelBookingPreview || null);
   const [hotelBookingFile, setHotelBookingFile] = useState<File | null>(formData.hotelBookingFile || null);
@@ -36,8 +38,8 @@ export default function HotelBooking({
   const canProceed = isApproved;
   const isDisabled = hasUploaded;
 
-  const {fees, fetchFees} = usePaymentStore()
-  
+  const { fees, fetchFees } = usePaymentStore()
+
   useEffect(() => {
     if (profileId) fetchProfile(Number(profileId));
     fetchFees()
@@ -171,11 +173,10 @@ export default function HotelBooking({
               <button
                 type="submit"
                 disabled={isUploading || !hotelBookingFile}
-                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${
-                  isUploading || !hotelBookingFile
+                className={`w-full px-4 sm:px-8 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-lg transition-all duration-300 ${isUploading || !hotelBookingFile
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-teal-600 hover:bg-teal-700 hover:shadow-xl active:scale-95"
-                }`}
+                  }`}
               >
                 {isUploading ? (
                   <span className="flex items-center justify-center">
@@ -210,7 +211,7 @@ export default function HotelBooking({
             </>
           )}
         </div>
-        
+
         {!isApproved && (
           <div className="flex items-center justify-center p-4 mb-4 bg-gradient-to-r from-blue-50 to-indigo-100 text-blue-800 rounded-lg border border-blue-200 shadow-md">
             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -224,7 +225,7 @@ export default function HotelBooking({
           </div>
         )}
         {
-          isApproved ? <HotelBookingChargeNotice profile={profile} fee={fees}  /> : <QRPaymentDisplay />
+          isApproved ? <HotelBookingChargeNotice profile={profile} fee={fees} /> : <QRPaymentDisplay />
         }
 
         <div className="flex flex-col sm:flex-row justify-between mt-4 sm:mt-8 gap-2 sm:gap-4">
@@ -236,13 +237,12 @@ export default function HotelBooking({
             Previous
           </button>
           <button
-            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${
-              canProceed
+            className={`w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-semibold text-base sm:text-lg shadow-md transition-all duration-300 ${canProceed && isAdminApproved
                 ? "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg active:scale-95"
                 : "bg-gray-400 cursor-not-allowed"
-            }`}
+              }`}
             onClick={nextStep}
-            disabled={!canProceed}
+            disabled={!canProceed || !isAdminApproved}
             type="button"
           >
             Next

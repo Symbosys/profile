@@ -13,6 +13,8 @@ import IncomeGSTChange from "../pages/IncomeGSTChange";
 import ProfileVrification from "../pages/profileVrification";
 import { useFormStore } from "../store/formStore";
 import HotelBooking from "../pages/HotelBooking";
+import { useEffect } from "react";
+import { useProfileStore } from "../store/profile";
 
 
 // Step titles
@@ -48,7 +50,25 @@ const stepComponents = [
 ];
 
 export default function Card() {
-  const { currentStep, formData, nextStep, prevStep, updateData } = useFormStore();
+  const { currentStep, formData, nextStep, prevStep, updateData, setStep } = useFormStore();
+  const { profile, fetchProfile } = useProfileStore();
+  const profileId = localStorage.getItem("profileId");
+
+  useEffect(() => {
+    if (profileId) {
+      fetchProfile(Number(profileId));
+    }
+  }, [profileId, fetchProfile]);
+
+  useEffect(() => {
+    if (profile) {
+      // Only set step to profile's current step if it's currently 0 or we want to force jump to the latest available step
+      // For now, let's ensure currentStep doesn't exceed profile.currentStep
+      if (currentStep > profile.currentStep) {
+        setStep(profile.currentStep);
+      }
+    }
+  }, [profile, currentStep, setStep]);
 
   const StepComponent = stepComponents[currentStep];
 
@@ -59,6 +79,7 @@ export default function Card() {
     alert("Form submitted! Check console for data.");
     // TODO: send formData to your backend API
   };
+
 
   return (
     <div>
@@ -78,6 +99,7 @@ export default function Card() {
             updateData={updateData}
             formData={formData}
             onSubmit={handleSubmit}
+            isAdminApproved={currentStep === 0 || (profile ? currentStep < profile.currentStep : false)}
           />
         </div>
       </div>
