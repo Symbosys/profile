@@ -1,13 +1,16 @@
+// src/store/profile.ts
 import { create } from 'zustand';
 import api from '../api/api';
+import { AxiosError } from 'axios';
 
 interface ImageData {
   uploaded: boolean;
   public_id: string;
   url: string;
+  secure_url?: string;
 }
 
-interface Profile {
+export interface Profile {
   id: number;
   email: string;
   name?: string;
@@ -19,10 +22,17 @@ interface Profile {
   website?: string;
   upi?: string;
   url?: string;
+  bankAccountNumber?: string;
+  ifscCode?: string;
+  bankName?: string;
 
+  customerImage?: ImageData | null;
 
+  // ----------  IMAGE FIELDS ----------
   cardVerification?: ImageData | null;
-  carVefificationStatus: string;
+  carVefificationStatus: string;          // <-- exact DB column
+  hotelBooking?: ImageData | null;
+  hotelBookingStatus: string;
   medicalKit?: ImageData | null;
   medicalKitStatus: string;
   policeVerification?: ImageData | null;
@@ -41,6 +51,7 @@ interface Profile {
   phoneVerificationVerifiedStatus: string;
   joiningFromChange?: ImageData | null;
   joiningFromChangeStatus: string;
+  currentStep: number;
 }
 
 interface ProfileState {
@@ -60,6 +71,12 @@ export const useProfileStore = create<ProfileState>((set) => ({
       const response = await api.get(`/profile/${profileId}`);
       set({ profile: response.data.data, loading: false, error: null });
     } catch (err: any) {
+      if(err instanceof  AxiosError) {
+        if(err.response?.status === 404) {
+          localStorage.removeItem("profileId");
+          window.location.reload();
+        }
+      }
       set({
         error: err.response?.data?.message || 'Failed to fetch profile',
         loading: false,

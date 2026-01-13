@@ -88,3 +88,16 @@ if not uploaded then user can upload image
 
 ui
 in this code do not change logic only change tailwind css to make attractive ui and display the formal message and make sure do not change logic
+
+
+
+
+
+
+
+
+if status is rejected then user can reupload the image  
+
+
+
+allow user to reupload image if status is rejected 

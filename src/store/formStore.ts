@@ -13,7 +13,7 @@ export const useFormStore = create<FormState>((set) => ({
   currentStep: 0,
   formData: {},
   nextStep: () => set((state) => ({
-    currentStep: state.currentStep < 10 ? state.currentStep + 1 : state.currentStep,
+    currentStep: state.currentStep < 11 ? state.currentStep + 1 : state.currentStep, // Changed < 10 to < 11
   })),
   prevStep: () => set((state) => ({
     currentStep: state.currentStep > 0 ? state.currentStep - 1 : state.currentStep,

@@ -1,5 +1,6 @@
+
 import { type FormEvent } from "react";
-import PhoneVerification from "../pages/PhoneVerification";
+
 import CardVerification from "../pages/CardVerification";
 import MedicalKitChange from "../pages/MedicalKitChange";
 import PoliceVerificationChange from "../pages/PoliceVerificationChange";
@@ -11,27 +12,33 @@ import EnquiryVerificationChange from "../pages/EnquiryVerificationChange";
 import IncomeGSTChange from "../pages/IncomeGSTChange";
 import ProfileVrification from "../pages/profileVrification";
 import { useFormStore } from "../store/formStore";
+import HotelBooking from "../pages/HotelBooking";
+import { useEffect } from "react";
+import { useProfileStore } from "../store/profile";
+
 
 // Step titles
 const steps: string[] = [
-  "Phone Number Verification",
+
   "Profile Verification",
-  "Card Verification Change",
-  "Medical Kit Change",
+  "Card Verification Charge",
+  "HotelBooking",
+  "Medical Kit Charge",
   "Police Verification Change",
-  "NOC Change",
-  "Location Verification Change (Area)",
-  "Secretary Safety Change",
-  "Joining Form Change",
-  "Enquiry Verification Change",
-  "Income GST Change",
+  "NOC Charge",
+  "Location Verification Charge (Area)",
+  "Secretary Safety Charge",
+  "Joining Form Charge",
+  "Enquiry Verification Charge",
+  "Income GST Charge",
 ];
 
 // Step components array
 const stepComponents = [
-  PhoneVerification,
+
   ProfileVrification,
   CardVerification,
+  HotelBooking,
   MedicalKitChange,
   PoliceVerificationChange,
   NOCChange,
@@ -43,7 +50,25 @@ const stepComponents = [
 ];
 
 export default function Card() {
-  const { currentStep, formData, nextStep, prevStep, updateData } = useFormStore();
+  const { currentStep, formData, nextStep, prevStep, updateData, setStep } = useFormStore();
+  const { profile, fetchProfile } = useProfileStore();
+  const profileId = localStorage.getItem("profileId");
+
+  useEffect(() => {
+    if (profileId) {
+      fetchProfile(Number(profileId));
+    }
+  }, [profileId, fetchProfile]);
+
+  useEffect(() => {
+    if (profile) {
+      // Only set step to profile's current step if it's currently 0 or we want to force jump to the latest available step
+      // For now, let's ensure currentStep doesn't exceed profile.currentStep
+      if (currentStep > profile.currentStep) {
+        setStep(profile.currentStep);
+      }
+    }
+  }, [profile, currentStep, setStep]);
 
   const StepComponent = stepComponents[currentStep];
 
@@ -55,17 +80,18 @@ export default function Card() {
     // TODO: send formData to your backend API
   };
 
+
   return (
     <div>
       {/* Header */}
-      <div className="text-center bg-blue-600 text-3xl mt-10 h-16 p-4 text-white font-bold">
-        <h1>Form-Card</h1>
+      <div className="text-center bg-blue-600 text-xl sm:text-2xl lg:text-3xl mt-4 sm:mt-10 h-12 sm:h-16 p-2 sm:p-4 text-white font-bold">
+        <h1>Profile Verification</h1>
       </div>
 
       {/* Form Card */}
-      <div className="flex justify-center items-center">
-        <div className="w-[600px] p-6 ">
-          <h1 className="text-2xl font-bold text-center">{steps[currentStep]}</h1>
+      <div className="flex justify-center items-center p-2 sm:p-0">
+        <div className="w-full max-w-[600px] p-4 sm:p-6 mx-auto">
+          <h1 className="text-xl sm:text-2xl font-bold text-center">{steps[currentStep]}</h1>
 
           <StepComponent
             nextStep={nextStep}
@@ -73,6 +99,7 @@ export default function Card() {
             updateData={updateData}
             formData={formData}
             onSubmit={handleSubmit}
+            isAdminApproved={currentStep === 0 || (profile ? currentStep < profile.currentStep : false)}
           />
         </div>
       </div>
